@@ -41,12 +41,9 @@ SkypeClient.prototype = {
         this._proxy.InvokeRemote('NAME SkypeNotification');
         this._proxy.InvokeRemote('PROTOCOL 5');
         if (status == GnomeSession.PresenceStatus.BUSY) {
-                this._proxy.InvokeRemote('SET PROFILE RICH_MOOD_TEXT DnD');
                 this._proxy.InvokeRemote('SET USERSTATUS NA');
 
         } else if (status != GnomeSession.PresenceStatus.IDLE) {
-
-                this._proxy.InvokeRemote('SET PROFILE RICH_MOOD_TEXT Online');
                 this._proxy.InvokeRemote('SET USERSTATUS ONLINE');       
         }
     }

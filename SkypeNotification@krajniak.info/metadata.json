@@ -1,0 +1,9 @@
+{
+	"shell-version": ["3.0"], 
+	"uuid": "SkypeNotification@krajniak.info", 
+	"name": "SkypeNotification", 
+	"description": "Set Skype presence with current system presence",
+	"url": "http://clet.blogspot.com/",
+	"original-author": "jkrajniak@gmail.com"
+}
+
