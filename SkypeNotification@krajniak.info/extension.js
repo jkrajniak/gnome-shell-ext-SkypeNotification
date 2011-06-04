@@ -9,17 +9,15 @@
  */
 
 const DBus = imports.dbus;
-const Main = imports.ui.main;
-const Shell = imports.gi.Shell;
 const GnomeSession = imports.misc.gnomeSession;
-const Mainloop = imports.mainloop;
 const Lang = imports.lang;
 
 
 const SkypeIface = {
     name: 'com.Skype.API',
     methods: [
-        { name: 'Invoke', inSignature: 's', outSignature: 's' }
+        { name: 'Invoke', inSignature: 's', outSignature: 's' },
+        { name: 'Notify', inSignature: 's', outSignature: 's' }
     ]
 };
 
@@ -35,16 +33,36 @@ SkypeClient.prototype = {
         this._proxy = new Skype(DBus.session, 'com.Skype.API', '/com/Skype');
         this._gnomeSessionPresence = new GnomeSession.Presence();
         this._gnomeSessionPresence.connect('StatusChanged', Lang.bind(this, this._onStatusChanged));
+        this._proxy.InvokeRemote('NAME SkypeNotification');
+        this._proxy.InvokeRemote('PROTOCOL 5');
+        this._proxy.InvokeRemote("GET USERSTATUS", Lang.bind(this, this.setState));        
     },
+    
+    _state: "",
+    setState: function(state, err){
+	this._state = state.replace('USERSTATUS ','');
+	global.log(err);
+    },
+	
+    getState: function() {
+	return this._state;
+    },
+    
     
     _onStatusChanged: function(presence, status)  {
         this._proxy.InvokeRemote('NAME SkypeNotification');
         this._proxy.InvokeRemote('PROTOCOL 5');
-        if (status == GnomeSession.PresenceStatus.BUSY) {
-                this._proxy.InvokeRemote('SET USERSTATUS NA');
 
-        } else if (status != GnomeSession.PresenceStatus.IDLE) {
-                this._proxy.InvokeRemote('SET USERSTATUS ONLINE');       
+        this._proxy.InvokeRemote("GET USERSTATUS", Lang.bind(this, this.setState));
+        
+        if ( this._state != "OFFLINE" && this._state != "INVISIBLE") {
+                if (status == GnomeSession.PresenceStatus.BUSY) {
+                        this._proxy.InvokeRemote('SET USERSTATUS AWAY');
+                } else if (status == GnomeSession.PresenceStatus.AWAY) {
+                        this._proxy.InvokeRemote('SET USERSTATUS NA');
+                } else if (status != GnomeSession.PresenceStatus.IDLE) {
+                        this._proxy.InvokeRemote('SET USERSTATUS ONLINE');       
+                }
         }
     }
 }
