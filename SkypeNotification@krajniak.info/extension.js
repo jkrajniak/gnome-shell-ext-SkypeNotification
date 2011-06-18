@@ -35,6 +35,9 @@ const SkypeIface = {
     methods: [
         { name: 'Invoke', inSignature: 's', outSignature: 's' },
         { name: 'Notify', inSignature: 's', outSignature: 's' }
+    ],
+    signals: [
+        { name: 'Notify', inSignature: 's' }
     ]
 };
 
@@ -52,19 +55,21 @@ SkypeClient.prototype = {
         this._gnomeSessionPresence.connect('StatusChanged', Lang.bind(this, this._onStatusChanged));
         this._proxy.InvokeRemote('NAME SkypeNotification');
         this._proxy.InvokeRemote('PROTOCOL 5');
-        this._proxy.InvokeRemote("GET USERSTATUS", Lang.bind(this, this.setState));        
+        this._proxy.InvokeRemote("GET USERSTATUS", Lang.bind(this, this.setState));  
+        
+        /** bind for Skype notifications */
+        //this._proxyClient = new Skype(DBus.session, 'com.Skype.API', '/com/Skype/Client');
     },
     
     _state: "",
+    
     setState: function(state, err){
-	this._state = state.replace('USERSTATUS ','');
-	global.log(err);
+    	this._state = state.replace('USERSTATUS ','');
     },
 	
     getState: function() {
-	return this._state;
+	    return this._state;
     },
-    
     
     _onStatusChanged: function(presence, status)  {
         this._proxy.InvokeRemote('NAME SkypeNotification');
@@ -74,11 +79,17 @@ SkypeClient.prototype = {
         
         if ( this._state != "OFFLINE" && this._state != "INVISIBLE") {
                 if (status == GnomeSession.PresenceStatus.BUSY) {
-                        this._proxy.InvokeRemote('SET USERSTATUS AWAY');
-                } else if (status == GnomeSession.PresenceStatus.AWAY) {
+                        this._proxy.InvokeRemote('SET USERSTATUS DND');
+                        global.log('SET DND');
+                } else if (status == GnomeSession.PresenceStatus.IDLE) {
                         this._proxy.InvokeRemote('SET USERSTATUS NA');
-                } else if (status != GnomeSession.PresenceStatus.IDLE) {
-                        this._proxy.InvokeRemote('SET USERSTATUS ONLINE');       
+                        global.log('SET NA');
+                } else if (status == GnomeSession.PresenceStatus.AVAILABLE) {
+                        this._proxy.InvokeRemote('SET USERSTATUS ONLINE');
+                        global.log('SET ONLINE');
+                } else if (status == GnomeSession.PresenceStatus.INVISIBLE) {
+                        this._proxy.InvokeRemote('SET USERSTATUS INVISIBLE');
+                        global.log('SET INVISIBLE');
                 }
         }
     }
@@ -86,5 +97,5 @@ SkypeClient.prototype = {
 
 
 function main(metadata) {
-    let client = new SkypeClient();   
+    let client = new SkypeClient();
 }
