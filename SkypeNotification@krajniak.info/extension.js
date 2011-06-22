@@ -41,7 +41,19 @@ const SkypeIface = {
     ]
 };
 
+const SkypeIfaceClient = {
+    name: 'com.Skype.API.Client',
+    methods: [
+        { name: 'Invoke', inSignature: 's', outSignature: 's' },
+        { name: 'Notify', inSignature: 's', outSignature: 's' }
+    ],
+    signals: [
+        { name: 'Notify', inSignature: 's' }
+    ]
+};
+
 let Skype = DBus.makeProxyClass(SkypeIface);
+let SkypeClient = DBus.makeProxyClass(SkypeIfaceClient);
 
 function SkypeClient() {
     this._init();
@@ -58,7 +70,8 @@ SkypeClient.prototype = {
         this._proxy.InvokeRemote("GET USERSTATUS", Lang.bind(this, this.setState));  
         
         /** bind for Skype notifications */
-        //this._proxyClient = new Skype(DBus.session, 'com.Skype.API', '/com/Skype/Client');
+        //this._proxyClient = new SkypeClient(DBus.session, 'com.Skype.API', '/com/Skype/Client');
+        //this._proxyClient.connect('Notify', Lang.bind(this, this._notifySkype));
     },
     
     _state: "",
@@ -71,11 +84,17 @@ SkypeClient.prototype = {
 	    return this._state;
     },
     
+    _notifySkype: function() {
+        global.log('SKYPE')
+    },
+    
     _onStatusChanged: function(presence, status)  {
         this._proxy.InvokeRemote('NAME SkypeNotification');
         this._proxy.InvokeRemote('PROTOCOL 5');
 
         this._proxy.InvokeRemote("GET USERSTATUS", Lang.bind(this, this.setState));
+        
+        global.log(status);
         
         if ( this._state != "OFFLINE" && this._state != "INVISIBLE") {
                 if (status == GnomeSession.PresenceStatus.BUSY) {
