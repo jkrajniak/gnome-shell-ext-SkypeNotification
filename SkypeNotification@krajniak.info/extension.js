@@ -64,7 +64,6 @@ SkypeClient.prototype = {
         this._sources = {};
         this._proxy = new Skype(DBus.session, 'com.Skype.API', '/com/Skype');
         this._gnomeSessionPresence = new GnomeSession.Presence();
-        this._gnomeSessionPresence.connect('StatusChanged', Lang.bind(this, this._onStatusChanged));
         this._proxy.InvokeRemote('NAME SkypeNotification');
         this._proxy.InvokeRemote('PROTOCOL 5');
         this._proxy.InvokeRemote("GET USERSTATUS", Lang.bind(this, this.setState));  
@@ -73,7 +72,14 @@ SkypeClient.prototype = {
         //this._proxyClient = new SkypeClient(DBus.session, 'com.Skype.API', '/com/Skype/Client');
         //this._proxyClient.connect('Notify', Lang.bind(this, this._notifySkype));
     },
+
+    enable: function() {
+        this._signal = this._gnomeSessionPresence.connect('StatusChanged', Lang.bind(this, this._onStatusChanged));
+    },
     
+    disable: function() {
+        this._gnomeSessionPresence.disconnect(this._signal);
+    },
     _state: "",
     
     setState: function(state, err){
@@ -93,9 +99,7 @@ SkypeClient.prototype = {
         this._proxy.InvokeRemote('PROTOCOL 5');
 
         this._proxy.InvokeRemote("GET USERSTATUS", Lang.bind(this, this.setState));
-        
-        global.log(status);
-        
+
         if ( this._state != "OFFLINE" && this._state != "INVISIBLE") {
                 if (status == GnomeSession.PresenceStatus.BUSY) {
                         this._proxy.InvokeRemote('SET USERSTATUS DND');
@@ -115,6 +119,10 @@ SkypeClient.prototype = {
 }
 
 
-function main(metadata) {
-    let client = new SkypeClient();
+function init() {
+    client = new SkypeClient();
 }
+
+function enable(){ return true; }
+
+function disable(){ client.disable(); return true; }
