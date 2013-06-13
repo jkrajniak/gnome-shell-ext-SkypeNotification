@@ -1,0 +1,7 @@
+{
+	"shell-version": ["3.6"], 
+	"uuid": "SkypeNotification@chrisss404.gmail.com", 
+	"name": "SkypeNotification", 
+	"description": "Set Skype presence with current system presence",
+	"url": ""
+}
