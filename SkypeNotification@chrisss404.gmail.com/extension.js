@@ -21,6 +21,7 @@
 
 const Gio = imports.gi.Gio;
 const Lang = imports.lang;
+const IMStatusChooserItem = imports.ui.userMenu.IMStatusChooserItem;
 
 
 const SkypeIface = <interface name="com.Skype.API">
@@ -38,6 +39,13 @@ const SkypeIfaceClient = <interface name="com.Skype.API.Client">
 
 const SkypeProxy = Gio.DBusProxy.makeProxyWrapper(SkypeIface);
 
+
+const SkypeStatus = {
+    OFFLINE: 1,
+    ONLINE: 2,
+    DND: 6
+}
+
 const Skype = new Lang.Class({
     Name: "Skype",
 
@@ -46,7 +54,7 @@ const Skype = new Lang.Class({
 
         this._proxy = new SkypeProxy(Gio.DBus.session, "com.Skype.API", "/com/Skype");
         this._proxy.InvokeRemote("NAME SkypeNotification");
-        this._proxy.InvokeRemote("PROTOCOL 5");
+        this._proxy.InvokeRemote("PROTOCOL 7");
 
         this._dbusImpl = Gio.DBusExportedObject.wrapJSObject(SkypeIfaceClient, this);
         this._dbusImpl.export(Gio.DBus.session, "/com/Skype/Client");
@@ -58,6 +66,21 @@ const Skype = new Lang.Class({
 
     disable: function() {
         this._enabled = false;
+    },
+
+    updateSkypeStatus: function(presence) {
+        global.log("presence: " + presence);
+        switch(presence) {
+            case SkypeStatus.DND:
+                this._proxy.InvokeRemote('SET USERSTATUS DND');
+                break;
+            case SkypeStatus.OFFLINE:
+                this._proxy.InvokeRemote('SET USERSTATUS OFFLINE');
+                break;
+            case SkypeStatus.ONLINE:
+            default:
+                this._proxy.InvokeRemote('SET USERSTATUS ONLINE');
+        }
     },
 
     _retrieve: function(request) {
@@ -88,17 +111,26 @@ const Skype = new Lang.Class({
 
 let skype = null;
 function init() {
+    skype = new Skype();
 }
 
 function enable() {
-    if(skype == null) {
-        skype = new Skype();
-    }
     skype.enable();
+
+    IMStatusChooserItem.prototype._setComboboxPresenceOrig = IMStatusChooserItem.prototype._setComboboxPresence;
+    IMStatusChooserItem.prototype._setComboboxPresence = function(presence) {
+        this._setComboboxPresenceOrig(presence);
+        skype.updateSkypeStatus(presence);
+    };
     global.log("enabled");
 }
 
 function disable() {
     skype.disable();
+
+    if(typeof IMStatusChooserItem.prototype._setComboboxPresenceOrig === 'function') {
+        IMStatusChooserItem.prototype._setComboboxPresence = IMStatusChooserItem.prototype._setComboboxPresenceOrig;
+        IMStatusChooserItem.prototype._setComboboxPresenceOrig = undefined;
+    }
     global.log("disabled");
 }
