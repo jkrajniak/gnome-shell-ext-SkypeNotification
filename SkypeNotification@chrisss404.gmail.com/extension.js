@@ -20,8 +20,10 @@
  */
 
 const Gio = imports.gi.Gio;
-const Lang = imports.lang;
 const IMStatusChooserItem = imports.ui.userMenu.IMStatusChooserItem;
+const Lang = imports.lang;
+const Main = imports.ui.main;
+const MessageTray = imports.ui.messageTray;
 
 
 const SkypeIface = <interface name="com.Skype.API">
@@ -85,7 +87,53 @@ const Skype = new Lang.Class({
 
     _retrieve: function(request) {
         let [response] = this._proxy.InvokeSync(request);
-        return response.split(" ")[3];
+        let parts = response.split(" ");
+        parts.splice(0, 3);
+        return parts.join(" ");
+    },
+
+    _getNotifySource: function() {
+    	let source = null;
+
+        // getSources() in gs3.8
+        let items = Main.messageTray.getSummaryItems();
+        let item = null; 
+        for(let index in items) {
+        	item = items[index].source;
+            if(item.title == "Skype") {
+            	if(item.initialTitle == "Skype") {
+            		source = item;
+            	} else {
+            		for(let notification in item.notifications) {
+            			item.notifications[notification].destroy();
+            		}
+            	}
+            }
+        }
+
+    	return source;
+    },
+
+    _notify: function(title, banner) {
+        let source = this._getNotifySource();
+        if(source == null) {
+        	global.log("Is Skype running?");
+        	return;
+        }
+
+        let notifications = source.notifications;
+        let notification = null;
+
+        if(source.count == 0) {
+        	notification = new MessageTray.Notification(source, title, banner);
+        	notification.setTransient(true);
+        	source.notify(notification);
+        } else {
+        	notification = notifications[0];
+        	notification.setTransient(true);
+        	notification.update(title, banner);
+        	notification.updated();
+        }
     },
 
     NotifyAsync: function(params) {
@@ -105,6 +153,8 @@ const Skype = new Lang.Class({
 
             global.log(userName);
             global.log(messageBody);
+            
+            this._notify(userName, messageBody);
         }
     }
 });
