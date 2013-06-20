@@ -20,10 +20,12 @@
  */
 
 const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 const IMStatusChooserItem = imports.ui.userMenu.IMStatusChooserItem;
 const Lang = imports.lang;
 const Main = imports.ui.main;
 const MessageTray = imports.ui.messageTray;
+const SimpleXML = imports.misc.extensionUtils.getCurrentExtension().imports.simpleXml.SimpleXML;
 
 
 const SkypeIface = <interface name="com.Skype.API">
@@ -53,35 +55,70 @@ const Skype = new Lang.Class({
 
     _init: function() {
         this._enabled = false;
+        this._authenticated = false;
+        this._currentUserHandle = "";
+        this._config = null;
+
+        this._messages = [];
 
         this._proxy = new SkypeProxy(Gio.DBus.session, "com.Skype.API", "/com/Skype");
-        this._proxy.InvokeRemote("NAME SkypeNotification");
-        this._proxy.InvokeRemote("PROTOCOL 7");
-
         this._dbusImpl = Gio.DBusExportedObject.wrapJSObject(SkypeIfaceClient, this);
-        this._dbusImpl.export(Gio.DBus.session, "/com/Skype/Client");
+
+        this._authenticate();
+        this._heartBeat();
+    },
+
+    _authenticate: function() {
+        this._proxy.InvokeRemote("NAME GnomeShellExtension", Lang.bind(this, this._onAuthenticate));
+    },
+
+    _heartBeat: function() {
+        this._proxy.InvokeRemote("GET SKYPEVERSION", Lang.bind(this, this._onHeartBeat));
+    },
+
+    _onAuthenticate: function(answer) {
+        if(answer == "OK") {
+            this._proxy.InvokeRemote("PROTOCOL 7");
+            this._dbusImpl.export(Gio.DBus.session, "/com/Skype/Client");
+        } else if(!this._authenticated && answer != "ERROR 68") {
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, Lang.bind(this, this._authenticate));
+        }
+    },
+
+    _onHeartBeat: function(answer) {
+        if(this._authenticated && answer == "ERROR 68") {
+            this._authenticated = false;
+            this._authenticate();
+        }
+        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 2500, Lang.bind(this, this._heartBeat));
     },
 
     enable: function() {
         this._enabled = true;
+        if(this._config != null) {
+            this._config.toggle(this._enabled);
+        }
     },
 
     disable: function() {
         this._enabled = false;
+        if(this._config != null) {
+            this._config.toggle(this._enabled);
+        }
     },
 
     updateSkypeStatus: function(presence) {
         global.log("presence: " + presence);
         switch(presence) {
             case SkypeStatus.DND:
-                this._proxy.InvokeRemote('SET USERSTATUS DND');
+                this._proxy.InvokeRemote("SET USERSTATUS DND");
                 break;
             case SkypeStatus.OFFLINE:
-                this._proxy.InvokeRemote('SET USERSTATUS OFFLINE');
+                this._proxy.InvokeRemote("SET USERSTATUS OFFLINE");
                 break;
             case SkypeStatus.ONLINE:
             default:
-                this._proxy.InvokeRemote('SET USERSTATUS ONLINE');
+                this._proxy.InvokeRemote("SET USERSTATUS ONLINE");
         }
     },
 
@@ -92,48 +129,125 @@ const Skype = new Lang.Class({
         return parts.join(" ");
     },
 
+    _getUserName: function(userHandle) {
+        let displayName = this._retrieve("GET USER %s DISPLAYNAME".format(userHandle));
+        if(displayName != "") {
+            return displayName;
+        }
+        let userName = this._retrieve("GET USER %s FULLNAME".format(userHandle));
+        if(userName != "") {
+        	return userName;
+        }
+        return userHandle;
+    },
+
+    _hasAnyoneBirthday: function() {
+        let today = new Date();
+        let tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+
+        let todayString = "%02d%02d".format(today.getMonth() + 1, today.getDate());
+        let tomorrowString = "%02d%02d".format(tomorrow.getMonth() + 1, tomorrow.getDate());
+
+        let [friends] = this._proxy.InvokeSync("SEARCH FRIENDS");
+        if(friends.indexOf("USERS ") !== -1) {
+            friends = friends.replace("USERS ", "").split(",");
+            for(let friend in friends) {
+                if(this._isBirthday(this._retrieve("GET USER %s BIRTHDAY".format(friends[friend])), tomorrowString)) {
+                    let userName = this._getUserName(friends[friend]);
+                    this._notify(this._config.getNotification("Birthday", {"contact": userName}));
+                }
+            }
+        }
+
+        let [myBirthday] = this._proxy.InvokeSync("GET PROFILE BIRTHDAY");
+        if(this._isBirthday(myBirthday.replace("PROFILE BIRTHDAY ", ""), todayString)) {
+            this._notify(this._config.getNotification("OurBirthday", {}));
+        }
+    },
+
+    _isBirthday: function(birthday, day) {
+        if(birthday.length > 4 && birthday.substr(4) == day) {
+            return true;
+        }
+        return false;
+    },
+
     _getNotifySource: function() {
-    	let source = null;
+        let source = null;
 
         // getSources() in gs3.8
         let items = Main.messageTray.getSummaryItems();
         let item = null; 
         for(let index in items) {
-        	item = items[index].source;
+            item = items[index].source;
             if(item.title == "Skype") {
-            	if(item.initialTitle == "Skype") {
-            		source = item;
-            	} else {
-            		for(let notification in item.notifications) {
-            			item.notifications[notification].destroy();
-            		}
-            	}
+                if(item.initialTitle == "Skype") {
+                    source = item;
+                } else {
+                    item.destroy();
+                }
             }
         }
 
-    	return source;
+        return source;
     },
 
-    _notify: function(title, banner) {
+    _onClose: function() {
+        this._messages = [];
+    },
+
+    _notify: function(message) {
+        if(message == null) {
+            return;
+        }
+        this._messages.push(message);
+
+        let items = this._messages; 
+        items.reverse();
+
+        let summary = "Skype";
+        let body = [];
+        let icon = "skype";
+
+        if(this._messages.length > 1) {
+            for(let index in items) {
+                if(items[index].body.length > 0) {
+                    body.push([items[index].summary, items[index].body].join(": "));
+                } else {
+                    body.push(items[index].summary);
+                }
+                body.push("\n");
+            }
+        } else {
+            for(let index in items) {
+                summary = items[index].summary;
+                body.push(items[index].body);
+                icon = items[index].icon;
+            }
+        }
+        body = body.join("").trim();
+
+
         let source = this._getNotifySource();
         if(source == null) {
-        	global.log("Is Skype running?");
-        	return;
+            global.log("Is Skype running?");
+            return;
         }
 
         let notifications = source.notifications;
         let notification = null;
 
         if(source.count == 0) {
-        	notification = new MessageTray.Notification(source, title, banner);
-        	notification.setTransient(true);
-        	source.notify(notification);
+            notification = new MessageTray.Notification(source, summary, body);
+            notification.setTransient(true);
+            notification.connect("collapsed", Lang.bind(this, this._onClose));
+            source.notify(notification);
         } else {
-        	notification = notifications[0];
-        	notification.setTransient(true);
-        	notification.update(title, banner);
-        	notification.updated();
+            notification = notifications[0];
+            notification.update(summary, body);
+            notification.updated();
         }
+        global.log("displaying");
     },
 
     NotifyAsync: function(params) {
@@ -144,18 +258,232 @@ const Skype = new Lang.Class({
         let [message] = params;
         global.log(message);
 
-        if(message.indexOf("CHATMESSAGE") !== -1) {
-            let messageId = message.split(" ")[1];
+        if(message.indexOf("CURRENTUSERHANDLE ") !== -1) {
+            this._currentUserHandle = message.replace("CURRENTUSERHANDLE ", "");
+            this._config = new SkypeConfig(this._currentUserHandle);
+            this._config.toggle(this._enabled);
+            this._authenticated = true;
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 5000, Lang.bind(this, this._hasAnyoneBirthday));
+        } else if(message.indexOf("VOICEMAIL ") !== -1) {
+            let voicemail = message.split(" ");
+            if(voicemail[2] == "TYPE") {
+                if(voicemail[3] == "INCOMING") {
+                    let userHandle = this._retrieve("GET VOICEMAIL %s PARTNER_HANDLE".format(voicemail[1]));
+                    let userName = this._getUserName(userHandle);
+                    this._notify(this._config.getNotification("VoicemailReceived", {"contact": userName}));
+                } else if(voicemail[3] == "VoicemailSent") {
+                    this._notify(this._config.getNotification("VoicemailReceived", {}));
+                }
+            }
+        } else if(message.indexOf("CHAT ") !== -1) {
+            let chatId = message.split(" ")[1];
 
-            let messageBody = this._retrieve("GET CHATMESSAGE " + messageId + " BODY");
-            let userHandle = this._retrieve("GET CHATMESSAGE " + messageId + " FROM_HANDLE");
-            let userName = this._retrieve("GET USER " + userHandle + " FULLNAME");
+            let recent = this._proxy.InvokeSync("GET CHAT %s RECENTCHATMESSAGES".format(chatId)).toString();
+            recent = recent.replace("CHAT %s RECENTCHATMESSAGES".format(chatId), "").split(",");
 
-            global.log(userName);
-            global.log(messageBody);
-            
-            this._notify(userName, messageBody);
+            let messageId = recent[recent.length - 1]; 
+            let messageBody = this._retrieve("GET CHATMESSAGE %s BODY".format(messageId));
+            let userHandle = this._retrieve("GET CHATMESSAGE %s FROM_HANDLE".format(messageId));
+            let state = this._retrieve("GET CHATMESSAGE %s STATUS".format(messageId));
+            let userName = this._getUserName(userHandle);
+
+            if(state == "RECEIVED") {
+                this._notify(this._config.getNotification("ChatIncoming", {"contact": userName, "message": messageBody}));
+            } else if(state == "SENDING") {
+                this._notify(this._config.getNotification("ChatOutgoing", {"contact": userName, "message": messageBody}));
+            }
+        } else if(message.indexOf("USER ") !== -1) {
+            let user = message.split(" ");
+            let userName = this._getUserName(user[1]);
+            if(user[2] == "ONLINESTATUS") {
+                if(user[3] == "ONLINE") {
+                    this._notify(this._config.getNotification("ContactOnline", {"contact": userName}));
+                } else if(user[3] == "OFFLINE") {
+                    this._notify(this._config.getNotification("ContactOffline", {"contact": userName}));
+                } else if(user[3] == "SUBSCRIBED") {
+                    this._notify(this._config.getNotification("ChatJoined", {"contact": userName, "message": user[3]}));
+                } else if(user[3] == "UNSUBSCRIBED") {
+                    this._notify(this._config.getNotification("ChatParted", {"contact": userName, "message": user[3]}));
+                }
+            } else if(user[2] == "RECEIVEDAUTHREQUEST") {
+                this._notify(this._config.getNotification("ContactOnline", {"contact": userName, "message": user[3]}));
+            } else if(user[2] == "BUDDYSTATUS") {
+                if(user[3] == "1") {
+                    this._notify(this._config.getNotification("ContactDeleted", {"contact": userName}));
+                } else if(user[3] == "3") {
+                    this._notify(this._config.getNotification("ContactAdded", {"contact": userName}));
+                }
+            }
+        } else if(message.indexOf("FILETRANSFER ") !== -1) {
+            let transfer = message.split(" ");
+            if(transfer[2] == "STATUS") {
+                if(transfer[3] == "NEW") {
+                    let type = this._retrieve("GET FILETRANSFER %s TYPE".format(transfer[1]));
+                    if(type == "INCOMING") {
+                        let userHandle = this._retrieve("GET FILETRANSFER %s PARTNER_HANDLE".format(transfer[1]));
+                        let userName = this._getUserName(userHandle);
+                        this._notify(this._config.getNotification("TransferRequest", {"contact": userName}));
+                    }
+                } else if(transfer[3] == "COMPLETED") {
+                    let fileName = this._retrieve("GET FILETRANSFER %s FILENAME".format(transfer[1]));
+                    let filePath = this._retrieve("GET FILETRANSFER %s FILEPATH".format(transfer[1]));
+                    this._notify(this._config.getNotification("TransferComplete", {"filename": fileName, "filepath": filePath}));
+                } else if(transfer[3] == "CANCELLED") {
+                    let fileName = this._retrieve("GET FILETRANSFER %s FILENAME".format(transfer[1]));
+                    this._notify(this._config.getNotification("TransferFailed", {"filename": fileName}));
+                }
+            }
+        } else if(message.indexOf("SMS ") !== -1) {
+            let sms = message.split(" ");
+            if(sms[2] == "STATUS") {
+                if(sms[3] == "DELIVERED") {
+                    this._notify(this._config.getNotification("SMSSent", {}));
+                } else if(sms[3] == "FAILED") {
+                    this._notify(this._config.getNotification("SMSFailed", {}));
+                }
+            }
         }
+    }
+});
+
+const SkypeConfig = new Lang.Class({
+    Name: "SkypeConfig",
+
+    _init: function(currentUserHandle) {
+        this._file = GLib.get_home_dir() + "/.Skype/" + currentUserHandle + "/config.xml";
+
+        let config = Gio.file_new_for_path(this._file);
+        if(!config.query_exists(null)) {
+            this._file = GLib.get_tmp_dir() + "/skype.xml";
+        }
+
+        this._options = {
+                "VoicemailReceived": {
+                    "enabled": false, "config": ["VoicemailReceived", "VoicemailReceived", 1],
+                    "notification": [ "{contact}", "Voicemail Received", "emblem-shared" ]},
+                "VoicemailSent": {
+                    "enabled": false, "config": ["VoicemailSent", "VoicemailSent", 0],
+                    "notification": [ "Voicemail Sent", "", "document-send" ]},
+                "ContactOnline": {
+                    "enabled": false, "config": ["Online", "ContactOnline", 1],
+                    "notification": [ "{contact} is now online", "", "user-online" ]},
+                "ContactOffline": {
+                    "enabled": false, "config": ["Offline", "ContactOffline", 1],
+                    "notification": [ "{contact} is now offline", "", "user-offline" ]},
+                "ContactAuthRequest": {
+                    "enabled": false, "config": ["Authreq", "ContactAuthRequest", 1],
+                    "notification": [ "Contact request from {contact}", "{message}", "contact-new" ]},
+                "ContactAdded": {
+                    "enabled": false, "config": ["ContactAdded", "ContactAdded", 1],
+                    "notification": [ "{contact} has been added to your contact list", "", "address-book-new" ]},
+                "ContactDeleted": {
+                    "enabled": false, "config": ["ContactDeleted", "ContactDeleted", 1],
+                    "notification": [ "{contact} has been deleted from your contact list", "", "edit-delete" ]},
+                "ChatIncoming": {
+                    "enabled": false, "config": ["Chat", "ChatIncoming", 1],
+                    "notification": [ "{contact}", "{message}", "im-message-new" ]},
+                "ChatOutgoing": {
+                    "enabled": false, "config": ["ChatOutgoing", "ChatOutgoing", 0],
+                    "notification": [ "{contact}", "{message}", "im-message-new" ]},
+                "ChatJoined": {
+                    "enabled": false, "config": ["ChatJoined", "ChatJoined", 0],
+                    "notification": [ "{contact} joined chat", "{message}", "system-users" ]},
+                "ChatParted": {
+                    "enabled": false, "config": ["ChatParted", "ChatParted", 0],
+                    "notification": [ "{contact} left chat", "{message}", "system-users" ]},
+                "TransferRequest": {
+                    "enabled": false, "config": ["TransferRequest", "TransferRequest", 1],
+                    "notification": [ "Incomming file from {contact}", "", "gtk-save" ]},
+                "TransferComplete": {
+                	"enabled": false, "config": ["TransferComplete", "TransferComplete", 1],
+                	"notification": [ "Transfer Complete", "{filename} saved to {filepath}", "gtk-save" ]},
+                "TransferFailed": {
+                    "enabled": false, "config": ["TransferFailed", "TransferFailed", 1],
+                    "notification": [ "Transfer Failed", "{filename}", "gtk-close" ]},
+                "SMSSent": {
+                    "enabled": false, "config": ["SMSSent", "SMSSent", 1],
+                    "notification": [ "SMS Sent", "", "document-send" ]},
+                "SMSFailed": {
+                    "enabled": false, "config": ["SMSFailed", "SMSFailed", 1],
+                    "notification": [ "SMS Failed", "", "gtk-close" ]},
+                "Birthday": {
+                    "enabled": false, "config": ["Birthday", "Birthday", 1],
+                    "notification": [ "{contact} has a birthday Tomorrow", "", "appointment-soon" ]},
+                "OurBirthday": {
+                    "enabled": false, "config": ["OurBirthday", "OurBirthday", 1],
+                    "notification": [ "Happy Birthday {contact}", "", "emblem-favorite" ]}
+        };
+    },
+
+    getNotification: function(type, params) {
+        let item = this._options[type];
+        if(typeof item !== "undefined" && item.enabled) {
+            let notification = { "summary": item.notification[0],
+                    "body": item.notification[1], "icon": item.notification[2] };
+            for(let token in params) {
+                notification.summary = notification.summary.replace("{%s}".format(token), params[token]);
+                notification.body = notification.body.replace("{%s}".format(token), params[token]);
+            }
+            return notification;
+        }
+        return null;
+    },
+
+    _get: function(xml, root, name, value) {
+        let element = xml.find(root, name);
+        if(typeof element === "undefined") {
+            element = xml.subElement(root, name);
+            element.data = [value];
+        }
+        return element;
+    },
+
+    _set: function(params) {
+        let [xml, toggle, notify, enalbe, script, ntag, stag, preset] = params;
+
+        this._get(xml, script, stag, "ls");
+        let ntagElement = this._get(xml, notify, ntag, preset);
+        let stagElement = this._get(xml, enalbe, stag, preset^1);
+
+        if(toggle) {
+            if(parseInt(ntagElement.data) == 1 || parseInt(stagElement.data) == 1) {
+                ntagElement.data = [0];
+                stagElement.data = [1];
+                return true;
+            } else {
+                stagElement.data = [0];
+                return false;
+            }
+        } else {
+            if(parseInt(ntagElement.data) == 1 || parseInt(stagElement.data) == 1) {
+                ntagElement.data = [1];
+                stagElement.data = [0];
+                return true;
+            } else {
+                ntagElement.data = [0];
+                return false;
+            }
+        }
+    },
+
+    toggle: function(toggle) {
+        let xml = new SimpleXML();
+        xml.parseFile(this._file);
+
+        let root = xml.getRoot();
+        let ui = this._get(xml, root, "UI", "");
+        let notify = this._get(xml, ui, "Notify", "");
+        let notifications = this._get(xml, ui, "Notifications", "");
+        let notificationsEnable = this._get(xml, notifications, "Enable", "");
+        let notificationsEnableScripts = this._get(xml, notificationsEnable, "Scripts", "");
+        let notificationsScripts = this._get(xml, notifications, "Scripts", "");
+
+        let params = [xml, toggle, notify, notificationsEnableScripts, notificationsScripts];
+        for(let key in this._options) {
+            this._options[key].enabled = this._set(params.concat(this._options[key].config));
+        }
+
+        xml.write(this._file);
     }
 });
 
@@ -172,15 +500,13 @@ function enable() {
         this._setComboboxPresenceOrig(presence);
         skype.updateSkypeStatus(presence);
     };
-    global.log("enabled");
 }
 
 function disable() {
     skype.disable();
 
-    if(typeof IMStatusChooserItem.prototype._setComboboxPresenceOrig === 'function') {
+    if(typeof IMStatusChooserItem.prototype._setComboboxPresenceOrig === "function") {
         IMStatusChooserItem.prototype._setComboboxPresence = IMStatusChooserItem.prototype._setComboboxPresenceOrig;
         IMStatusChooserItem.prototype._setComboboxPresenceOrig = undefined;
     }
-    global.log("disabled");
 }

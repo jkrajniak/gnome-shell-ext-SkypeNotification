@@ -26,7 +26,6 @@ const SimpleXML = new Lang.Class({
     Name: "SimpleXML",
 
     _init: function() {
-    	global.log("hello");
         this._clear();
     },
 
@@ -52,8 +51,17 @@ const SimpleXML = new Lang.Class({
     parseString: function(string) {
         this._clear();
 
-        let tokens = string.split(/[<+?>]/);
-        this._tokens = tokens.reverse();
+        let tokens = string.split(/([<+>])/);
+        this._tokens = [];
+        for(let index = 0, amount = tokens.length; index < amount; index++) {
+            if(tokens[index] == "<") {
+                this._tokens.push(tokens[index++] + tokens[index++]);
+            } else {
+                this._tokens.push(tokens[index]);
+            }
+        }
+        this._tokens.reverse();
+
         this._createTree();
     },
 
@@ -62,9 +70,9 @@ const SimpleXML = new Lang.Class({
     },
 
     find: function(root, name) {
-        for(var entry in root) {
-            if(root[entry].name == name) {
-                return root[entry];
+        for(let index in root.data) {
+            if(root.data[index].name == name) {
+                return root.data[index]; 
             }
         }
         return undefined;
@@ -79,7 +87,7 @@ const SimpleXML = new Lang.Class({
     write: function(path) {
         let contents = '<?xml version="1.0"?>\n';
 
-        for(var index in this._doc.data) {
+        for(let index in this._doc.data) {
             contents += this._stringify(this._doc.data[index]);
         }
 
@@ -91,12 +99,12 @@ const SimpleXML = new Lang.Class({
         obj.data.reverse();
 
         let text = "<" + obj.name;
-        for(var item in obj.attr) {
+        for(let item in obj.attr) {
             text += " " + obj.attr[item];
         }
         text += ">";
 
-        for(var item in obj.data) {
+        for(let item in obj.data) {
             if(typeof obj.data[item] === "object") {
                 text += this._stringify(obj.data[item]);
             } else {
@@ -117,17 +125,17 @@ const SimpleXML = new Lang.Class({
         let token;
         while((token = this._getNextToken()) != null) {
             if(token[0] != "") {
-                if(token[0].indexOf("/") === 0) {
-                    this._level[this._depth + 1] = this.subElement(this._level[this._depth], token[0].substr(1));
+                if(token[0].indexOf("</") === 0) {
+                    this._level[this._depth + 1] = this.subElement(this._level[this._depth], token[0].substr(2));
                     this._depth++;
-                } else if(token[0] == this._level[this._depth].name) {
+                } else if(token[0].substr(1) == this._level[this._depth].name) {
                     token.splice(0, 1);
                     this._level[this._depth].attr = token;
                     this._depth--;
-                } else if(token[0] == "xml") {
+                } else if(token[0] == "<?xml") {
                 } else {
                     let contents = "";
-                    for(var item in token) {
+                    for(let item in token) {
                         contents += token[item] + " ";
                     }
                     this._level[this._depth].data = [contents.trim()]; 
