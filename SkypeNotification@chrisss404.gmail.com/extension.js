@@ -19,12 +19,16 @@
  *
  */
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
 const IMStatusChooserItem = imports.ui.userMenu.IMStatusChooserItem;
 const Lang = imports.lang;
+
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
+
 const Main = imports.ui.main;
 const MessageTray = imports.ui.messageTray;
+
+const Config = imports.misc.config;
 const SimpleXML = imports.misc.extensionUtils.getCurrentExtension().imports.simpleXml.SimpleXML;
 
 
@@ -58,6 +62,7 @@ const Skype = new Lang.Class({
         this._authenticated = false;
         this._currentUserHandle = "";
         this._config = null;
+        this._isGnome38 = (Config.PACKAGE_VERSION.indexOf("3.8") == 0);
 
         this._messages = [];
 
@@ -161,7 +166,7 @@ const Skype = new Lang.Class({
 
         let [myBirthday] = this._proxy.InvokeSync("GET PROFILE BIRTHDAY");
         if(this._isBirthday(myBirthday.replace("PROFILE BIRTHDAY ", ""), todayString)) {
-            this._notify(this._config.getNotification("OurBirthday", {}));
+            this._notify(this._config.getNotification("OurBirthday", {"contact": this._getUserName(this._currentUserHandle)}));
         }
     },
 
@@ -174,17 +179,28 @@ const Skype = new Lang.Class({
 
     _getNotifySource: function() {
         let source = null;
+        let items = null;
 
-        // getSources() in gs3.8
-        let items = Main.messageTray.getSummaryItems();
+        if(this._isGnome38) {
+            items = Main.messageTray.getSources();
+        } else {
+            items = Main.messageTray.getSummaryItems();
+        }
+
         let item = null; 
         for(let index in items) {
-            item = items[index].source;
+            if(this._isGnome38) {
+                item = items[index];
+            } else {
+                item = items[index].source;
+            }
+            global.log(" ## " + item.title + " (" + item.initialTitle + ")");
             if(item.title == "Skype") {
                 if(item.initialTitle == "Skype") {
                     source = item;
                 } else {
                     item.destroy();
+                    global.log(" -- destroyed");
                 }
             }
         }
@@ -201,6 +217,12 @@ const Skype = new Lang.Class({
             return;
         }
         this._messages.push(message);
+
+        let source = this._getNotifySource();
+        if(source == null) {
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, Lang.bind(this, this._notify));
+            return;
+        }
 
         let items = this._messages; 
         items.reverse();
@@ -227,13 +249,6 @@ const Skype = new Lang.Class({
         }
         body = body.join("").trim();
 
-
-        let source = this._getNotifySource();
-        if(source == null) {
-            global.log("Is Skype running?");
-            return;
-        }
-
         let notifications = source.notifications;
         let notification = null;
 
@@ -242,12 +257,12 @@ const Skype = new Lang.Class({
             notification.setTransient(true);
             notification.connect("collapsed", Lang.bind(this, this._onClose));
             source.notify(notification);
+            global.log(" ++ notified");
         } else {
             notification = notifications[0];
             notification.update(summary, body);
-            notification.updated();
+            global.log(" ++ updated");
         }
-        global.log("displaying");
     },
 
     NotifyAsync: function(params) {
@@ -276,12 +291,26 @@ const Skype = new Lang.Class({
                 }
             }
         } else if(message.indexOf("CHAT ") !== -1) {
-            let chatId = message.split(" ")[1];
+            let chat = message.split(" ");
 
-            let recent = this._proxy.InvokeSync("GET CHAT %s RECENTCHATMESSAGES".format(chatId)).toString();
-            recent = recent.replace("CHAT %s RECENTCHATMESSAGES".format(chatId), "").split(",");
+            if(chat[2] == "ACTIVITY_TIMESTAMP") {
+                let chatName = this._retrieve("GET CHAT %s FRIENDLYNAME".format(chat[1]));
+                let recent = this._proxy.InvokeSync("GET CHAT %s RECENTCHATMESSAGES".format(chat[1])).toString();
+                recent = recent.replace("CHAT %s RECENTCHATMESSAGES".format(chat[1]), "").split(",");
 
-            let messageId = recent[recent.length - 1]; 
+                let state = "";
+                if(recent.length > 0) {
+                    global.log("    recent: " + recent[recent.length - 1]);
+                    state = this._retrieve("GET CHATMESSAGE %s STATUS".format(recent[recent.length - 1]));
+                }
+
+                global.log(" ** STATE: " + state);
+                if(state != "RECEIVED" && state != "SENDING") {
+                    this._notify(this._config.getNotification("ChatIncomingInitial", {"chat": chatName}));
+                }
+            }
+        } else if(message.indexOf("CHATMESSAGE ") !== -1) {
+            let messageId = message.split(" ")[1];
             let messageBody = this._retrieve("GET CHATMESSAGE %s BODY".format(messageId));
             let userHandle = this._retrieve("GET CHATMESSAGE %s FROM_HANDLE".format(messageId));
             let state = this._retrieve("GET CHATMESSAGE %s STATUS".format(messageId));
@@ -296,9 +325,9 @@ const Skype = new Lang.Class({
             let user = message.split(" ");
             let userName = this._getUserName(user[1]);
             if(user[2] == "ONLINESTATUS") {
-                if(user[3] == "ONLINE") {
+                if(user[3] == "ONLINE" && user[1] != this._currentUserHandle) {
                     this._notify(this._config.getNotification("ContactOnline", {"contact": userName}));
-                } else if(user[3] == "OFFLINE") {
+                } else if(user[3] == "OFFLINE" && user[1] != this._currentUserHandle) {
                     this._notify(this._config.getNotification("ContactOffline", {"contact": userName}));
                 } else if(user[3] == "SUBSCRIBED") {
                     this._notify(this._config.getNotification("ChatJoined", {"contact": userName, "message": user[3]}));
@@ -379,6 +408,9 @@ const SkypeConfig = new Lang.Class({
                 "ContactDeleted": {
                     "enabled": false, "config": ["ContactDeleted", "ContactDeleted", 1],
                     "notification": [ "{contact} has been deleted from your contact list", "", "edit-delete" ]},
+                "ChatIncomingInitial": {
+                    "enabled": true, "config": ["", "", 1],
+                    "notification": [ "{chat}", "", "im-message-new" ]},
                 "ChatIncoming": {
                     "enabled": false, "config": ["Chat", "ChatIncoming", 1],
                     "notification": [ "{contact}", "{message}", "im-message-new" ]},
@@ -480,7 +512,9 @@ const SkypeConfig = new Lang.Class({
 
         let params = [xml, toggle, notify, notificationsEnableScripts, notificationsScripts];
         for(let key in this._options) {
-            this._options[key].enabled = this._set(params.concat(this._options[key].config));
+            if(!this._options[key].enabled) {
+                this._options[key].enabled = this._set(params.concat(this._options[key].config));
+            }
         }
 
         xml.write(this._file);

@@ -1,7 +1,7 @@
 {
-	"shell-version": ["3.6"], 
-	"uuid": "SkypeNotification@chrisss404.gmail.com", 
-	"name": "SkypeNotification", 
-	"description": "Set Skype presence with current system presence",
-	"url": "https://github.com/chrisss404/gnome-shell-ext-SkypeNotification"
+    "shell-version": ["3.6", "3.8"], 
+    "uuid": "SkypeNotification@chrisss404.gmail.com", 
+    "name": "SkypeNotification", 
+    "description": "Set Skype presence with current system presence",
+    "url": "https://github.com/chrisss404/gnome-shell-ext-SkypeNotification"
 }
