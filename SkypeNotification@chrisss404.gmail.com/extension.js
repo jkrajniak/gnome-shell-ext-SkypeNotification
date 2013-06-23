@@ -19,17 +19,23 @@
  *
  */
 
-const IMStatusChooserItem = imports.ui.userMenu.IMStatusChooserItem;
 const Lang = imports.lang;
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
-
-const Main = imports.ui.main;
-const MessageTray = imports.ui.messageTray;
+const St = imports.gi.St
 
 const Config = imports.misc.config;
-const SimpleXML = imports.misc.extensionUtils.getCurrentExtension().imports.simpleXml.SimpleXML;
+const Me = imports.misc.extensionUtils.getCurrentExtension();
+const Util = imports.misc.util;
+
+const IMStatusChooserItem = imports.ui.userMenu.IMStatusChooserItem;
+const Main = imports.ui.main;
+const MessageTray = imports.ui.messageTray;
+const PanelMenu = imports.ui.panelMenu;
+const PopupMenu = imports.ui.popupMenu;
+
+const SimpleXML = Me.imports.simpleXml.SimpleXML;
 
 
 const SkypeIface = <interface name="com.Skype.API">
@@ -62,7 +68,11 @@ const Skype = new Lang.Class({
         this._authenticated = false;
         this._currentUserHandle = "";
         this._config = null;
+        this._skypeMenu = null;
         this._isGnome38 = (Config.PACKAGE_VERSION.indexOf("3.8") == 0);
+
+        this._enableIcons("16x16");
+        this._enableIcons("32x32");
 
         this._messages = [];
 
@@ -71,6 +81,18 @@ const Skype = new Lang.Class({
 
         this._authenticate();
         this._heartBeat();
+    },
+
+    _enableIcons: function(size) {
+        let directory = Gio.file_new_for_path(Me.path + "/icons/" + size);
+        let list = directory.enumerate_children("*", Gio.FileQueryInfoFlags.NONE, null);
+        let file = null;
+        while((file = list.next_file(null)) != null) {
+            let icon = Gio.file_new_for_path(GLib.get_user_data_dir() + "/icons/hicolor/" + size+ "/apps/" + file.get_name());
+            if(!icon.query_exists(null)) {
+                icon.make_symbolic_link(Me.path + "/icons/" + size + "/" + file.get_name(), null);
+            }
+        }
     },
 
     _authenticate: function() {
@@ -91,6 +113,9 @@ const Skype = new Lang.Class({
     },
 
     _onHeartBeat: function(answer) {
+        if(answer == null) {
+            this._skypeMenu.disable();
+        }
         if(this._authenticated && answer == "ERROR 68") {
             this._authenticated = false;
             this._authenticate();
@@ -103,12 +128,18 @@ const Skype = new Lang.Class({
         if(this._config != null) {
             this._config.toggle(this._enabled);
         }
+        this._skypeMenu = new SkypeMenuButton(this._proxy);
+        Main.panel.addToStatusArea('skypeMenu', this._skypeMenu);
     },
 
     disable: function() {
         this._enabled = false;
         if(this._config != null) {
             this._config.toggle(this._enabled);
+        }
+        if(this._skypeMenu != null) {
+            this._skypeMenu.destroy();
+            this._skypeMenu = null;
         }
     },
 
@@ -274,6 +305,7 @@ const Skype = new Lang.Class({
         global.log(message);
 
         if(message.indexOf("CURRENTUSERHANDLE ") !== -1) {
+        	this._skypeMenu.enable();
             this._currentUserHandle = message.replace("CURRENTUSERHANDLE ", "");
             this._config = new SkypeConfig(this._currentUserHandle);
             this._config.toggle(this._enabled);
@@ -325,11 +357,26 @@ const Skype = new Lang.Class({
             let user = message.split(" ");
             let userName = this._getUserName(user[1]);
             if(user[2] == "ONLINESTATUS") {
-                if(user[3] == "ONLINE" && user[1] != this._currentUserHandle) {
-                    this._notify(this._config.getNotification("ContactOnline", {"contact": userName}));
-                } else if(user[3] == "OFFLINE" && user[1] != this._currentUserHandle) {
-                    this._notify(this._config.getNotification("ContactOffline", {"contact": userName}));
-                } else if(user[3] == "SUBSCRIBED") {
+                if(user[1] == this._currentUserHandle) {
+                    if(user[3] == "ONLINE") {
+                        this._skypeMenu.setIcon("skype-presence-online");
+                    } else if(user[3] == "AWAY") {
+                        this._skypeMenu.setIcon("skype-presence-away");
+                    } else if(user[3] == "DND") {
+                        this._skypeMenu.setIcon("skype-presence-do-not-disturb");
+                    } else if(user[3] == "INVISIBLE") {
+                        this._skypeMenu.setIcon("skype-presence-invisible");
+                    } else if(user[3] == "OFFLINE") {
+                        this._skypeMenu.setIcon("skype-presence-offline");
+                    }
+                } else {
+                    if(user[3] == "ONLINE") {
+                        this._notify(this._config.getNotification("ContactOnline", {"contact": userName}));
+                    } else if(user[3] == "OFFLINE") {
+                        this._notify(this._config.getNotification("ContactOffline", {"contact": userName}));
+                    }
+                }
+                if(user[3] == "SUBSCRIBED") {
                     this._notify(this._config.getNotification("ChatJoined", {"contact": userName, "message": user[3]}));
                 } else if(user[3] == "UNSUBSCRIBED") {
                     this._notify(this._config.getNotification("ChatParted", {"contact": userName, "message": user[3]}));
@@ -372,6 +419,52 @@ const Skype = new Lang.Class({
                 }
             }
         }
+    }
+});
+
+const SkypeMenuButton = new Lang.Class({
+    Name: "SkypeMenuButton",
+    Extends: PanelMenu.SystemStatusButton,
+
+    _init: function(proxy) {
+        this.parent('skype-presence-offline', 'skypeMenu');
+        this._proxy = proxy;
+        this._enabled = false;
+    },
+
+    enable: function() {
+        if(this.enabled) {
+            return;
+        }
+        this.enabled = true;
+
+        let addContact = new PopupMenu.PopupMenuItem("Add a Contact");
+        addContact.connect('activate', Lang.bind(this, this._openAddContact));
+
+        let quit = new PopupMenu.PopupMenuItem("Quit");
+        quit.connect('activate', Lang.bind(this, this._quit));
+
+        this.menu.addMenuItem(addContact);
+        this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+        this.menu.addMenuItem(quit);
+    },
+
+    disable: function() {
+        if(!this.enabled) {
+            return;
+        }
+        this.enabled = false;
+        this.menu.box.get_children().forEach(function(c) { c.destroy() });
+    },
+
+    _openAddContact: function() {
+        if(this._proxy != null) {
+            this._proxy.InvokeRemote("OPEN ADDAFRIEND");
+        }
+    },
+
+    _quit: function() {
+        Util.spawn(["killall", "skype"]);
     }
 });
 
