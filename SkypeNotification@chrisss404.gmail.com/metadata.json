@@ -1,7 +1,7 @@
 {
     "shell-version": ["3.6", "3.8"], 
     "uuid": "SkypeNotification@chrisss404.gmail.com", 
-    "name": "SkypeNotification", 
-    "description": "Set Skype presence with current system presence",
+    "name": "Skype Integration", 
+    "description": "Integrastes some main features of Skype into GNOME Shell: Set Skype presence with current system presence, make use of shell notifications and add a Skype button to the panel.",
     "url": "https://github.com/chrisss404/gnome-shell-ext-SkypeNotification"
 }
