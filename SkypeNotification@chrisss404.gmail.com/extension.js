@@ -146,6 +146,7 @@ const Skype = new Lang.Class({
     },
 
     enable: function() {
+    	this._enabled = true;
         if(this._config != null) {
             this._config.toggle(this._enabled);
         }
@@ -157,12 +158,9 @@ const Skype = new Lang.Class({
             this._searchProvider = new SkypeSearchProvider("SKYPE", this._proxy);
             Main.overview.addSearchProvider(this._searchProvider);
         }
-        if(!this._enabled) {
-            this._authenticate();
-            this._heartBeat();
-            this._apiExtension.enable();
-            this._enabled = true;        	
-        }
+        this._authenticate();
+        this._heartBeat();
+        this._apiExtension.enable();
     },
 
     disable: function() {
@@ -338,7 +336,7 @@ const Skype = new Lang.Class({
             if(this._currentUserHandle != userHandle) {
                 this._currentUserHandle = userHandle;
                 this._config = new SkypeConfig(this._currentUserHandle);
-                GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, Lang.bind(this, this.enable));
+                this._config.toggle(this._enabled);
             }
             this._authenticated = true;
             this._searchProvider.setContacts(this._getContacts());
@@ -576,6 +574,10 @@ const SkypeConfig = new Lang.Class({
     },
 
     _get: function(xml, root, name, value) {
+        if(name.length == 0) {
+            return {};
+        }
+
         let element = xml.find(root, name);
         if(typeof element === "undefined") {
             element = xml.subElement(root, name);
@@ -590,10 +592,11 @@ const SkypeConfig = new Lang.Class({
         let script = this._get(xml, script, stag, "");
         script.data = [ 'python ' + Me.path + '/notify.py -e"%type" -n"%sname" -f"%fname" -p"%fpath" -m"%smessage" -s"%fsize" -u"%sskype"' ];
         let ntagElement = this._get(xml, notify, ntag, preset);
-        let stagElement = this._get(xml, enalbe, stag, preset^1);
+        let stagElement = this._get(xml, enalbe, stag, preset);
 
+        let active = (parseInt(ntagElement.data) == 1 || parseInt(stagElement.data) == 1);
         if(toggle) {
-            if(parseInt(ntagElement.data) == 1 || parseInt(stagElement.data) == 1) {
+            if(active) {
                 ntagElement.data = [0];
                 stagElement.data = [1];
                 return true;
@@ -602,7 +605,7 @@ const SkypeConfig = new Lang.Class({
                 return false;
             }
         } else {
-            if(parseInt(ntagElement.data) == 1 || parseInt(stagElement.data) == 1) {
+            if(active) {
                 ntagElement.data = [1];
                 stagElement.data = [0];
                 return true;
