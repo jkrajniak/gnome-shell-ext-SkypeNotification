@@ -146,7 +146,6 @@ const Skype = new Lang.Class({
     },
 
     enable: function() {
-        this._enabled = true;
         if(this._config != null) {
             this._config.toggle(this._enabled);
         }
@@ -158,9 +157,12 @@ const Skype = new Lang.Class({
             this._searchProvider = new SkypeSearchProvider("SKYPE", this._proxy);
             Main.overview.addSearchProvider(this._searchProvider);
         }
-        this._authenticate();
-        this._heartBeat();
-        this._apiExtension.enable();
+        if(!this._enabled) {
+            this._authenticate();
+            this._heartBeat();
+            this._apiExtension.enable();
+            this._enabled = true;        	
+        }
     },
 
     disable: function() {
@@ -331,10 +333,13 @@ const Skype = new Lang.Class({
 
         let [message] = params;
         if(message.indexOf("CURRENTUSERHANDLE ") !== -1) {
-        	this._skypeMenu.enable();
-            this._currentUserHandle = message.replace("CURRENTUSERHANDLE ", "");
-            this._config = new SkypeConfig(this._currentUserHandle);
-            this._config.toggle(this._enabled);
+            this._skypeMenu.enable();
+            let userHandle = message.replace("CURRENTUSERHANDLE ", "");
+            if(this._currentUserHandle != userHandle) {
+                this._currentUserHandle = userHandle;
+                this._config = new SkypeConfig(this._currentUserHandle);
+                GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, Lang.bind(this, this.enable));
+            }
             this._authenticated = true;
             this._searchProvider.setContacts(this._getContacts());
         } else if(message.indexOf("USER ") !== -1) {
