@@ -262,16 +262,21 @@ const Skype = new Lang.Class({
         }
         body = body.join("").trim();
 
+        let params = {};
+        if(!this._isGnome36) {
+            params["gicon"] = Gio.icon_new_for_string(icon);
+        }
+
         if(this._notificationSource.count == 0) {
             this._activeNotification = new MessageTray.Notification(this._notificationSource, 
-                    summary, body, { "gicon": Gio.icon_new_for_string(icon) });
+                    summary, body, params);
             this._activeNotification.setUrgency(MessageTray.Urgency.HIGH);
             this._notificationSource.notify(this._activeNotification);
         } else {
             this._activeNotification = this._notificationSource.notifications[0];
             this._activeNotification.setTransient(true);
             this._activeNotification.setUrgency(MessageTray.Urgency.HIGH);
-            this._activeNotification.update(summary, body, { "gicon": Gio.icon_new_for_string(icon) });
+            this._activeNotification.update(summary, body, params);
         }
     },
 
