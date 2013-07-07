@@ -19,12 +19,19 @@
  *
  */
 
+const Gettext = imports.gettext;
 const Lang = imports.lang;
 
+const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Util = imports.misc.util;
 
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
+
+Gettext.textdomain(Me.uuid);
+Gettext.bindtextdomain(Me.uuid, Me.path + "/locale");
+
+const _ = Gettext.gettext;
 
 
 const SkypeMenuButton = new Lang.Class({
@@ -35,32 +42,32 @@ const SkypeMenuButton = new Lang.Class({
         this.parent("skype", "skypeMenu");
         this._proxy = proxy;
 
-        let changeStatusSection = new PopupMenu.PopupSubMenuMenuItem("Change Status");
+        let changeStatusSection = new PopupMenu.PopupSubMenuMenuItem(_("Change Status"));
 
-        let changeStatusOnline = new PopupMenu.PopupMenuItem("Online");
+        let changeStatusOnline = new PopupMenu.PopupMenuItem(_("Online"));
         changeStatusOnline.connect('activate', Lang.bind(this, this._changeStatusOnline));
         changeStatusSection.menu.addMenuItem(changeStatusOnline);
 
-        let changeStatusAway = new PopupMenu.PopupMenuItem("Away");
+        let changeStatusAway = new PopupMenu.PopupMenuItem(_("Away"));
         changeStatusAway.connect('activate', Lang.bind(this, this._changeStatusAway));
         changeStatusSection.menu.addMenuItem(changeStatusAway);
 
-        let changeStatusDnd = new PopupMenu.PopupMenuItem("Do Not Disturb");
+        let changeStatusDnd = new PopupMenu.PopupMenuItem(_("Do Not Disturb"));
         changeStatusDnd.connect('activate', Lang.bind(this, this._changeStatusDnd));
         changeStatusSection.menu.addMenuItem(changeStatusDnd);
 
-        let changeStatusInvisible = new PopupMenu.PopupMenuItem("Invisible");
+        let changeStatusInvisible = new PopupMenu.PopupMenuItem(_("Invisible"));
         changeStatusInvisible.connect('activate', Lang.bind(this, this._changeStatusInvisible));
         changeStatusSection.menu.addMenuItem(changeStatusInvisible);
 
-        let changeStatusOffline = new PopupMenu.PopupMenuItem("Offline");
+        let changeStatusOffline = new PopupMenu.PopupMenuItem(_("Offline"));
         changeStatusOffline.connect('activate', Lang.bind(this, this._changeStatusOffline));
         changeStatusSection.menu.addMenuItem(changeStatusOffline);
 
-        let addContact = new PopupMenu.PopupMenuItem("Add a Contact");
+        let addContact = new PopupMenu.PopupMenuItem(_("Add a Contact"));
         addContact.connect('activate', Lang.bind(this, this._openAddContact));
 
-        let quit = new PopupMenu.PopupMenuItem("Quit");
+        let quit = new PopupMenu.PopupMenuItem(_("Quit"));
         quit.connect('activate', Lang.bind(this, this._quit));
 
         this.menu.addMenuItem(addContact);

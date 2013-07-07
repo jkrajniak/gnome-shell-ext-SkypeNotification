@@ -19,6 +19,7 @@
  *
  */
 
+const Gettext = imports.gettext;
 const Lang = imports.lang;
 
 const Gio = imports.gi.Gio;
@@ -27,6 +28,11 @@ const GLib = imports.gi.GLib;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 const SimpleXML = Me.imports.simpleXml.SimpleXML;
+
+Gettext.textdomain(Me.uuid);
+Gettext.bindtextdomain(Me.uuid, Me.path + "/locale");
+
+const _ = Gettext.gettext;
 
 
 const SkypeConfig = new Lang.Class({
@@ -43,25 +49,25 @@ const SkypeConfig = new Lang.Class({
         this._options = {
                 "VoicemailReceived": {
                     "enabled": false, "config": ["VoicemailReceived", "VoicemailReceived", 1],
-                    "notification": [ "{contact}", "Voicemail Received", "emblem-shared" ]},
+                    "notification": [ "{contact}", _("Voicemail Received"), "emblem-shared" ]},
                 "VoicemailSent": {
                     "enabled": false, "config": ["VoicemailSent", "VoicemailSent", 0],
-                    "notification": [ "Voicemail Sent", "", "document-send" ]},
+                    "notification": [ _("Voicemail Sent"), "", "document-send" ]},
                 "ContactOnline": {
                     "enabled": false, "config": ["Online", "ContactOnline", 1],
-                    "notification": [ "{contact} is now online", "", "user-available" ]},
+                    "notification": [ _("{contact} has appeared online"), "", "user-available" ]},
                 "ContactOffline": {
                     "enabled": false, "config": ["Offline", "ContactOffline", 1],
-                    "notification": [ "{contact} is now offline", "", "user-offline" ]},
+                    "notification": [ _("{contact} has gone offline"), "", "user-offline" ]},
                 "ContactAuthRequest": {
                     "enabled": false, "config": ["Authreq", "ContactAuthRequest", 1],
-                    "notification": [ "Contact request from {contact}", "", "contact-new" ]},
+                    "notification": [ _("Contact request from {contact}"), "", "contact-new" ]},
                 "ContactAdded": {
                     "enabled": false, "config": ["ContactAdded", "ContactAdded", 1],
-                    "notification": [ "{contact} has been added to your contact list", "", "address-book-new" ]},
+                    "notification": [ _("{contact} has been added to your contact list"), "", "address-book-new" ]},
                 "ContactDeleted": {
                     "enabled": false, "config": ["ContactDeleted", "ContactDeleted", 1],
-                    "notification": [ "{contact} has been deleted from your contact list", "", "edit-delete" ]},
+                    "notification": [ _("{contact} has been deleted from your contact list"), "", "edit-delete" ]},
                 "ChatIncomingInitial": {
                     "enabled": true, "config": ["", "", 1],
                     "notification": [ "{contact}", "{message}", "skype" ]},
@@ -73,31 +79,31 @@ const SkypeConfig = new Lang.Class({
                     "notification": [ "{contact}", "{message}", "skype" ]},
                 "ChatJoined": {
                     "enabled": false, "config": ["ChatJoined", "ChatJoined", 0],
-                    "notification": [ "{contact} joined chat", "{message}", "system-users" ]},
+                    "notification": [ _("{contact} joined chat"), "{message}", "system-users" ]},
                 "ChatParted": {
                     "enabled": false, "config": ["ChatParted", "ChatParted", 0],
-                    "notification": [ "{contact} left chat", "{message}", "system-users" ]},
+                    "notification": [ _("{contact} left chat"), "{message}", "system-users" ]},
                 "TransferRequest": {
                     "enabled": false, "config": ["TransferRequest", "TransferRequest", 1],
-                    "notification": [ "Incomming file from {contact}", "", "gtk-save" ]},
+                    "notification": [ _("Incoming file from {contact}"), "", "gtk-save" ]},
                 "TransferComplete": {
                 	"enabled": false, "config": ["TransferComplete", "TransferComplete", 1],
-                	"notification": [ "Transfer Complete", "{filename} saved to {filepath}", "gtk-save" ]},
+                	"notification": [ _("Transfer Complete"), _("{filename} saved to {filepath}"), "gtk-save" ]},
                 "TransferFailed": {
                     "enabled": false, "config": ["TransferFailed", "TransferFailed", 1],
-                    "notification": [ "Transfer Failed", "{filename}", "gtk-close" ]},
+                    "notification": [ _("Transfer Failed"), "{filename}", "gtk-close" ]},
                 "SMSSent": {
                     "enabled": false, "config": ["SMSSent", "SMSSent", 1],
-                    "notification": [ "SMS Sent", "", "document-send" ]},
+                    "notification": [ _("SMS Sent"), "", "document-send" ]},
                 "SMSFailed": {
                     "enabled": false, "config": ["SMSFailed", "SMSFailed", 1],
-                    "notification": [ "SMS Failed", "", "gtk-close" ]},
+                    "notification": [ _("SMS Failed"), "", "gtk-close" ]},
                 "Birthday": {
                     "enabled": false, "config": ["Birthday", "Birthday", 1],
-                    "notification": [ "{contact} has a birthday Tomorrow", "", "appointment-soon" ]},
+                    "notification": [ _("{contact} has a birthday tomorrow"), "", "appointment-soon" ]},
                 "OurBirthday": {
                     "enabled": false, "config": ["OurBirthday", "OurBirthday", 1],
-                    "notification": [ "Happy Birthday {contact}", "", "emblem-favorite" ]}
+                    "notification": [ _("Happy Birthday {contact}"), "", "emblem-favorite" ]}
         };
     },
 
