@@ -109,10 +109,20 @@ const SkypeConfig = new Lang.Class({
             for(let token in params) {
                 notification.summary = notification.summary.replace("{%s}".format(token), params[token]);
                 notification.body = notification.body.replace("{%s}".format(token), params[token]);
+                notification.summary = this._unescapeHtml(notification.summary);
+                notification.body = this._unescapeHtml(notification.body);
             }
             return notification;
         }
         return null;
+    },
+
+    _unescapeHtml: function(text) {
+    	return text.replace(/&lt;/g, "<")
+                   .replace(/&gt;/g, ">")
+                   .replace(/&quot;/g, "\"")
+                   .replace(/&apos;/g, "'")
+                   .replace(/&amp;/g, "&");
     },
 
     _get: function(xml, root, name, value) {

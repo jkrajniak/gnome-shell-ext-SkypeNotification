@@ -75,10 +75,11 @@ const Skype = new Lang.Class({
         this._searchProvider = null;
         this._skypeMenu = null;
         this._apiExtension = new SkypeAPIExtension(Lang.bind(this, this.NotifyCallback));
-        this._isGnome38 = (Config.PACKAGE_VERSION.indexOf("3.8") == 0);
+        this._isGnome36 = (Config.PACKAGE_VERSION.indexOf("3.6") == 0);
 
         this._messages = [];
         this._closeTimer = null;
+        this._notificationSource = 0;
         this._activeNotification = null;
 
         this._proxy = new SkypeProxy(Gio.DBus.session, "com.Skype.API", "/com/Skype");
@@ -157,64 +158,84 @@ const Skype = new Lang.Class({
             case Tp.ConnectionPresenceType.OFFLINE:
                 this._proxy.InvokeRemote("SET USERSTATUS OFFLINE");
                 break;
+            case Tp.ConnectionPresenceType.HIDDEN:
+                this._proxy.InvokeRemote("SET USERSTATUS INVISIBLE");
+                break;
+            case Tp.ConnectionPresenceType.AWAY:
+                this._proxy.InvokeRemote("SET USERSTATUS AWAY");
+                break;
             case Tp.ConnectionPresenceType.AVAILABLE:
             default:
                 this._proxy.InvokeRemote("SET USERSTATUS ONLINE");
         }
     },
 
-    _getNotifySource: function() {
+    _updateNotifySource: function() {
         let source = null;
         let items = null;
 
-        if(this._isGnome38) {
-            items = Main.messageTray.getSources();
-        } else {
+        if(this._isGnome36) {
             items = Main.messageTray.getSummaryItems();
+        } else {
+            items = Main.messageTray.getSources();
         }
 
         let item = null;
+        let numberOfNotifications = -1;
         for(let index in items) {
-            if(this._isGnome38) {
-                item = items[index];
-            } else {
+            if(this._isGnome36) {
                 item = items[index].source;
+            } else {
+                item = items[index];
             }
             if(item.title == "Skype") {
-                for(let i in item.notifications) {
-                    item.notifications[i].destroy();
+                if(item.count > numberOfNotifications) {
+                    source = item;
+                    numberOfNotifications = item.count;
                 }
-                source = item;
             }
         }
 
-        return source;
+        if(source == null) {
+            this._notificationSource++;
+        } else {
+            this._notificationSource = source;
+        }
     },
 
     _onClose: function() {
         this._messages = [];
-        if(this._activeNotification != null) {
+
+        if(this._activeNotification != null && !Main.messageTray._trayHovered) {
             this._activeNotification.emit("destroy", MessageTray.NotificationDestroyedReason.EXPIRED);
             this._activeNotification = null;
         }
     },
 
-    _notify: function(message) {
+    _pushMessage: function(message) {
         if(message == null) {
             return;
         }
         this._messages.push(message);
 
-        let source = this._getNotifySource();
-        if(source == null) {
-            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, Lang.bind(this, this._notify));
-            return;
-        }
         if(this._closeTimer != null) {
             GLib.source_remove(this._closeTimer);
             this._closeTimer = null;
         }
         this._closeTimer = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 10000, Lang.bind(this, this._onClose));
+        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, Lang.bind(this, this._notify));
+    },
+
+    _notify: function() {
+        this._updateNotifySource();
+        if(typeof this._notificationSource !== "object") {
+            if(this._notificationSource < 10) {
+                GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, Lang.bind(this, this._notify));
+            } else {
+                this._notificationSource = 0;
+            }
+            return;
+        }
 
         let items = this._messages; 
         items.reverse();
@@ -240,11 +261,18 @@ const Skype = new Lang.Class({
             }
         }
         body = body.join("").trim();
-        
-        this._activeNotification = new MessageTray.Notification(source, summary, body, { gicon: Gio.icon_new_for_string(icon) });
-        this._activeNotification.setTransient(false);
-        this._activeNotification.setUrgency(MessageTray.Urgency.HIGH);
-        source.notify(this._activeNotification);
+
+        if(this._notificationSource.count == 0) {
+            this._activeNotification = new MessageTray.Notification(this._notificationSource, 
+                    summary, body, { "gicon": Gio.icon_new_for_string(icon) });
+            this._activeNotification.setUrgency(MessageTray.Urgency.HIGH);
+            this._notificationSource.notify(this._activeNotification);
+        } else {
+            this._activeNotification = this._notificationSource.notifications[0];
+            this._activeNotification.setTransient(true);
+            this._activeNotification.setUrgency(MessageTray.Urgency.HIGH);
+            this._activeNotification.update(summary, body, { "gicon": Gio.icon_new_for_string(icon) });
+        }
     },
 
     _getContacts: function() {
@@ -294,7 +322,7 @@ const Skype = new Lang.Class({
     },
 
     NotifyCallback: function(type, params) {
-        this._notify(this._config.getNotification(type, params));
+        this._pushMessage(this._config.getNotification(type, params));
     },
 
     NotifyAsync: function(params) {
