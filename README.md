@@ -9,3 +9,15 @@ This extension tries to make life easier for those who have to use Microsoft Sky
 ![Screenshot](https://raw.github.com/chrisss404/gnome-shell-ext-SkypeNotification/master/data/screenshot.jpg)
 ![Screenshot](https://raw.github.com/chrisss404/gnome-shell-ext-SkypeNotification/master/data/screenshot2.jpg)
 
+----
+
+Inspired by
+
+- https://github.com/MrTheodor/gnome-shell-ext-SkypeNotification
+- https://gist.github.com/nzjrs/1006316
+- https://extensions.gnome.org/extension/166/skype-contact-search/
+
+Credits to
+
+- https://github.com/whhglyphs/webhostinghub-glyphs/ (thanks keynslug for telling me about this awesome icons)
+

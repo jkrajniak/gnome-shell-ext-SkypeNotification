@@ -314,15 +314,15 @@ const Skype = new Lang.Class({
 
     _setUserPresenceMenuIcon: function(presence) {
         if(presence == "ONLINE") {
-            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/16x16/skype-presence-online.png"));
+            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-online-symbolic.svg"));
         } else if(presence == "AWAY") {
-            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/16x16/skype-presence-away.png"));
+            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-away-symbolic.svg"));
         } else if(presence == "DND") {
-            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/16x16/skype-presence-do-not-disturb.png"));
+            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-do-not-disturb-symbolic.svg"));
         } else if(presence == "INVISIBLE") {
-            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/16x16/skype-presence-invisible.png"));
+            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-invisible-symbolic.svg"));
         } else if(presence == "OFFLINE") {
-            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/16x16/skype-presence-offline.png"));
+            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-offline-symbolic.svg"));
         }
     },
 
