@@ -84,6 +84,7 @@ const Skype = new Lang.Class({
 
         this._proxy = new SkypeProxy(Gio.DBus.session, "com.Skype.API", "/com/Skype");
         this._dbusImpl = Gio.DBusExportedObject.wrapJSObject(SkypeIfaceClient, this);
+        this._dbusImpl.export(Gio.DBus.session, "/com/Skype/Client");
     },
 
     _authenticate: function() {
@@ -97,7 +98,6 @@ const Skype = new Lang.Class({
     _onAuthenticate: function(answer) {
         if(answer == "OK") {
             this._proxy.InvokeRemote("PROTOCOL 7");
-            this._dbusImpl.export(Gio.DBus.session, "/com/Skype/Client");
         } else if(!this._authenticated && answer != "ERROR 68") {
             GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, Lang.bind(this, this._authenticate));
         }
@@ -380,16 +380,16 @@ const SkypeAPIExtension = new Lang.Class({
     },
 
     enable: function() {
-        this._dbusId = Gio.DBus.session.own_name('com.Skype.API.Extension',
-                Gio.BusNameOwnerFlags.ALLOW_REPLACEMENT, null, null);
+         this._dbusId = Gio.DBus.session.own_name('com.Skype.API.Extension',
+                 Gio.BusNameOwnerFlags.ALLOW_REPLACEMENT, null, null);
     },
 
     disable: function() {
-        Gio.DBus.session.unown_name(this._dbusId);
+         Gio.DBus.session.unown_name(this._dbusId);
     },
 
     Notify: function(type, sname, sskype, smessage, fpath, fsize, fname) {
-        this._notify(type, { "contact": sname, "message": smessage,
-            "filepath": fpath + "/" + fname, "filename": fname });
+         this._notify(type, { "contact": sname, "message": smessage,
+             "filepath": fpath + "/" + fname, "filename": fname });
     }
 });
