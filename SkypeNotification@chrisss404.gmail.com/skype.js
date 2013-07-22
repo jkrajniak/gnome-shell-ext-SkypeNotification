@@ -77,7 +77,7 @@ const Skype = new Lang.Class({
         this._config = null;
         this._searchProvider = null;
         this._skypeMenu = null;
-        this._skypeMenuIcon = null;
+        this._skypeMenuAlert = false;
         this._skypeMenuEnabled = true;
         this._apiExtension = new SkypeAPIExtension(Lang.bind(this, this.NotifyCallback));
         this._isGnome36 = (Config.PACKAGE_VERSION.indexOf("3.6") == 0);
@@ -115,10 +115,9 @@ const Skype = new Lang.Class({
 
         if(this._skypeMenuEnabled && this._skypeMenu == null) {
             this._skypeMenu = new SkypeMenuButton(this._proxy);
-            if(this._skypeMenuIcon != null) {
-                this._skypeMenu.setGIcon(this._skypeMenuIcon);
-            }
+            this._setUserPresenceMenuIcon();
             Main.panel.addToStatusArea("skypeMenu", this._skypeMenu);
+            this._missedChat();
         }
 
         if(!this._skypeMenuEnabled && this._skypeMenu != null) {
@@ -133,6 +132,10 @@ const Skype = new Lang.Class({
 
     _heartBeat: function() {
         this._proxy.InvokeRemote("GET SKYPEVERSION", Lang.bind(this, this._onHeartBeat));
+    },
+
+    _missedChat: function() {
+        this._proxy.InvokeRemote("SEARCH MISSEDCHATS", Lang.bind(this, this._onMissedChat));
     },
 
     _onAuthenticate: function(answer) {
@@ -164,8 +167,25 @@ const Skype = new Lang.Class({
         }
     },
 
+    _onMissedChat: function(answer) {
+        if(answer[0] !== "CHATS ") {
+            if(!this._skypeMenuAlert) {
+                this._skypeMenuAlert = true;
+                this._setUserPresenceMenuIcon();
+            }
+        } else {
+            if(this._skypeMenuAlert) {
+                this._skypeMenuAlert = false;
+                this._setUserPresenceMenuIcon();
+            }
+        }
+        if(this._skypeMenuEnabled) {
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, Lang.bind(this, this._missedChat));
+        }
+    },
+
     enable: function() {
-    	this._enabled = true;
+        this._enabled = true;
         if(this._config != null) {
             this._config.toggle(this._enabled);
         }
@@ -359,23 +379,26 @@ const Skype = new Lang.Class({
         return userHandle;
     },
 
-    _setUserPresenceMenuIcon: function(presence) {
-        this._currentPresence = presence;
-
-        if(presence == "ONLINE") {
-            this._skypeMenuIcon = Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-online-symbolic.svg");
-        } else if(presence == "AWAY") {
-            this._skypeMenuIcon = Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-away-symbolic.svg");
-        } else if(presence == "DND") {
-            this._skypeMenuIcon = Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-away-symbolic.svg");
-        } else if(presence == "INVISIBLE") {
-            this._skypeMenuIcon = Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-invisible-symbolic.svg");
-        } else if(presence == "OFFLINE") {
-            this._skypeMenuIcon = Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-offline-symbolic.svg");
+    _setUserPresenceMenuIcon: function() {
+        if(!this._skypeMenuEnabled) {
+            return;
         }
 
-        if(this._skypeMenuEnabled && this._skypeMenuIcon != null) {
-            this._skypeMenu.setGIcon(this._skypeMenuIcon);
+        let type = "-symbolic";
+        if(this._skypeMenuAlert) {
+            type = "-alert-symbolic";
+        }
+
+        if(this._currentPresence == "ONLINE") {
+            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-online" + type + ".svg"));
+        } else if(this._currentPresence == "AWAY") {
+            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-away" + type + ".svg"));
+        } else if(this._currentPresence == "DND") {
+            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-do-not-disturb" + type + ".svg"));
+        } else if(this._currentPresence == "INVISIBLE") {
+            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-invisible" + type + ".svg"));
+        } else if(this._currentPresence == "OFFLINE") {
+            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-offline" + type + ".svg"));
         }
     },
 
@@ -401,6 +424,7 @@ const Skype = new Lang.Class({
             if(this._skypeMenuEnabled && this._skypeMenu == null) {
                 this._skypeMenu = new SkypeMenuButton(this._proxy);
                 Main.panel.addToStatusArea("skypeMenu", this._skypeMenu);
+                this._missedChat();
             }
 
             if(this._searchProvider == null) {
@@ -411,12 +435,14 @@ const Skype = new Lang.Class({
         } else if(message.indexOf("USER ") !== -1) {
             let user = message.split(" ");
             if(user[2] == "ONLINESTATUS" && user[1] == this._currentUserHandle) {
-                this._setUserPresenceMenuIcon(user[3]);
+                this._currentPresence = user[3];
+                this._setUserPresenceMenuIcon();
             } else if(user[2] == "BUDDYSTATUS") {
                 this._searchProvider.setContacts(this._getContacts());
             }
         } else if(message.indexOf("USERSTATUS ") !== -1) {
-            this._setUserPresenceMenuIcon(message.split(" ")[1]);
+            this._currentPresence = message.split(" ")[1];
+            this._setUserPresenceMenuIcon();
         }
     }
 });
