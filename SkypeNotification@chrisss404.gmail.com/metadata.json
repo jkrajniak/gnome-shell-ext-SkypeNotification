@@ -2,6 +2,6 @@
     "shell-version": ["3.6", "3.8"], 
     "uuid": "SkypeNotification@chrisss404.gmail.com", 
     "name": "Skype Integration", 
-    "description": "Integrates some main features of Skype into GNOME Shell: Set Skype presence with current system presence, make use of shell notifications and add a Skype button to the panel.",
+    "description": "Integrates some main features of Skype into GNOME Shell: Set Skype presence with current system presence, make use of shell notifications, enable search for contacts and add a Skype menu button to the panel. (Make sure you have the D-Bus Python Bindings installed)",
     "url": "https://github.com/chrisss404/gnome-shell-ext-SkypeNotification"
 }
