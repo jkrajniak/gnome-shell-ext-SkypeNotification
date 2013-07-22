@@ -28,8 +28,7 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 const SimpleXML = Me.imports.simpleXml.SimpleXML;
 
-const Gettext = imports.gettext.domain(Me.uuid);
-const _ = Gettext.gettext;
+const _ = imports.gettext.domain(Me.uuid).gettext;
 
 
 const SkypeConfig = new Lang.Class({

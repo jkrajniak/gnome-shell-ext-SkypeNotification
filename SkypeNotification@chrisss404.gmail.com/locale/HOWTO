@@ -4,7 +4,7 @@
 
 
 ## create new messages.pot
-xgettext -k_ -kN_ -o messages.pot ../skypeMenuButton.js ../skypeConfig.js
+xgettext -k_ -kN_ -o messages.pot ../skypeMenuButton.js ../skypeConfig.js ../prefs.js
 
 ## init new language
 LANG=sv_SE msginit

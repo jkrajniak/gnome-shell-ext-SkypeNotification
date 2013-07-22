@@ -63,6 +63,8 @@ const SkypeIfaceExtension = <interface name="com.Skype.API.Extension">
 
 const SkypeProxy = Gio.DBusProxy.makeProxyWrapper(SkypeIface);
 
+const SETTINGS_SHOW_PANEL_BUTTON_KEY = "show-top-bar-icon";
+
 
 const Skype = new Lang.Class({
     Name: "Skype",
@@ -71,9 +73,12 @@ const Skype = new Lang.Class({
         this._enabled = false;
         this._authenticated = false;
         this._currentUserHandle = "";
+        this._currentPresence = "ONLINE";
         this._config = null;
         this._searchProvider = null;
         this._skypeMenu = null;
+        this._skypeMenuIcon = null;
+        this._skypeMenuEnabled = true;
         this._apiExtension = new SkypeAPIExtension(Lang.bind(this, this.NotifyCallback));
         this._isGnome36 = (Config.PACKAGE_VERSION.indexOf("3.6") == 0);
 
@@ -85,6 +90,41 @@ const Skype = new Lang.Class({
         this._proxy = new SkypeProxy(Gio.DBus.session, "com.Skype.API", "/com/Skype");
         this._dbusImpl = Gio.DBusExportedObject.wrapJSObject(SkypeIfaceClient, this);
         this._dbusImpl.export(Gio.DBus.session, "/com/Skype/Client");
+
+        this._settings = null;
+        this._settingsSignal = null;
+    },
+
+    _initSettings: function() {
+        const GioSSS = Gio.SettingsSchemaSource;
+        let schemaSource = GioSSS.new_from_directory(Me.path + "/schemas", 
+                GioSSS.get_default(), false);
+
+        let schemaObj = schemaSource.lookup(Me.metadata["settings-schema"], true);
+        if(!schemaObj) {
+            throw new Error("Schema " + Me.metadata["settings-schema"] + " could not be found for extension " +
+                            Me.uuid + ". Please check your installation.");
+        }
+
+        this._settings = new Gio.Settings({ settings_schema: schemaObj });
+        this._skypeMenuEnabled = this._settings.get_boolean(SETTINGS_SHOW_PANEL_BUTTON_KEY);
+    },
+
+    _onSettingsChanged: function() {
+        this._skypeMenuEnabled = this._settings.get_boolean(SETTINGS_SHOW_PANEL_BUTTON_KEY);
+
+        if(this._skypeMenuEnabled && this._skypeMenu == null) {
+            this._skypeMenu = new SkypeMenuButton(this._proxy);
+            if(this._skypeMenuIcon != null) {
+                this._skypeMenu.setGIcon(this._skypeMenuIcon);
+            }
+            Main.panel.addToStatusArea("skypeMenu", this._skypeMenu);
+        }
+
+        if(!this._skypeMenuEnabled && this._skypeMenu != null) {
+            this._skypeMenu.destroy();
+            this._skypeMenu = null;
+        }
     },
 
     _authenticate: function() {
@@ -129,9 +169,12 @@ const Skype = new Lang.Class({
         if(this._config != null) {
             this._config.toggle(this._enabled);
         }
+        this._initSettings();
         this._authenticate();
         this._heartBeat();
         this._apiExtension.enable();
+        this._settingsSignal = this._settings.connect("changed::" + SETTINGS_SHOW_PANEL_BUTTON_KEY,
+                Lang.bind(this,  this._onSettingsChanged));
     },
 
     disable: function() {
@@ -148,6 +191,10 @@ const Skype = new Lang.Class({
             this._searchProvider = null;
         }
         this._apiExtension.disable();
+        if(this._settingsSignal != null) {
+            this._settings.disconnect(this._settingsSignal);
+            this._settingsSignal = null;
+        }
     },
 
     updateSkypeStatus: function(presence) {
@@ -313,16 +360,22 @@ const Skype = new Lang.Class({
     },
 
     _setUserPresenceMenuIcon: function(presence) {
+        this._currentPresence = presence;
+
         if(presence == "ONLINE") {
-            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-online-symbolic.svg"));
+            this._skypeMenuIcon = Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-online-symbolic.svg");
         } else if(presence == "AWAY") {
-            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-away-symbolic.svg"));
+            this._skypeMenuIcon = Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-away-symbolic.svg");
         } else if(presence == "DND") {
-            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-do-not-disturb-symbolic.svg"));
+            this._skypeMenuIcon = Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-away-symbolic.svg");
         } else if(presence == "INVISIBLE") {
-            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-invisible-symbolic.svg"));
+            this._skypeMenuIcon = Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-invisible-symbolic.svg");
         } else if(presence == "OFFLINE") {
-            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-offline-symbolic.svg"));
+            this._skypeMenuIcon = Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-offline-symbolic.svg");
+        }
+
+        if(this._skypeMenuEnabled && this._skypeMenuIcon != null) {
+            this._skypeMenu.setGIcon(this._skypeMenuIcon);
         }
     },
 
@@ -345,7 +398,7 @@ const Skype = new Lang.Class({
                 this._config.toggle(this._enabled);
             }
 
-            if(this._skypeMenu == null) {
+            if(this._skypeMenuEnabled && this._skypeMenu == null) {
                 this._skypeMenu = new SkypeMenuButton(this._proxy);
                 Main.panel.addToStatusArea("skypeMenu", this._skypeMenu);
             }

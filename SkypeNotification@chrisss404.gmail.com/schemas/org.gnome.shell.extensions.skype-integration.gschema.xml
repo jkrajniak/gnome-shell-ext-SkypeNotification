@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="gnome-shell-extensions">
+    <schema path="/org/gnome/shell/extensions/skype-integration/"
+            id="org.gnome.shell.extensions.skype-integration">
+        <key name="show-top-bar-icon" type="b">
+            <default>true</default>
+            <summary>Show top bar icon</summary>
+            <description>Shall the top bar icon be displayed</description>
+        </key>
+    </schema>
+</schemalist>

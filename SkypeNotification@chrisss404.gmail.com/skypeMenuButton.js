@@ -27,8 +27,7 @@ const Util = imports.misc.util;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 
-const Gettext = imports.gettext.domain(Me.uuid);
-const _ = Gettext.gettext;
+const _ = imports.gettext.domain(Me.uuid).gettext;
 
 
 const SkypeMenuButton = new Lang.Class({

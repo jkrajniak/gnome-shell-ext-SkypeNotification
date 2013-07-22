@@ -1,0 +1,5 @@
+
+## to compile the schema run following commind in this directory
+
+glib-compile-schemas .
+
