@@ -19,8 +19,6 @@
  *
  */
 
-const Lang = imports.lang;
-
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 const IMStatusChooserItem = imports.ui.userMenu.IMStatusChooserItem;
@@ -30,6 +28,7 @@ const Skype = Me.imports.skype.Skype;
 
 let skype = null;
 function init() {
+    imports.gettext.bindtextdomain(Me.uuid, Me.path + "/locale");
     skype = new Skype();
 }
 

@@ -19,7 +19,6 @@
  *
  */
 
-const Gettext = imports.gettext;
 const Lang = imports.lang;
 
 const Me = imports.misc.extensionUtils.getCurrentExtension();
@@ -28,9 +27,7 @@ const Util = imports.misc.util;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 
-Gettext.textdomain(Me.uuid);
-Gettext.bindtextdomain(Me.uuid, Me.path + "/locale");
-
+const Gettext = imports.gettext.domain(Me.uuid);
 const _ = Gettext.gettext;
 
 

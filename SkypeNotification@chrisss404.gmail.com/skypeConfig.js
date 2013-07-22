@@ -19,7 +19,6 @@
  *
  */
 
-const Gettext = imports.gettext;
 const Lang = imports.lang;
 
 const Gio = imports.gi.Gio;
@@ -29,9 +28,7 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 const SimpleXML = Me.imports.simpleXml.SimpleXML;
 
-Gettext.textdomain(Me.uuid);
-Gettext.bindtextdomain(Me.uuid, Me.path + "/locale");
-
+const Gettext = imports.gettext.domain(Me.uuid);
 const _ = Gettext.gettext;
 
 
