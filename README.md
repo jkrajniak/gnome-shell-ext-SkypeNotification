@@ -12,7 +12,7 @@ This extension tries to make life easier for those who have to use Microsoft Sky
 
 ### Screenshots
 
-![Screenshot](https://raw.github.com/chrisss404/gnome-shell-ext-SkypeNotification/master/data/screenshot.jpg)
+![Screenshot](https://raw.github.com/chrisss404/gnome-shell-ext-SkypeNotification/master/data/screenshot1.jpg)
 ![Screenshot](https://raw.github.com/chrisss404/gnome-shell-ext-SkypeNotification/master/data/screenshot2.jpg)
 
 ----
