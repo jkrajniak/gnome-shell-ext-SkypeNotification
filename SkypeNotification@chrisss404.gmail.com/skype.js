@@ -179,7 +179,7 @@ const Skype = new Lang.Class({
                 this._setUserPresenceMenuIcon();
             }
         }
-        if(this._skypeMenuEnabled) {
+        if(this._enabled && this._skypeMenuEnabled) {
             GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, Lang.bind(this, this._missedChat));
         }
     },
