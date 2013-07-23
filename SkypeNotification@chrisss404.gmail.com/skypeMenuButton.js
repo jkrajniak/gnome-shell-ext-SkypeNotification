@@ -34,48 +34,69 @@ const SkypeMenuButton = new Lang.Class({
     Name: "SkypeMenuButton",
     Extends: PanelMenu.SystemStatusButton,
 
-    _init: function(proxy) {
+    _init: function(proxy, getRecentChats) {
         this.parent("skype", "skypeMenu");
         this._proxy = proxy;
+        this._getRecentChats = getRecentChats;
+
+        this._recentChatsSection = new PopupMenu.PopupSubMenuMenuItem(_("Recent Chats"));
 
         let changeStatusSection = new PopupMenu.PopupSubMenuMenuItem(_("Change Status"));
 
         let changeStatusOnline = new PopupMenu.PopupMenuItem(_("Online"));
-        changeStatusOnline.connect('activate', Lang.bind(this, this._changeStatusOnline));
+        changeStatusOnline.connect("activate", Lang.bind(this, this._changeStatusOnline));
         changeStatusSection.menu.addMenuItem(changeStatusOnline);
 
         let changeStatusAway = new PopupMenu.PopupMenuItem(_("Away"));
-        changeStatusAway.connect('activate', Lang.bind(this, this._changeStatusAway));
+        changeStatusAway.connect("activate", Lang.bind(this, this._changeStatusAway));
         changeStatusSection.menu.addMenuItem(changeStatusAway);
 
         let changeStatusDnd = new PopupMenu.PopupMenuItem(_("Do Not Disturb"));
-        changeStatusDnd.connect('activate', Lang.bind(this, this._changeStatusDnd));
+        changeStatusDnd.connect("activate", Lang.bind(this, this._changeStatusDnd));
         changeStatusSection.menu.addMenuItem(changeStatusDnd);
 
         let changeStatusInvisible = new PopupMenu.PopupMenuItem(_("Invisible"));
-        changeStatusInvisible.connect('activate', Lang.bind(this, this._changeStatusInvisible));
+        changeStatusInvisible.connect("activate", Lang.bind(this, this._changeStatusInvisible));
         changeStatusSection.menu.addMenuItem(changeStatusInvisible);
 
         let changeStatusOffline = new PopupMenu.PopupMenuItem(_("Offline"));
-        changeStatusOffline.connect('activate', Lang.bind(this, this._changeStatusOffline));
+        changeStatusOffline.connect("activate", Lang.bind(this, this._changeStatusOffline));
         changeStatusSection.menu.addMenuItem(changeStatusOffline);
 
         let addContact = new PopupMenu.PopupMenuItem(_("Add a Contact"));
-        addContact.connect('activate', Lang.bind(this, this._openAddContact));
+        addContact.connect("activate", Lang.bind(this, this._openAddContact));
 
         let quit = new PopupMenu.PopupMenuItem(_("Quit"));
-        quit.connect('activate', Lang.bind(this, this._quit));
+        quit.connect("activate", Lang.bind(this, this._quit));
 
-        this.menu.addMenuItem(addContact);
+        this.menu.addMenuItem(this._recentChatsSection);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
         this.menu.addMenuItem(changeStatusSection);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+        this.menu.addMenuItem(addContact);
+        this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
         this.menu.addMenuItem(quit);
+
+        this.menu.connect("open-state-changed", Lang.bind(this, this._updateRecentChats));
     },
 
-    _openAddContact: function() {
+    _updateRecentChats: function(event) {
+        if(event.isOpen) {
+            this._recentChatsSection.menu.removeAll();
+
+            let chats = this._getRecentChats();
+            for(let index in chats) {
+                let chatItem = new PopupMenu.PopupMenuItem(chats[index].title);
+                chatItem.chat = chats[index].chat;
+                chatItem.connect("activate", Lang.bind(this, this._openChat));
+                this._recentChatsSection.menu.addMenuItem(chatItem);
+            }
+        }
+    },
+
+    _openChat: function(event) {
         if(this._proxy != null) {
-            this._proxy.InvokeRemote("OPEN ADDAFRIEND");
+            this._proxy.InvokeRemote("OPEN CHAT " + event.chat);
         }
     },
 
@@ -106,6 +127,12 @@ const SkypeMenuButton = new Lang.Class({
     _changeStatusOffline: function() {
         if(this._proxy != null) {
             this._proxy.InvokeRemote("SET USERSTATUS OFFLINE");
+        }
+    },
+
+    _openAddContact: function() {
+        if(this._proxy != null) {
+            this._proxy.InvokeRemote("OPEN ADDAFRIEND");
         }
     },
 

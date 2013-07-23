@@ -26,8 +26,8 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 const _ = imports.gettext.domain(Me.uuid).gettext;
 
-
 const SETTINGS_SHOW_PANEL_BUTTON_KEY = "show-top-bar-icon";
+
 
 let settings;
 function init() {

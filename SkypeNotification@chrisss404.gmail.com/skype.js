@@ -114,7 +114,7 @@ const Skype = new Lang.Class({
         this._skypeMenuEnabled = this._settings.get_boolean(SETTINGS_SHOW_PANEL_BUTTON_KEY);
 
         if(this._skypeMenuEnabled && this._skypeMenu == null) {
-            this._skypeMenu = new SkypeMenuButton(this._proxy);
+            this._skypeMenu = new SkypeMenuButton(this._proxy, Lang.bind(this, this._getRecentChats));
             this._setUserPresenceMenuIcon();
             Main.panel.addToStatusArea("skypeMenu", this._skypeMenu);
             this._missedChat();
@@ -379,8 +379,42 @@ const Skype = new Lang.Class({
         return userHandle;
     },
 
+    _getRecentChats: function() {
+        let results = [];
+        let [chats] = this._proxy.InvokeSync("SEARCH RECENTCHATS");
+        chats = chats.replace("CHATS ", "").split(",");
+
+        for(let index in chats) {
+            let [topic] = this._proxy.InvokeSync("GET CHAT " + chats[index] + " TOPIC");
+            topic = topic.split(" TOPIC ");
+
+            let record = { "chat": chats[index], "title": "" };
+            if(topic[1] == "") {
+                let [members] = this._proxy.InvokeSync("GET CHAT " + chats[index] + " MEMBERS");
+                members = members.split(" MEMBERS ");
+                members = members[1].split(" ");
+
+                let participants = [];
+                for(let item in members) {
+                    if(members[item] != this._currentUserHandle) {
+                        participants.push(this._getUserName(members[item]));
+                    }
+                }
+                record["title"] = participants.join(", ");
+            } else {
+                record["title"] = topic[1];
+            }
+
+            if(record["title"].length > 39) {
+                record["title"] = record["title"].substr(0, 39) + "...";
+            }
+            results.push(record);
+        }
+        return results;
+    },
+
     _setUserPresenceMenuIcon: function() {
-        if(!this._skypeMenuEnabled) {
+        if(!this._skypeMenuEnabled || this._skypeMenu == null) {
             return;
         }
 
@@ -422,7 +456,7 @@ const Skype = new Lang.Class({
             }
 
             if(this._skypeMenuEnabled && this._skypeMenu == null) {
-                this._skypeMenu = new SkypeMenuButton(this._proxy);
+                this._skypeMenu = new SkypeMenuButton(this._proxy, Lang.bind(this, this._getRecentChats));
                 Main.panel.addToStatusArea("skypeMenu", this._skypeMenu);
                 this._missedChat();
             }
