@@ -74,6 +74,7 @@ const Skype = new Lang.Class({
         this._authenticated = false;
         this._currentUserHandle = "";
         this._currentPresence = "ONLINE";
+        this._missedChats = "";
         this._config = null;
         this._searchProvider = null;
         this._skypeMenu = null;
@@ -168,7 +169,8 @@ const Skype = new Lang.Class({
     },
 
     _onMissedChat: function(answer) {
-        if(answer[0] !== "CHATS ") {
+        this._missedChats = answer[0];
+        if(this._missedChats !== "CHATS ") {
             if(!this._skypeMenuAlert) {
                 this._skypeMenuAlert = true;
                 this._setUserPresenceMenuIcon();
@@ -408,6 +410,11 @@ const Skype = new Lang.Class({
             if(record["title"].length > 39) {
                 record["title"] = record["title"].substr(0, 39) + "...";
             }
+
+            if(this._missedChats.indexOf(chats[index]) !== -1) {
+                record["title"] = "* " + record["title"];
+            }
+
             results.push(record);
         }
         return results;
