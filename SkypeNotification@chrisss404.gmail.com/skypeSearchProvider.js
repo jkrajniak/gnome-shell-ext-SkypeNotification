@@ -21,6 +21,7 @@
 
 const Lang = imports.lang;
 
+const GLib = imports.gi.GLib;
 const St = imports.gi.St
 
 const IconGrid = imports.ui.iconGrid;
@@ -32,10 +33,11 @@ const SkypeSearchProvider = new Lang.Class({
     Name: "SkypeSearchProvider",
     Extends: Search.SearchProvider,
 
-    _init: function(title, proxy) {
+    _init: function(title, skype) {
         this.title = title;
 
-        this._proxy = proxy;
+        this._proxy = skype._proxy;
+        this._focusSkypeChatWindow = Lang.bind(skype, skype._focusSkypeChatWindow);
         this._contacts = [];
         this._contactsSubsearch = [];
     },
@@ -120,5 +122,6 @@ const SkypeSearchProvider = new Lang.Class({
         } else {
             this._proxy.InvokeRemote("OPEN IM " + this._contactsSubsearch[event].handle);
         }
+        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, Lang.bind(this, this._focusSkypeChatWindow));
     }
 });

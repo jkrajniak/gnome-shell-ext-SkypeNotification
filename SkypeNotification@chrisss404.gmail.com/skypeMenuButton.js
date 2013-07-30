@@ -21,6 +21,8 @@
 
 const Lang = imports.lang;
 
+const GLib = imports.gi.GLib;
+
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Util = imports.misc.util;
 
@@ -34,10 +36,13 @@ const SkypeMenuButton = new Lang.Class({
     Name: "SkypeMenuButton",
     Extends: PanelMenu.SystemStatusButton,
 
-    _init: function(proxy, getRecentChats) {
+    _init: function(skype) {
         this.parent("skype", "skypeMenu");
-        this._proxy = proxy;
-        this._getRecentChats = getRecentChats;
+        this._proxy = skype._proxy;
+        this._getRecentChats = Lang.bind(skype, skype._getRecentChats);
+        this._focusSkypeMainWindow = Lang.bind(skype, skype._focusSkypeMainWindow);
+        this._focusSkypeChatWindow = Lang.bind(skype, skype._focusSkypeChatWindow);
+        this._focusSkypeAddFriendWindow = Lang.bind(skype, skype._focusSkypeAddFriendWindow);
 
         this._recentChatsSection = new PopupMenu.PopupSubMenuMenuItem(_("Recent Chats"));
 
@@ -63,6 +68,9 @@ const SkypeMenuButton = new Lang.Class({
         changeStatusOffline.connect("activate", Lang.bind(this, this._changeStatusOffline));
         changeStatusSection.menu.addMenuItem(changeStatusOffline);
 
+        let showContactList = new PopupMenu.PopupMenuItem(_("Show Contact List"));
+        showContactList.connect("activate", Lang.bind(this, this._openContactList));
+
         let addContact = new PopupMenu.PopupMenuItem(_("Add a Contact"));
         addContact.connect("activate", Lang.bind(this, this._openAddContact));
 
@@ -73,6 +81,7 @@ const SkypeMenuButton = new Lang.Class({
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
         this.menu.addMenuItem(changeStatusSection);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+        this.menu.addMenuItem(showContactList);
         this.menu.addMenuItem(addContact);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
         this.menu.addMenuItem(quit);
@@ -87,7 +96,7 @@ const SkypeMenuButton = new Lang.Class({
             let chats = this._getRecentChats();
             for(let index in chats) {
                 let chatItem = new PopupMenu.PopupMenuItem(chats[index].title);
-                chatItem.chat = chats[index].chat;
+                chatItem.chatId = chats[index].chat;
                 chatItem.connect("activate", Lang.bind(this, this._openChat));
                 this._recentChatsSection.menu.addMenuItem(chatItem);
             }
@@ -96,7 +105,8 @@ const SkypeMenuButton = new Lang.Class({
 
     _openChat: function(event) {
         if(this._proxy != null) {
-            this._proxy.InvokeRemote("OPEN CHAT " + event.chat);
+            this._proxy.InvokeRemote("OPEN CHAT " + event.chatId);
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, Lang.bind(this, this._focusSkypeChatWindow));
         }
     },
 
@@ -130,9 +140,15 @@ const SkypeMenuButton = new Lang.Class({
         }
     },
 
+    _openContactList: function() {
+        Util.spawn(["skype"]);
+        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, Lang.bind(this, this._focusSkypeMainWindow));
+    },
+
     _openAddContact: function() {
         if(this._proxy != null) {
             this._proxy.InvokeRemote("OPEN ADDAFRIEND");
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, Lang.bind(this, this._focusSkypeAddFriendWindow));
         }
     },
 

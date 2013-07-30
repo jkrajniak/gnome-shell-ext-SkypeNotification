@@ -114,7 +114,7 @@ const Skype = new Lang.Class({
         this._skypeMenuEnabled = this._settings.get_boolean(SETTINGS_SHOW_PANEL_BUTTON_KEY);
 
         if(this._skypeMenuEnabled && this._skypeMenu == null) {
-            this._skypeMenu = new SkypeMenuButton(this._proxy, Lang.bind(this, this._getRecentChats));
+            this._skypeMenu = new SkypeMenuButton(this);
             this._setUserPresenceMenuIcon();
             Main.panel.addToStatusArea("skypeMenu", this._skypeMenu);
             this._missedChat();
@@ -456,13 +456,13 @@ const Skype = new Lang.Class({
             }
 
             if(this._skypeMenuEnabled && this._skypeMenu == null) {
-                this._skypeMenu = new SkypeMenuButton(this._proxy, Lang.bind(this, this._getRecentChats));
+                this._skypeMenu = new SkypeMenuButton(this);
                 Main.panel.addToStatusArea("skypeMenu", this._skypeMenu);
                 this._missedChat();
             }
 
             if(this._searchProvider == null) {
-                this._searchProvider = new SkypeSearchProvider("SKYPE", this._proxy);
+                this._searchProvider = new SkypeSearchProvider("SKYPE", this);
                 Main.overview.addSearchProvider(this._searchProvider);
             }
             this._searchProvider.setContacts(this._getContacts());
@@ -477,6 +477,52 @@ const Skype = new Lang.Class({
         } else if(message.indexOf("USERSTATUS ") !== -1) {
             this._currentPresence = message.split(" ")[1];
             this._setUserPresenceMenuIcon();
+        } 
+    },
+
+    _getSkypeWindows: function() {
+        let skypeWindows = [];
+        let windows = global.get_window_actors();
+        for(let i in windows) {
+            let metaWindow = windows[i].get_meta_window();
+            if(metaWindow.get_wm_class() == "Skype") {
+                skypeWindows.push(metaWindow);
+            }
+        }
+        return skypeWindows;
+    },
+
+    _focusSkypeMainWindow: function() {
+        let windows = this._getSkypeWindows();
+        for(let i in windows) {
+            let title = windows[i].get_title();
+            if(title.indexOf(" - ") !== -1 && title.indexOf(this._currentUserHandle) !== -1) {
+                windows[i].change_workspace_by_index(global.screen.get_active_workspace_index(), false, global.get_current_time());
+                Main.activateWindow(windows[i]);
+                break;
+            }
+        }
+    },
+
+    _focusSkypeChatWindow: function() {
+        let windows = this._getSkypeWindows();
+        for(let i in windows) {
+            let title = windows[i].get_title();
+            if(title.indexOf(" - ") !== -1 && title.indexOf(this._currentUserHandle) === -1) {
+                Main.activateWindow(windows[i]);
+                break;
+            }
+        }
+    },
+
+    _focusSkypeAddFriendWindow: function() {
+        let windows = this._getSkypeWindows();
+        for(let i in windows) {
+            let title = windows[i].get_title();
+            if(title.indexOf(" - ") === -1) {
+                Main.activateWindow(windows[i]);
+                break;
+            }
         }
     }
 });

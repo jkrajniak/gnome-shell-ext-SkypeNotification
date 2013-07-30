@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SkypeNotification@chrisss404.gmail.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-23 12:24+0200\n"
+"POT-Creation-Date: 2013-07-30 12:21+0200\n"
 "PO-Revision-Date: 2013-07-07 18:27+0200\n"
 "Last-Translator: Christian Hofer <chrisss404@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,39 +17,43 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../skypeMenuButton.js:42
+#: ../skypeMenuButton.js:47
 msgid "Recent Chats"
 msgstr ""
 
-#: ../skypeMenuButton.js:44
+#: ../skypeMenuButton.js:49
 msgid "Change Status"
 msgstr ""
 
-#: ../skypeMenuButton.js:46
+#: ../skypeMenuButton.js:51
 msgid "Online"
 msgstr ""
 
-#: ../skypeMenuButton.js:50
+#: ../skypeMenuButton.js:55
 msgid "Away"
 msgstr ""
 
-#: ../skypeMenuButton.js:54
+#: ../skypeMenuButton.js:59
 msgid "Do Not Disturb"
 msgstr ""
 
-#: ../skypeMenuButton.js:58
+#: ../skypeMenuButton.js:63
 msgid "Invisible"
 msgstr ""
 
-#: ../skypeMenuButton.js:62
+#: ../skypeMenuButton.js:67
 msgid "Offline"
 msgstr ""
 
-#: ../skypeMenuButton.js:66
+#: ../skypeMenuButton.js:71
+msgid "Show Contact List"
+msgstr ""
+
+#: ../skypeMenuButton.js:74
 msgid "Add a Contact"
 msgstr ""
 
-#: ../skypeMenuButton.js:69
+#: ../skypeMenuButton.js:77
 msgid "Quit"
 msgstr ""
 
