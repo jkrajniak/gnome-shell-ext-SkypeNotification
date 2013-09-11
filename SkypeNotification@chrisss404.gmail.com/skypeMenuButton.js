@@ -22,6 +22,7 @@
 const Lang = imports.lang;
 
 const GLib = imports.gi.GLib;
+const St = imports.gi.St;
 
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Util = imports.misc.util;
@@ -34,10 +35,19 @@ const _ = imports.gettext.domain(Me.uuid).gettext;
 
 const SkypeMenuButton = new Lang.Class({
     Name: "SkypeMenuButton",
-    Extends: PanelMenu.SystemStatusButton,
+    Extends: PanelMenu.Button,
 
     _init: function(skype) {
-        this.parent("skype", "skypeMenu");
+//        this.parent("skype", "skypeMenu");
+        this.parent(0.0, "skype");
+        this._icon = new St.Icon({style_class: "system-status-icon"});
+        
+        let hbox = new St.BoxLayout({ style_class: "panel-status-menu-box" });
+        hbox.add_child(this._icon);
+        
+        this.actor.add_child(hbox);
+        this.actor.add_style_class_name("panel-status-button");
+        
         this._proxy = skype._proxy;
         this._getRecentChats = Lang.bind(skype, skype._getRecentChats);
         this._focusSkypeMainWindow = Lang.bind(skype, skype._focusSkypeMainWindow);
@@ -107,6 +117,10 @@ const SkypeMenuButton = new Lang.Class({
         this.menu.connect("open-state-changed", Lang.bind(this, this._updateMuteSwitch));
         this.menu.connect("open-state-changed", Lang.bind(this, this._updateStatusDots));
     },
+    
+    setGIcon: function(gicon) {
+        this._icon.gicon = gicon;
+    },
 
     _updateRecentChats: function(event) {
         if(event.isOpen) {
@@ -124,11 +138,12 @@ const SkypeMenuButton = new Lang.Class({
 
     _updateStatusDots: function() {
         let curStatus = this._getCurrentPresence();
-        for(status in this._statusMenuItems) {
+        for(let status in this._statusMenuItems) {
             let checked = status === curStatus;
             let menuItem = this._statusMenuItems[status];
 
-            menuItem.setShowDot(checked);
+//            menuItem.setShowDot(checked);
+            menuItem.setOrnament(checked);
         }
     },
 

@@ -19,9 +19,13 @@
  *
  */
 
+const Config = imports.misc.config;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
-const IMStatusChooserItem = imports.ui.userMenu.IMStatusChooserItem;
+let hastStatusChooser = (Config.PACKAGE_VERSION.indexOf("3.6") == 0 || Config.PACKAGE_VERSION.indexOf("3.8") == 0);
+if(hastStatusChooser) {
+    const IMStatusChooserItem = imports.ui.userMenu.IMStatusChooserItem;
+}
 
 const Skype = Me.imports.skype.Skype;
 
@@ -35,6 +39,10 @@ function init() {
 function enable() {
     skype.enable();
 
+    if(!hastStatusChooser) {
+        return;
+    }
+
     IMStatusChooserItem.prototype._setComboboxPresenceOrig = IMStatusChooserItem.prototype._setComboboxPresence;
     IMStatusChooserItem.prototype._setComboboxPresence = function(presence) {
         this._setComboboxPresenceOrig(presence);
@@ -44,6 +52,10 @@ function enable() {
 
 function disable() {
     skype.disable();
+
+    if(!hastStatusChooser) {
+        return;
+    }
 
     if(typeof IMStatusChooserItem.prototype._setComboboxPresenceOrig === "function") {
         IMStatusChooserItem.prototype._setComboboxPresence = IMStatusChooserItem.prototype._setComboboxPresenceOrig;
