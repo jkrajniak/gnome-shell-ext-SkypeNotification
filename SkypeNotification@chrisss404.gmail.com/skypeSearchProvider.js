@@ -31,10 +31,10 @@ const Search = imports.ui.search;
 
 const SkypeSearchProvider = new Lang.Class({
     Name: "SkypeSearchProvider",
-    Extends: Search.SearchProvider,
 
     _init: function(title, skype) {
-        this.title = title;
+        this.title = title; //Gnome 3.6 & 3.8
+        this.id = title;    //Gnome 3.10 & newer
 
         this._proxy = skype._proxy;
         this._focusSkypeChatWindow = Lang.bind(skype, skype._focusSkypeChatWindow);
@@ -78,7 +78,15 @@ const SkypeSearchProvider = new Lang.Class({
                 return (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0));
             });
 
-        this.searchSystem.pushResults(this, result);
+        //Gnome 3.6 & 3.8
+        if(typeof this.searchSystem.pushResults === "function") {
+            this.searchSystem.pushResults(this, result);
+        }
+        //Gnome 3.10 & newer
+        if(typeof this.searchSystem.setResults === "function") {
+            this.searchSystem.setResults(this, result);
+        }
+
         this._contactsSubsearch = result;
     },
 
@@ -90,6 +98,7 @@ const SkypeSearchProvider = new Lang.Class({
         this._search(previousResults, terms);
     },
 
+    //Gnome 3.6 & 3.8
     createResultActor: function (resultMeta, terms) {
         let actor = new St.Button({ style_class: "app-well-app app-folder",
             button_mask: St.ButtonMask.ONE,
@@ -106,6 +115,22 @@ const SkypeSearchProvider = new Lang.Class({
         actor.connect("clicked", Lang.bind(this, this.activateResult));
 
         return actor;
+    },
+
+    //Gnome 3.10 & newer
+    createResultObject: function (resultMeta, terms) {
+        let object = {};
+
+        object.actor = new St.Bin({ reactive: true,
+                                    track_hover: true });
+        object.icon = new IconGrid.BaseIcon(resultMeta["name"],
+                 { createIcon: Lang.bind(this, this._createIcon) });
+
+
+        object.actor.child = object.icon.actor;
+        object.actor.label_actor = object.icon.label;
+
+        return object;
     },
 
     _createIcon: function(size) {
