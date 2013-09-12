@@ -38,7 +38,6 @@ const SkypeMenuButton = new Lang.Class({
     Extends: PanelMenu.Button,
 
     _init: function(skype) {
-//        this.parent("skype", "skypeMenu");
         this.parent(0.0, "skype");
         this._icon = new St.Icon({style_class: "system-status-icon"});
         
@@ -142,8 +141,14 @@ const SkypeMenuButton = new Lang.Class({
             let checked = status === curStatus;
             let menuItem = this._statusMenuItems[status];
 
-//            menuItem.setShowDot(checked);
-            menuItem.setOrnament(checked);
+            //Gnome 3.6 & 3.8
+            if(typeof menuItem.setShowDot === "function") {
+            	menuItem.setShowDot(checked);
+            }
+            //Gnome 3.10 & newer
+            if(typeof menuItem.setOrnament === "function") {
+            	menuItem.setOrnament(checked);
+            }
         }
     },
 
