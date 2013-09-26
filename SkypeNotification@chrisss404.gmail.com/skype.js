@@ -385,10 +385,14 @@ const Skype = new Lang.Class({
     },
 
     _getRecentChats: function() {
-        let results = [];
         let [chats] = this._proxy.InvokeSync("SEARCH RECENTCHATS");
-        chats = chats.replace("CHATS ", "").split(",");
-
+        chats = chats.replace("CHATS ", "")
+        if(chats == "") {
+            return [];
+        }
+        
+        let results = [];
+        chats = chats.split(",");
         for(let index in chats) {
             let [topic] = this._proxy.InvokeSync("GET CHAT " + chats[index] + " TOPIC");
             topic = topic.split(" TOPIC ");
