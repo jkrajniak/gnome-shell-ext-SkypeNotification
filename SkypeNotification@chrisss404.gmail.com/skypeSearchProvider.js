@@ -100,8 +100,7 @@ const SkypeSearchProvider = new Lang.Class({
 
     //Gnome 3.6 & 3.8
     createResultActor: function (resultMeta, terms) {
-        let actor = new St.Button({ style_class: "app-well-app app-folder",
-            button_mask: St.ButtonMask.ONE,
+        let actor = new St.Button({ button_mask: St.ButtonMask.ONE,
             toggle_mode: true,
             can_focus: true,
             x_fill: true,
