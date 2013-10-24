@@ -1,0 +1,134 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SkypeNotification@chrisss404.gmail.com\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-09-26 17:42+0200\n"
+"PO-Revision-Date: 2013-09-07 20:27+0100\n"
+"Last-Translator: Robert Jegliński <koluch@goldap.net.pl>\n"
+"Language-Team: Polish\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: ../skypeMenuButton.js:57
+msgid "Recent Chats"
+msgstr "Ostatnie czaty"
+
+#: ../skypeMenuButton.js:59
+msgid "Change Status"
+msgstr "Zmień status"
+
+#: ../skypeMenuButton.js:62
+msgid "Online"
+msgstr "Dostępny"
+
+#: ../skypeMenuButton.js:66
+msgid "Away"
+msgstr "Zaraz wracam"
+
+#: ../skypeMenuButton.js:70
+msgid "Do Not Disturb"
+msgstr "Nie przeszkadzać"
+
+#: ../skypeMenuButton.js:74
+msgid "Invisible"
+msgstr "Niewidoczny"
+
+#: ../skypeMenuButton.js:78
+msgid "Offline"
+msgstr "Niepodłączony"
+
+#: ../skypeMenuButton.js:92
+msgid "Show Contact List"
+msgstr "Pokaż kontakty"
+
+#: ../skypeMenuButton.js:95
+msgid "Add a Contact"
+msgstr "Dodaj kontakt"
+
+#: ../skypeMenuButton.js:98
+msgid "Mute Microphone"
+msgstr "Wycisz mikrofon"
+
+#: ../skypeMenuButton.js:101
+msgid "Quit"
+msgstr "Zakończ"
+
+#: ../skypeConfig.js:48
+msgid "Voicemail Received"
+msgstr "Otrzymałeś pocztę głosową"
+
+#: ../skypeConfig.js:51
+msgid "Voicemail Sent"
+msgstr "Poczta głosowa wysłana"
+
+#: ../skypeConfig.js:54
+msgid "{contact} has appeared online"
+msgstr "{contact} stał(a) się dostępny(a) "
+
+#: ../skypeConfig.js:57
+msgid "{contact} has gone offline"
+msgstr "{contact} stał(a) się niedostępny(a)"
+
+#: ../skypeConfig.js:60
+msgid "Contact request from {contact}"
+msgstr "Zaproszenie do kontaktów od {contact}"
+
+#: ../skypeConfig.js:63
+msgid "{contact} has been added to your contact list"
+msgstr "{contact} został(a) dodany(a) do Twoich kontaktów"
+
+#: ../skypeConfig.js:66
+msgid "{contact} has been deleted from your contact list"
+msgstr "{contact} został(a) usunięty(a) z Twoich kontaktów"
+
+#: ../skypeConfig.js:78
+msgid "{contact} joined chat"
+msgstr "{contact} dołączył(a) do czatu"
+
+#: ../skypeConfig.js:81
+msgid "{contact} left chat"
+msgstr "{contact} opuścił(a) czat"
+
+#: ../skypeConfig.js:84
+msgid "Incoming file from {contact}"
+msgstr "Transfer pliku od {contact}"
+
+#: ../skypeConfig.js:87
+msgid "Transfer Complete"
+msgstr "Transfer zakończony"
+
+#: ../skypeConfig.js:87
+msgid "{filename} saved to {filepath}"
+msgstr "{filename} zapisany w {filepath}"
+
+#: ../skypeConfig.js:90
+msgid "Transfer Failed"
+msgstr "Transfer przerwany"
+
+#: ../skypeConfig.js:93
+msgid "SMS Sent"
+msgstr "SMS został pomyślnie wysłany"
+
+#: ../skypeConfig.js:96
+msgid "SMS Failed"
+msgstr "Wysłanie SMS nie powiodło się"
+
+#: ../skypeConfig.js:99
+msgid "{contact} has a birthday tomorrow"
+msgstr "{contact} ochodzi jutro urodziny"
+
+#: ../skypeConfig.js:102
+msgid "Happy Birthday {contact}"
+msgstr "{contact} obchodzi dzisiaj urodziny"
+
+#: ../prefs.js:66
+msgid "Show top bar icon"
+msgstr "Pokaż ikonę w górnym pasku stanu"
+
+#: ../prefs.js:77 ../prefs.js:78
+msgid "Shall the top bar icon be displayed"
+msgstr "Czy ikona w górnym pasku stanu ma być wyświetlana"
