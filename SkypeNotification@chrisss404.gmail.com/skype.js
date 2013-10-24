@@ -74,11 +74,11 @@ const Skype = new Lang.Class({
         this._authenticated = false;
         this._currentUserHandle = "";
         this._currentPresence = "ONLINE";
-        this._missedChats = "";
+        this._missedChats = "CHATS #john/$doe;e2e9ce7160e3bc00";
         this._config = null;
         this._searchProvider = null;
         this._skypeMenu = null;
-        this._skypeMenuAlert = false;
+        this._skypeMenuAlert = true;
         this._skypeMenuEnabled = true;
         this._apiExtension = new SkypeAPIExtension(Lang.bind(this, this.NotifyCallback));
         this._isGnome36 = (Config.PACKAGE_VERSION.indexOf("3.6") == 0);
@@ -172,18 +172,14 @@ const Skype = new Lang.Class({
     },
 
     _onMissedChat: function(answer) {
-        this._missedChats = answer[0];
-        if(this._missedChats !== "CHATS ") {
-            if(!this._skypeMenuAlert) {
-                this._skypeMenuAlert = true;
-                this._runUserPresenceCallbacks();
-            }
-        } else {
+        if(answer[0].length < this._missedChats.length) {
             if(this._skypeMenuAlert) {
                 this._skypeMenuAlert = false;
                 this._runUserPresenceCallbacks();
             }
         }
+        this._missedChats = answer[0];
+
         if(this._enabled && this._skypeMenuEnabled) {
             GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, Lang.bind(this, this._missedChat));
         }
@@ -264,6 +260,14 @@ const Skype = new Lang.Class({
         }
     },
 
+    _onClicked: function() {
+        let recent = this._getRecentChats();
+        if(recent.length > 0) {
+            this._proxy.InvokeRemote("OPEN CHAT " + recent[0]["chat"]);
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, Lang.bind(this, this._focusSkypeChatWindow));
+        }
+    },
+
     _pushMessage: function(message) {
         if(message == null) {
             return;
@@ -323,11 +327,13 @@ const Skype = new Lang.Class({
             this._activeNotification = new MessageTray.Notification(this._notificationSource, 
                     summary, body, params);
             this._activeNotification.setUrgency(MessageTray.Urgency.HIGH);
+            this._activeNotification.connect("clicked", Lang.bind(this, this._onClicked));
             this._notificationSource.notify(this._activeNotification);
         } else {
             this._activeNotification = this._notificationSource.notifications[0];
             this._activeNotification.setTransient(true);
             this._activeNotification.setUrgency(MessageTray.Urgency.HIGH);
+            this._activeNotification.connect("clicked", Lang.bind(this, this._onClicked));
             this._activeNotification.update(summary, body, params);
         }
     },
@@ -454,6 +460,10 @@ const Skype = new Lang.Class({
     },
 
     NotifyCallback: function(type, params) {
+        if(!this._skypeMenuAlert && (type == "ChatIncomingInitial" || type == "ChatIncoming")) {
+            this._skypeMenuAlert = true;
+            this._runUserPresenceCallbacks();
+        }
         this._pushMessage(this._config.getNotification(type, params));
     },
 
@@ -514,7 +524,6 @@ const Skype = new Lang.Class({
         for(let i in windows) {
             let title = windows[i].get_title();
             if(title.indexOf(" - ") !== -1 && title.indexOf(this._currentUserHandle) !== -1) {
-                windows[i].change_workspace_by_index(global.screen.get_active_workspace_index(), false, global.get_current_time());
                 Main.activateWindow(windows[i]);
                 break;
             }
