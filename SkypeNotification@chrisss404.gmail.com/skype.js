@@ -74,7 +74,7 @@ const Skype = new Lang.Class({
         this._authenticated = false;
         this._currentUserHandle = "";
         this._currentPresence = "ONLINE";
-        this._missedChats = "CHATS #john/$doe;e2e9ce7160e3bc00";
+        this._missedChats = "CHATS #dummy";
         this._config = null;
         this._searchProvider = null;
         this._skypeMenu = null;
@@ -462,6 +462,7 @@ const Skype = new Lang.Class({
     NotifyCallback: function(type, params) {
         if(!this._skypeMenuAlert && (type == "ChatIncomingInitial" || type == "ChatIncoming")) {
             this._skypeMenuAlert = true;
+            this._missedChats = "CHATS #dummy";
             this._runUserPresenceCallbacks();
         }
         this._pushMessage(this._config.getNotification(type, params));
