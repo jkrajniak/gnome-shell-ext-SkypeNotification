@@ -54,7 +54,7 @@ msgid "Add a Contact"
 msgstr ""
 
 #: ../skypeMenuButton.js:98
-msgid "Mute Microphone"
+msgid "Microphone"
 msgstr ""
 
 #: ../skypeMenuButton.js:101

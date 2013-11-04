@@ -95,7 +95,7 @@ const SkypeMenuButton = new Lang.Class({
         let addContact = new PopupMenu.PopupMenuItem(_("Add a Contact"));
         addContact.connect("activate", Lang.bind(this, this._openAddContact));
 
-        this._muteSwitch = new PopupMenu.PopupSwitchMenuItem(_("Mute Microphone"));
+        this._muteSwitch = new PopupMenu.PopupSwitchMenuItem(_("Microphone"));
         this._muteSwitch.connect("toggled", Lang.bind(this, this._toggleMute));
 
         let quit = new PopupMenu.PopupMenuItem(_("Quit"));
@@ -203,7 +203,7 @@ const SkypeMenuButton = new Lang.Class({
 
     _getMute: function() {
         let result = this._proxy.InvokeSync("GET MUTE").toString();
-        return result.indexOf("OFF") == -1;
+        return result.indexOf("ON") == -1;
     }, 
 
     _setMute: function(value) {
@@ -216,7 +216,7 @@ const SkypeMenuButton = new Lang.Class({
     },
 
     _toggleMute: function(actor) {
-        this._setMute(actor.state ? "ON" : "OFF");
+        this._setMute(actor.state ? "OFF" : "ON");
         GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, Lang.bind(this, this._updateMuteSwitch, this.menu));
     },
 
