@@ -465,7 +465,10 @@ const Skype = new Lang.Class({
             this._missedChats = "CHATS #dummy";
             this._runUserPresenceCallbacks();
         }
-        this._pushMessage(this._config.getNotification(type, params));
+
+        if(!this._isSkypeChatWindowFocused()) {
+            this._pushMessage(this._config.getNotification(type, params));
+        }
     },
 
     NotifyAsync: function(params) {
@@ -551,6 +554,30 @@ const Skype = new Lang.Class({
                 break;
             }
         }
+    },
+
+    _isSkypeChatWindowFocused: function() {
+        let windows = global.get_window_actors();
+        let length = windows.length;
+        
+        if(length > 0) {
+            let metaWindow = windows[length - 1].get_meta_window();
+            if(metaWindow.get_wm_class() == "Skype") {
+                let title = metaWindow.get_title();
+            	if(title.indexOf(" - ") !== -1 && title.indexOf(this._currentUserHandle) === -1) {
+            	    return true;
+                }
+            }
+        }
+        return false;
+    },
+
+    _isThereAnActiveCall: function() {
+        let [calls] = this._proxy.InvokeSync("SEARCH ACTIVECALLS");
+        if(calls != "CALLS ") {
+            return true;
+        }
+        return false;
     }
 });
 

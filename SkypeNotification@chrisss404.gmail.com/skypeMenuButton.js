@@ -53,6 +53,7 @@ const SkypeMenuButton = new Lang.Class({
         this._focusSkypeChatWindow = Lang.bind(skype, skype._focusSkypeChatWindow);
         this._focusSkypeAddFriendWindow = Lang.bind(skype, skype._focusSkypeAddFriendWindow);
         this._getCurrentPresence = Lang.bind(skype, skype._getCurrentPresence);
+        this._isThereAnActiveCall = Lang.bind(skype, skype._isThereAnActiveCall);
 
         this._recentChatsSection = new PopupMenu.PopupSubMenuMenuItem(_("Recent Chats"));
 
@@ -211,8 +212,10 @@ const SkypeMenuButton = new Lang.Class({
     },
 
     _updateMuteSwitch: function(actor) {
-        if(actor.isOpen)
+        if(actor.isOpen) {
             this._muteSwitch.setToggleState(this._getMute());
+        }
+        this._muteSwitch.setSensitive(this._isThereAnActiveCall());
     },
 
     _toggleMute: function(actor) {
