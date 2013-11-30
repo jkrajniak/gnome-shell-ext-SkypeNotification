@@ -21,7 +21,7 @@ msgstr ""
 
 #: ../skypeMenuButton.js:57
 msgid "Recent Chats"
-msgstr "Discutions récentes"
+msgstr "Discussions récentes"
 
 #: ../skypeMenuButton.js:59
 msgid "Change Status"
@@ -49,7 +49,7 @@ msgstr "Hors ligne"
 
 #: ../skypeMenuButton.js:92
 msgid "Show Contact List"
-msgstr "Afficher la liste de contact"
+msgstr "Afficher la liste de contacts"
 
 #: ../skypeMenuButton.js:95
 msgid "Add a Contact"
@@ -93,11 +93,11 @@ msgstr "{contact} a été supprimé de votre liste de contact"
 
 #: ../skypeConfig.js:78
 msgid "{contact} joined chat"
-msgstr "{contact} a rejoint la discution"
+msgstr "{contact} a rejoint la discussion"
 
 #: ../skypeConfig.js:81
 msgid "{contact} left chat"
-msgstr "{contact} a quitter la discution"
+msgstr "{contact} a quitter la discussion"
 
 #: ../skypeConfig.js:84
 msgid "Incoming file from {contact}"
@@ -133,8 +133,8 @@ msgstr "Bon anniversaire à {contact}"
 
 #: ../prefs.js:66
 msgid "Show top bar icon"
-msgstr "Afficher l’icône dans le panel supérieur"
+msgstr "Afficher l’icône dans le panneau supérieur"
 
 #: ../prefs.js:77 ../prefs.js:78
 msgid "Shall the top bar icon be displayed"
-msgstr "L’icône du panel supérieur doit-elle être affiché ?"
+msgstr "L’icône du panneau supérieur doit-elle être affiché ?"
