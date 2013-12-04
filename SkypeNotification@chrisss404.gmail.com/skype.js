@@ -460,15 +460,18 @@ const Skype = new Lang.Class({
     },
 
     NotifyCallback: function(type, params) {
-        if(!this._skypeMenuAlert && (type == "ChatIncomingInitial" || type == "ChatIncoming")) {
-            this._skypeMenuAlert = true;
-            this._missedChats = "CHATS #dummy";
-            this._runUserPresenceCallbacks();
+        if(type == "ChatIncomingInitial" || type == "ChatIncoming") {
+            if(!this._skypeMenuAlert) {
+                this._skypeMenuAlert = true;
+                this._missedChats = "CHATS #dummy";
+                this._runUserPresenceCallbacks();
+            }
+            if(this._isSkypeChatWindowFocused()) {
+                return;
+            }
         }
 
-        if(!this._isSkypeChatWindowFocused()) {
-            this._pushMessage(this._config.getNotification(type, params));
-        }
+        this._pushMessage(this._config.getNotification(type, params));
     },
 
     NotifyAsync: function(params) {
@@ -564,8 +567,8 @@ const Skype = new Lang.Class({
             let metaWindow = windows[length - 1].get_meta_window();
             if(metaWindow.get_wm_class() == "Skype") {
                 let title = metaWindow.get_title();
-            	if(title.indexOf(" - ") !== -1 && title.indexOf(this._currentUserHandle) === -1) {
-            	    return true;
+                if(title.indexOf(" - ") !== -1 && title.indexOf(this._currentUserHandle) === -1) {
+                    return true;
                 }
             }
         }
