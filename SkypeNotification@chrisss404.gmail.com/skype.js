@@ -240,6 +240,26 @@ const Skype = new Lang.Class({
         }
     },
 
+    updateSkypeStatus: function(presence) {
+        switch(presence) {
+            case Tp.ConnectionPresenceType.BUSY:
+                this._proxy.InvokeRemote("SET USERSTATUS DND");
+                break;
+            case Tp.ConnectionPresenceType.OFFLINE:
+                this._proxy.InvokeRemote("SET USERSTATUS OFFLINE");
+                break;
+            case Tp.ConnectionPresenceType.HIDDEN:
+                this._proxy.InvokeRemote("SET USERSTATUS INVISIBLE");
+                break;
+            case Tp.ConnectionPresenceType.AWAY:
+                this._proxy.InvokeRemote("SET USERSTATUS AWAY");
+                break;
+            case Tp.ConnectionPresenceType.AVAILABLE:
+            default:
+                this._proxy.InvokeRemote("SET USERSTATUS ONLINE");
+        }
+    },
+
     _updateNotifySource: function() {
         let source = null;
         let items = null;
