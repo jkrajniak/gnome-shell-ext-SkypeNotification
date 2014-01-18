@@ -177,13 +177,15 @@ const Skype = new Lang.Class({
     },
 
     _onMissedChat: function(answer) {
-        if(answer[0].length < this._missedChats.length) {
-            if(this._skypeMenuChatAlert) {
-                this._skypeMenuChatAlert = false;
-                this._runUserPresenceCallbacks();
+        if(answer != null) {
+            if(answer[0].length < this._missedChats.length) {
+                if(this._skypeMenuChatAlert) {
+                    this._skypeMenuChatAlert = false;
+                    this._runUserPresenceCallbacks();
+                }
             }
+            this._missedChats = answer[0];
         }
-        this._missedChats = answer[0];
 
         if(this._enabled && this._skypeMenuEnabled) {
             GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, Lang.bind(this, this._missedChat));
@@ -503,6 +505,9 @@ const Skype = new Lang.Class({
 
     NotifyCallback: function(type, params) {
         if(type == "ChatIncomingInitial" || type == "ChatIncoming" || type == "CallMissed") {
+            if(this._isSkypeChatWindowFocused()) {
+                return;
+            }
             if(!this._skypeMenuChatAlert) {
                 this._skypeMenuChatAlert = true;
                 this._missedChats = "CHATS #dummy";
@@ -511,9 +516,6 @@ const Skype = new Lang.Class({
             if(!this._skypeMenuCallAlert) {
                 this._skypeMenuCallAlert = true;
                 this._runUserPresenceCallbacks();
-            }
-            if(this._isSkypeChatWindowFocused()) {
-                return;
             }
         }
         
