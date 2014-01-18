@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SkypeNotification@chrisss404.gmail.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-26 17:42+0200\n"
+"POT-Creation-Date: 2014-01-18 13:40+0100\n"
 "PO-Revision-Date: 2013-09-30 18:42+0200\n"
 "Last-Translator: Dalan <remi.bertho@gmail.com>\n"
 "Language-Team: français <wesnoth@ml.free.fr>\n"
@@ -19,115 +19,119 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Gtranslator 2.91.6\n"
 
-#: ../skypeMenuButton.js:57
+#: ../skypeMenuButton.js:58
 msgid "Recent Chats"
 msgstr "Discussions récentes"
 
-#: ../skypeMenuButton.js:59
+#: ../skypeMenuButton.js:60
 msgid "Change Status"
 msgstr "Changer l'état"
 
-#: ../skypeMenuButton.js:62
+#: ../skypeMenuButton.js:63
 msgid "Online"
 msgstr "En ligne"
 
-#: ../skypeMenuButton.js:66
+#: ../skypeMenuButton.js:67
 msgid "Away"
 msgstr "Absent"
 
-#: ../skypeMenuButton.js:70
+#: ../skypeMenuButton.js:71
 msgid "Do Not Disturb"
 msgstr "Ne pas déranger"
 
-#: ../skypeMenuButton.js:74
+#: ../skypeMenuButton.js:75
 msgid "Invisible"
 msgstr "Invisible"
 
-#: ../skypeMenuButton.js:78
+#: ../skypeMenuButton.js:79
 msgid "Offline"
 msgstr "Hors ligne"
 
-#: ../skypeMenuButton.js:92
+#: ../skypeMenuButton.js:93
 msgid "Show Contact List"
 msgstr "Afficher la liste de contacts"
 
-#: ../skypeMenuButton.js:95
+#: ../skypeMenuButton.js:96
 msgid "Add a Contact"
 msgstr "Ajouter un contact"
 
-#: ../skypeMenuButton.js:98
+#: ../skypeMenuButton.js:99
 msgid "Microphone"
 msgstr "Microphone"
 
-#: ../skypeMenuButton.js:101
+#: ../skypeMenuButton.js:102
 msgid "Quit"
 msgstr "Quitter"
 
 #: ../skypeConfig.js:48
+msgid "Call Missed"
+msgstr "Appel manqué"
+
+#: ../skypeConfig.js:51
 msgid "Voicemail Received"
 msgstr "Message vocal reçu"
 
-#: ../skypeConfig.js:51
+#: ../skypeConfig.js:54
 msgid "Voicemail Sent"
 msgstr "Message vocal envoyé"
 
-#: ../skypeConfig.js:54
+#: ../skypeConfig.js:57
 msgid "{contact} has appeared online"
 msgstr "{contact} est en ligne"
 
-#: ../skypeConfig.js:57
+#: ../skypeConfig.js:60
 msgid "{contact} has gone offline"
 msgstr "{contact} est hors ligne"
 
-#: ../skypeConfig.js:60
+#: ../skypeConfig.js:63
 msgid "Contact request from {contact}"
 msgstr "Demande de contact de {contact}"
 
-#: ../skypeConfig.js:63
+#: ../skypeConfig.js:66
 msgid "{contact} has been added to your contact list"
 msgstr "{contact} a été ajouté à votre liste de contact"
 
-#: ../skypeConfig.js:66
+#: ../skypeConfig.js:69
 msgid "{contact} has been deleted from your contact list"
 msgstr "{contact} a été supprimé de votre liste de contact"
 
-#: ../skypeConfig.js:78
+#: ../skypeConfig.js:81
 msgid "{contact} joined chat"
 msgstr "{contact} a rejoint la discussion"
 
-#: ../skypeConfig.js:81
+#: ../skypeConfig.js:84
 msgid "{contact} left chat"
 msgstr "{contact} a quitter la discussion"
 
-#: ../skypeConfig.js:84
+#: ../skypeConfig.js:87
 msgid "Incoming file from {contact}"
 msgstr "{contact} vous envoie un fichier"
 
-#: ../skypeConfig.js:87
+#: ../skypeConfig.js:90
 msgid "Transfer Complete"
 msgstr "Transfert fini"
 
-#: ../skypeConfig.js:87
+#: ../skypeConfig.js:90
 msgid "{filename} saved to {filepath}"
 msgstr "{filename} enregistré dans {filepath}"
 
-#: ../skypeConfig.js:90
+#: ../skypeConfig.js:93
 msgid "Transfer Failed"
 msgstr "Transfert échoué"
 
-#: ../skypeConfig.js:93
+#: ../skypeConfig.js:96
 msgid "SMS Sent"
 msgstr "SMS envoyé"
 
-#: ../skypeConfig.js:96
+#: ../skypeConfig.js:99
 msgid "SMS Failed"
 msgstr "Échec de l'envoie du SMS"
 
-#: ../skypeConfig.js:99
+#: ../skypeConfig.js:102
 msgid "{contact} has a birthday tomorrow"
 msgstr "{contact} fête son anniversaire demain"
 
-#: ../skypeConfig.js:102
+#: ../skypeConfig.js:105
 msgid "Happy Birthday {contact}"
 msgstr "Bon anniversaire à {contact}"
 

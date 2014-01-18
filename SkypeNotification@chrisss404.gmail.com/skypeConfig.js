@@ -43,6 +43,9 @@ const SkypeConfig = new Lang.Class({
         }
 
         this._options = {
+                "CallMissed": {
+                    "enabled": true, "config": ["CallMissed", "CallMissed", 1],
+                    "notification": [ _("Call Missed"), "", "skype" ]},
                 "VoicemailReceived": {
                     "enabled": false, "config": ["VoicemailReceived", "VoicemailReceived", 1],
                     "notification": [ "{contact}", _("Voicemail Received"), "emblem-shared" ]},
@@ -187,6 +190,7 @@ const SkypeConfig = new Lang.Class({
         for(let key in this._options) {
             this._options[key].enabled = this._set(params.concat(this._options[key].config));
         }
+        this._options["CallMissed"].enabled = true;
         this._options["ChatIncomingInitial"].enabled = true;
 
         xml.write(this._file);

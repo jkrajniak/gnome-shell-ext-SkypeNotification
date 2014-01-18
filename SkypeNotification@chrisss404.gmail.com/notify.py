@@ -21,7 +21,14 @@
 #
  
 import dbus
+import sys
 from optparse import OptionParser
+
+for i in range(len(sys.argv)):
+    if sys.argv[i] == "-n":
+        sys.argv[i] = '-n"%sname"'
+    if sys.argv[i] == "-u":
+        sys.argv[i] = '-u"%sskype"'
 
 parser = OptionParser()
 parser.add_option("-e", "--event", dest="type", help="type of SKYPE_EVENT")
