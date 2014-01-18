@@ -560,11 +560,8 @@ const Skype = new Lang.Class({
     },
 
     _isSkypeChatWindowFocused: function() {
-        let windows = global.get_window_actors();
-        let length = windows.length;
-        
-        if(length > 0) {
-            let metaWindow = windows[length - 1].get_meta_window();
+        if(global.display) {
+            let metaWindow = global.display.focus_window;
             if(metaWindow.get_wm_class() == "Skype") {
                 let title = metaWindow.get_title();
                 if(title.indexOf(" - ") !== -1 && title.indexOf(this._currentUserHandle) === -1) {
