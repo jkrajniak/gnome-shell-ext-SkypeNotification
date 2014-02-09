@@ -19,15 +19,16 @@
  *
  */
 
-const Config = imports.misc.config;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
-let hastStatusChooser = (Config.PACKAGE_VERSION.indexOf("3.6") == 0 || Config.PACKAGE_VERSION.indexOf("3.8") == 0);
-if(hastStatusChooser) {
+//Gnome 3.6 & 3.8
+try {
     const IMStatusChooserItem = imports.ui.userMenu.IMStatusChooserItem;
-} else {
+} catch(e) { }
+//Gnome 3.10 & newer
+try {
     const MessageTrayMenuButton = imports.ui.messageTray.MessageTrayMenuButton;
-}
+} catch(e) { }
 
 const Skype = Me.imports.skype.Skype;
 
@@ -41,16 +42,16 @@ function init() {
 function enable() {
     skype.enable();
 
-    if(hastStatusChooser) {
-        IMStatusChooserItem.prototype._setComboboxPresenceOrig = IMStatusChooserItem.prototype._setComboboxPresence;
-        IMStatusChooserItem.prototype._setComboboxPresence = function(presence) {
-            this._setComboboxPresenceOrig(presence);
-            skype.updateSkypeStatus(presence);
-        };
-    } else {
+    if(MessageTrayMenuButton) {
         MessageTrayMenuButton.prototype._iconForPresenceOrig = MessageTrayMenuButton.prototype._iconForPresence;
         MessageTrayMenuButton.prototype._iconForPresence = function(presence) {
             this._iconForPresenceOrig(presence);
+            skype.updateSkypeStatus(presence);
+        };
+    } else if(IMStatusChooserItem) {
+        IMStatusChooserItem.prototype._setComboboxPresenceOrig = IMStatusChooserItem.prototype._setComboboxPresence;
+        IMStatusChooserItem.prototype._setComboboxPresence = function(presence) {
+            this._setComboboxPresenceOrig(presence);
             skype.updateSkypeStatus(presence);
         };
     }
@@ -59,15 +60,11 @@ function enable() {
 function disable() {
     skype.disable();
 
-    if(hastStatusChooser) {
-        if(typeof IMStatusChooserItem.prototype._setComboboxPresenceOrig === "function") {
-            IMStatusChooserItem.prototype._setComboboxPresence = IMStatusChooserItem.prototype._setComboboxPresenceOrig;
-            IMStatusChooserItem.prototype._setComboboxPresenceOrig = undefined;
-        }
-    } else {
-        if(typeof MessageTrayMenuButton.prototype._iconForPresenceOrig === "function") {
-            MessageTrayMenuButton.prototype._iconForPresence = MessageTrayMenuButton.prototype._iconForPresenceOrig;
-            MessageTrayMenuButton.prototype._iconForPresenceOrig = undefined;
-        }
+    if(typeof MessageTrayMenuButton.prototype._iconForPresenceOrig === "function") {
+        MessageTrayMenuButton.prototype._iconForPresence = MessageTrayMenuButton.prototype._iconForPresenceOrig;
+        MessageTrayMenuButton.prototype._iconForPresenceOrig = undefined;
+    } else if(typeof IMStatusChooserItem.prototype._setComboboxPresenceOrig === "function") {
+        IMStatusChooserItem.prototype._setComboboxPresence = IMStatusChooserItem.prototype._setComboboxPresenceOrig;
+        IMStatusChooserItem.prototype._setComboboxPresenceOrig = undefined;
     }
 }
