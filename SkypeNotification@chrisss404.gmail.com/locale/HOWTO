@@ -1,0 +1,17 @@
+### for more details go to
+### https://wiki.gnome.org/GnomeShell/Extensions/FAQ/CreatingExtensions
+
+
+
+## create new messages.pot
+xgettext -k_ -kN_ -o messages.pot ../skypeMenuButton.js ../skypeConfig.js ../prefs.js
+
+## init new language
+LANG=sv_SE msginit
+
+## update existing language translations
+msgmerge -U sv.po messages.pot
+
+## create a machine readable copy
+msgfmt sv.po -o sv/LC_MESSAGES/SkypeNotification@chrisss404.gmail.com.mo
+

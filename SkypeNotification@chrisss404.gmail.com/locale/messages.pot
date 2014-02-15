@@ -1,0 +1,142 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-01-18 13:40+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../skypeMenuButton.js:58
+msgid "Recent Chats"
+msgstr ""
+
+#: ../skypeMenuButton.js:60
+msgid "Change Status"
+msgstr ""
+
+#: ../skypeMenuButton.js:63
+msgid "Online"
+msgstr ""
+
+#: ../skypeMenuButton.js:67
+msgid "Away"
+msgstr ""
+
+#: ../skypeMenuButton.js:71
+msgid "Do Not Disturb"
+msgstr ""
+
+#: ../skypeMenuButton.js:75
+msgid "Invisible"
+msgstr ""
+
+#: ../skypeMenuButton.js:79
+msgid "Offline"
+msgstr ""
+
+#: ../skypeMenuButton.js:93
+msgid "Show Contact List"
+msgstr ""
+
+#: ../skypeMenuButton.js:96
+msgid "Add a Contact"
+msgstr ""
+
+#: ../skypeMenuButton.js:99
+msgid "Microphone"
+msgstr ""
+
+#: ../skypeMenuButton.js:102
+msgid "Quit"
+msgstr ""
+
+#: ../skypeConfig.js:48
+msgid "Call Missed"
+msgstr ""
+
+#: ../skypeConfig.js:51
+msgid "Voicemail Received"
+msgstr ""
+
+#: ../skypeConfig.js:54
+msgid "Voicemail Sent"
+msgstr ""
+
+#: ../skypeConfig.js:57
+msgid "{contact} has appeared online"
+msgstr ""
+
+#: ../skypeConfig.js:60
+msgid "{contact} has gone offline"
+msgstr ""
+
+#: ../skypeConfig.js:63
+msgid "Contact request from {contact}"
+msgstr ""
+
+#: ../skypeConfig.js:66
+msgid "{contact} has been added to your contact list"
+msgstr ""
+
+#: ../skypeConfig.js:69
+msgid "{contact} has been deleted from your contact list"
+msgstr ""
+
+#: ../skypeConfig.js:81
+msgid "{contact} joined chat"
+msgstr ""
+
+#: ../skypeConfig.js:84
+msgid "{contact} left chat"
+msgstr ""
+
+#: ../skypeConfig.js:87
+msgid "Incoming file from {contact}"
+msgstr ""
+
+#: ../skypeConfig.js:90
+msgid "Transfer Complete"
+msgstr ""
+
+#: ../skypeConfig.js:90
+msgid "{filename} saved to {filepath}"
+msgstr ""
+
+#: ../skypeConfig.js:93
+msgid "Transfer Failed"
+msgstr ""
+
+#: ../skypeConfig.js:96
+msgid "SMS Sent"
+msgstr ""
+
+#: ../skypeConfig.js:99
+msgid "SMS Failed"
+msgstr ""
+
+#: ../skypeConfig.js:102
+msgid "{contact} has a birthday tomorrow"
+msgstr ""
+
+#: ../skypeConfig.js:105
+msgid "Happy Birthday {contact}"
+msgstr ""
+
+#: ../prefs.js:66
+msgid "Show top bar icon"
+msgstr ""
+
+#: ../prefs.js:77 ../prefs.js:78
+msgid "Shall the top bar icon be displayed"
+msgstr ""
