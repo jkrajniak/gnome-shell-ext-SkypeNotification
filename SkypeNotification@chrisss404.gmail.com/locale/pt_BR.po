@@ -1,0 +1,143 @@
+# Portuguese translations for SkypeNotification@chrisss package
+# Traduções em português brasileiro para o pacote SkypeNotification@chrisss.
+# Copyright (C) 2014 THE SkypeNotification@chrisss'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the SkypeNotification@chrisss package.
+# Charles Santos Silva <silva.charlessantos@gmail.com>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SkypeNotification@chrisss 404.gmail.com\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-01-18 13:40+0100\n"
+"PO-Revision-Date: 2014-02-15 17:02-0200\n"
+"Last-Translator: Charles Santos Silva <silva.charlessantos@gmail.com>\n"
+"Language-Team: Brazilian Portuguese\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: ../skypeMenuButton.js:58
+msgid "Recent Chats"
+msgstr "Conversas Recentes"
+
+#: ../skypeMenuButton.js:60
+msgid "Change Status"
+msgstr "Mudar Status"
+
+#: ../skypeMenuButton.js:63
+msgid "Online"
+msgstr "Online"
+
+#: ../skypeMenuButton.js:67
+msgid "Away"
+msgstr "Ausente"
+
+#: ../skypeMenuButton.js:71
+msgid "Do Not Disturb"
+msgstr "Não Pertube"
+
+#: ../skypeMenuButton.js:75
+msgid "Invisible"
+msgstr "Invisível"
+
+#: ../skypeMenuButton.js:79
+msgid "Offline"
+msgstr "Offline"
+
+#: ../skypeMenuButton.js:93
+msgid "Show Contact List"
+msgstr "Mostrar lista de Contatos"
+
+#: ../skypeMenuButton.js:96
+msgid "Add a Contact"
+msgstr "Adicionar um Contato"
+
+#: ../skypeMenuButton.js:99
+msgid "Microphone"
+msgstr "Microfone"
+
+#: ../skypeMenuButton.js:102
+msgid "Quit"
+msgstr "Sair"
+
+#: ../skypeConfig.js:48
+msgid "Call Missed"
+msgstr "Chamada Perdida"
+
+#: ../skypeConfig.js:51
+msgid "Voicemail Received"
+msgstr "Correio de Voz Recebido"
+
+#: ../skypeConfig.js:54
+msgid "Voicemail Sent"
+msgstr "Correio de Voz Enviado"
+
+#: ../skypeConfig.js:57
+msgid "{contact} has appeared online"
+msgstr "{contact} conectou-se ao Skype"
+
+#: ../skypeConfig.js:60
+msgid "{contact} has gone offline"
+msgstr "{contact} desconectou-se do Skype"
+
+#: ../skypeConfig.js:63
+msgid "Contact request from {contact}"
+msgstr "Pedido de contato de {contact}"
+
+#: ../skypeConfig.js:66
+msgid "{contact} has been added to your contact list"
+msgstr "{contact} o adicionou a sua lista de contatos"
+
+#: ../skypeConfig.js:69
+msgid "{contact} has been deleted from your contact list"
+msgstr "{contact} o apagou de sua lista de contatos"
+
+#: ../skypeConfig.js:81
+msgid "{contact} joined chat"
+msgstr "{contact} juntou-se à conversa"
+
+#: ../skypeConfig.js:84
+msgid "{contact} left chat"
+msgstr "{contact} deixou a conversa"
+
+#: ../skypeConfig.js:87
+msgid "Incoming file from {contact}"
+msgstr "Recebendo arquivo de {contact}"
+
+#: ../skypeConfig.js:90
+msgid "Transfer Complete"
+msgstr "Tranferência Completa"
+
+#: ../skypeConfig.js:90
+msgid "{filename} saved to {filepath}"
+msgstr "{filename} salvo em {filepath}"
+
+#: ../skypeConfig.js:93
+msgid "Transfer Failed"
+msgstr "Transferência Falhou"
+
+#: ../skypeConfig.js:96
+msgid "SMS Sent"
+msgstr "SMS Enviado"
+
+#: ../skypeConfig.js:99
+msgid "SMS Failed"
+msgstr "SMS Falhou"
+
+#: ../skypeConfig.js:102
+msgid "{contact} has a birthday tomorrow"
+msgstr "{contact} faz aniversário amanhã"
+
+#: ../skypeConfig.js:105
+msgid "Happy Birthday {contact}"
+msgstr "Feliz Aniversário {contact}"
+
+#: ../prefs.js:66
+msgid "Show top bar icon"
+msgstr "Exibir ícone na barra superior"
+
+#: ../prefs.js:77 ../prefs.js:78
+msgid "Shall the top bar icon be displayed"
+msgstr "O ícone da barra superior deve ser exibido"
