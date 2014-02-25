@@ -519,7 +519,9 @@ const Skype = new Lang.Class({
             }
         }
         
-        this._pushMessage(this._config.getNotification(type, params));
+        if(this._config != null) {
+            this._pushMessage(this._config.getNotification(type, params));
+        }
     },
 
     NotifyAsync: function(params) {
@@ -533,8 +535,13 @@ const Skype = new Lang.Class({
             let userHandle = message.replace("CURRENTUSERHANDLE ", "");
             if(this._currentUserHandle != userHandle) {
                 this._currentUserHandle = userHandle;
-                this._config = new SkypeConfig(this._currentUserHandle);
-                this._config.toggle(this._enabled);
+                if(this._currentUserHandle != "") {
+                    this._config = new SkypeConfig(this._currentUserHandle);
+                    this._config.toggle(this._enabled);
+                } else {
+                    global.log("userHandle is not set");
+                    global.log(message);
+                }
             }
 
             if(this._skypeMenuEnabled && this._skypeMenu == null) {
