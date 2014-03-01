@@ -37,30 +37,36 @@ const SkypeMenuButton = Me.imports.skypeMenuButton.SkypeMenuButton;
 const SkypeSearchProvider = Me.imports.skypeSearchProvider.SkypeSearchProvider;
 
 
-const SkypeIface = <interface name="com.Skype.API">
-<method name="Invoke">
-    <arg type="s" direction="in"/>
-    <arg type="s" direction="out"/>
-</method>
-</interface>;
+const SkypeIface = '<node> \
+<interface name="com.Skype.API"> \
+<method name="Invoke"> \
+    <arg type="s" direction="in"/> \
+    <arg type="s" direction="out"/> \
+</method> \
+</interface> \
+</node>';
 
-const SkypeIfaceClient = <interface name="com.Skype.API.Client">
-<method name="Notify">
-    <arg type="s" direction="in"/>
-</method>
-</interface>;
+const SkypeIfaceClient = '<node> \
+<interface name="com.Skype.API.Client"> \
+<method name="Notify"> \
+    <arg type="s" direction="in"/> \
+</method> \
+</interface> \
+</node>';
 
-const SkypeIfaceExtension = <interface name="com.Skype.API.Extension">
-<method name="Notify">
-    <arg type="s" direction="in" name="type"/>
-    <arg type="s" direction="in" name="sname"/>
-    <arg type="s" direction="in" name="sskype"/>
-    <arg type="s" direction="in" name="smessage"/>
-    <arg type="s" direction="in" name="fpath"/>
-    <arg type="s" direction="in" name="fsize"/>
-    <arg type="s" direction="in" name="fname"/>
-</method>
-</interface>;
+const SkypeIfaceExtension = '<node> \
+<interface name="com.Skype.API.Extension"> \
+<method name="Notify"> \
+    <arg type="s" direction="in" name="type"/> \
+    <arg type="s" direction="in" name="sname"/> \
+    <arg type="s" direction="in" name="sskype"/> \
+    <arg type="s" direction="in" name="smessage"/> \
+    <arg type="s" direction="in" name="fpath"/> \
+    <arg type="s" direction="in" name="fsize"/> \
+    <arg type="s" direction="in" name="fname"/> \
+</method> \
+</interface> \
+</node>';
 
 const SkypeProxy = Gio.DBusProxy.makeProxyWrapper(SkypeIface);
 
@@ -552,7 +558,14 @@ const Skype = new Lang.Class({
 
             if(this._searchProvider == null) {
                 this._searchProvider = new SkypeSearchProvider("SKYPE", this);
-                Main.overview.addSearchProvider(this._searchProvider);
+                if(typeof Main.overview.viewSelector === "object" &&
+                   typeof Main.overview.viewSelector._searchResults === "object" &&
+                   typeof Main.overview.viewSelector._searchResults._searchSystem === "object" &&
+                   typeof Main.overview.viewSelector._searchResults._searchSystem.addProvider === "function") {
+                    Main.overview.viewSelector._searchResults._searchSystem.addProvider(this._searchProvider);
+                } else if(typeof Main.overview.addSearchProvider === "function") {
+                    Main.overview.addSearchProvider(this._searchProvider);
+                }
             }
             this._searchProvider.setContacts(this._getContacts());
         } else if(message.indexOf("USER ") !== -1) {

@@ -78,24 +78,36 @@ const SkypeSearchProvider = new Lang.Class({
                 return (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0));
             });
 
-        //Gnome 3.6 & 3.8
-        if(typeof this.searchSystem.pushResults === "function") {
-            this.searchSystem.pushResults(this, result);
-        }
-        //Gnome 3.10 & newer
-        if(typeof this.searchSystem.setResults === "function") {
-            this.searchSystem.setResults(this, result);
+        if(typeof this.searchSystem === "object") {
+            //Gnome 3.6 & 3.8
+            if(typeof this.searchSystem.pushResults === "function") {
+                this.searchSystem.pushResults(this, result);
+            }
+            //Gnome 3.10
+            if(typeof this.searchSystem.setResults === "function") {
+                this.searchSystem.setResults(this, result);
+            }
         }
 
         this._contactsSubsearch = result;
     },
 
-    getInitialResultSet: function(terms) {
-        this._search(this._contacts, terms);
+    filterResults: function(results, maxNumber) {
+        return results.slice(0, maxNumber);
     },
 
-    getSubsearchResultSet: function(previousResults, terms) {
+    getInitialResultSet: function(terms, callback, cancelable) {
+        this._search(this._contacts, terms);
+        if(typeof callback === "function") {
+            this.getResultMetas(this._contactsSubsearch, callback);
+        }
+    },
+
+    getSubsearchResultSet: function(previousResults, terms, callback, cancelable) {
         this._search(previousResults, terms);
+        if(typeof callback === "function") {
+            this.getResultMetas(this._contactsSubsearch, callback);
+        }
     },
 
     //Gnome 3.6 & 3.8
