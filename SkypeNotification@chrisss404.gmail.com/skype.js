@@ -37,20 +37,25 @@ const SkypeMenuButton = Me.imports.skypeMenuButton.SkypeMenuButton;
 const SkypeSearchProvider = Me.imports.skypeSearchProvider.SkypeSearchProvider;
 
 
-const SkypeIface = '<interface name="com.Skype.API"> \
+const SkypeIface = '<node> \
+<interface name="com.Skype.API"> \
 <method name="Invoke"> \
     <arg type="s" direction="in"/> \
     <arg type="s" direction="out"/> \
 </method> \
-</interface>';
+</interface> \
+</node>';
 
-const SkypeIfaceClient = '<interface name="com.Skype.API.Client"> \
+const SkypeIfaceClient = '<node> \
+<interface name="com.Skype.API.Client"> \
 <method name="Notify"> \
     <arg type="s" direction="in"/> \
 </method> \
-</interface>';
+</interface> \
+</node>';
 
-const SkypeIfaceExtension = '<interface name="com.Skype.API.Extension"> \
+const SkypeIfaceExtension = '<node> \
+<interface name="com.Skype.API.Extension"> \
 <method name="Notify"> \
     <arg type="s" direction="in" name="type"/> \
     <arg type="s" direction="in" name="sname"/> \
@@ -60,7 +65,8 @@ const SkypeIfaceExtension = '<interface name="com.Skype.API.Extension"> \
     <arg type="s" direction="in" name="fsize"/> \
     <arg type="s" direction="in" name="fname"/> \
 </method> \
-</interface>';
+</interface> \
+</node>';
 
 const SkypeProxy = Gio.DBusProxy.makeProxyWrapper(SkypeIface);
 
