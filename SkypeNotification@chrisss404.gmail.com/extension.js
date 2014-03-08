@@ -21,7 +21,7 @@
 
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
-//Gnome 3.6 & 3.8
+//Gnome 3.8
 try {
     const IMStatusChooserItem = imports.ui.userMenu.IMStatusChooserItem;
 } catch(e) { }
@@ -45,14 +45,14 @@ function enable() {
     if(MessageTrayMenuButton) {
         MessageTrayMenuButton.prototype._iconForPresenceOrig = MessageTrayMenuButton.prototype._iconForPresence;
         MessageTrayMenuButton.prototype._iconForPresence = function(presence) {
-            this._iconForPresenceOrig(presence);
             skype.updateSkypeStatus(presence);
+            return this._iconForPresenceOrig(presence);
         };
     } else if(IMStatusChooserItem) {
         IMStatusChooserItem.prototype._setComboboxPresenceOrig = IMStatusChooserItem.prototype._setComboboxPresence;
         IMStatusChooserItem.prototype._setComboboxPresence = function(presence) {
-            this._setComboboxPresenceOrig(presence);
             skype.updateSkypeStatus(presence);
+            this._setComboboxPresenceOrig(presence);
         };
     }
 }

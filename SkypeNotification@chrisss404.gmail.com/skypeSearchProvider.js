@@ -22,6 +22,7 @@
 const Lang = imports.lang;
 
 const GLib = imports.gi.GLib;
+const Shell = imports.gi.Shell;
 const St = imports.gi.St
 
 const IconGrid = imports.ui.iconGrid;
@@ -33,13 +34,12 @@ const SkypeSearchProvider = new Lang.Class({
     Name: "SkypeSearchProvider",
 
     _init: function(title, skype) {
-        this.title = title; //Gnome 3.6 & 3.8
-        this.id = title;    //Gnome 3.10 & newer
+        this.id = title;
+        this.appInfo = Shell.AppSystem.get_default().lookup_app('skype.desktop').get_app_info();
 
         this._proxy = skype._proxy;
         this._focusSkypeChatWindow = Lang.bind(skype, skype._focusSkypeChatWindow);
         this._contacts = [];
-        this._contactsSubsearch = [];
     },
 
     setContacts: function(contacts) {
@@ -48,17 +48,20 @@ const SkypeSearchProvider = new Lang.Class({
 
     getResultMetas: function(result, callback) {
         let metas = [];
-        for (let i in result) {
-            metas.push({ "id": i,
-                         "name": result[i].name,
-                         "handle": result[i].handle
+        for(let i in result) {
+            let id = result[i];
+            let name = this._contacts[id] ? this._contacts[id].name : "";
+            metas.push({ "id": id,
+                         "name": name,
+                         "createIcon": Lang.bind(this, this._createIcon)
                        });
         }
         callback(metas);
     },
 
-    _search: function(haystack, needles) {
+    _search: function(haystack, needles, callback) {
         let result = [];
+        let tmp = [];
 
         let handle = "";
         let name = "";
@@ -70,16 +73,19 @@ const SkypeSearchProvider = new Lang.Class({
                 handle = haystack[i].handle.trim().toLowerCase();
                 name = haystack[i].name.trim().toLowerCase();
                 if(handle.indexOf(needle) === 0 || name.indexOf(needle) === 0) {
-                    result.push(haystack[i]);
+                    tmp.push(i);
                 }
             }
         }
-        result.sort(function(a, b) {
-                return (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0));
+        tmp.sort(function(a, b) {
+                return (haystack[a].name < haystack[b].name ? -1 : (haystack[a].name > haystack[b].name ? 1 : 0));
             });
+        for(let i in tmp) {
+            result = result.concat(tmp[i]);
+        }
 
         if(typeof this.searchSystem === "object") {
-            //Gnome 3.6 & 3.8
+            //Gnome 3.8
             if(typeof this.searchSystem.pushResults === "function") {
                 this.searchSystem.pushResults(this, result);
             }
@@ -88,8 +94,11 @@ const SkypeSearchProvider = new Lang.Class({
                 this.searchSystem.setResults(this, result);
             }
         }
-
-        this._contactsSubsearch = result;
+        
+        //Gnome 3.12
+        if(typeof callback === "function") {
+            callback(result);
+        }
     },
 
     filterResults: function(results, maxNumber) {
@@ -97,67 +106,27 @@ const SkypeSearchProvider = new Lang.Class({
     },
 
     getInitialResultSet: function(terms, callback, cancelable) {
-        this._search(this._contacts, terms);
-        if(typeof callback === "function") {
-            this.getResultMetas(this._contactsSubsearch, callback);
-        }
+        this._search(this._contacts, terms, callback);
     },
 
     getSubsearchResultSet: function(previousResults, terms, callback, cancelable) {
-        this._search(previousResults, terms);
-        if(typeof callback === "function") {
-            this.getResultMetas(this._contactsSubsearch, callback);
-        }
-    },
-
-    //Gnome 3.6 & 3.8
-    createResultActor: function (resultMeta, terms) {
-        let actor = new St.Button({ button_mask: St.ButtonMask.ONE,
-            toggle_mode: true,
-            can_focus: true,
-            x_fill: true,
-            y_fill: true });
-
-        let icon = new IconGrid.BaseIcon(resultMeta["name"],
-                 { createIcon: Lang.bind(this, this._createIcon) });
-        actor.set_child(icon.actor);
-        actor.label_actor = icon.label;
-        actor.handle = resultMeta["handle"];
-        actor.connect("clicked", Lang.bind(this, this.activateResult));
-
-        return actor;
-    },
-
-    //Gnome 3.10 & newer
-    createResultObject: function (resultMeta, terms) {
-        let object = {};
-
-        object.actor = new St.Bin({ reactive: true,
-                                    track_hover: true });
-        object.icon = new IconGrid.BaseIcon(resultMeta["name"],
-                 { createIcon: Lang.bind(this, this._createIcon) });
-
-
-        object.actor.child = object.icon.actor;
-        object.actor.label_actor = object.icon.label;
-
-        return object;
+        this._search(this._contacts, terms, callback);
     },
 
     _createIcon: function(size) {
         return new St.Icon({ icon_name: "skype",
-            icon_size: 64,
-            style_class: "app-well-app",
-            track_hover: true });
+            icon_size: size });
     },
 
     activateResult: function(event) {
-        if(typeof event.handle === "string") {
-            this._proxy.InvokeRemote("OPEN IM " + event.handle);
+        if(this._contacts[event]) {
+            this._proxy.InvokeRemote("OPEN IM " + this._contacts[event].handle);
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, Lang.bind(this, this._focusSkypeChatWindow));
             Main.overview.hide();
-        } else {
-            this._proxy.InvokeRemote("OPEN IM " + this._contactsSubsearch[event].handle);
         }
-        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, Lang.bind(this, this._focusSkypeChatWindow));
+    },
+
+    launchSearch: function(terms) {
+        global.log("launchSearch");
     }
 });

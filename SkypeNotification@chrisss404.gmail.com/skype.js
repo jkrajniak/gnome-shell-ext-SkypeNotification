@@ -89,7 +89,6 @@ const Skype = new Lang.Class({
         this._skypeMenuCallAlert = false;
         this._skypeMenuEnabled = true;
         this._apiExtension = new SkypeAPIExtension(Lang.bind(this, this.NotifyCallback));
-        this._isGnome36 = (Config.PACKAGE_VERSION.indexOf("3.6") == 0);
 
         this._messages = [];
         this._closeTimer = null;
@@ -270,22 +269,12 @@ const Skype = new Lang.Class({
 
     _updateNotifySource: function() {
         let source = null;
-        let items = null;
-
-        if(this._isGnome36) {
-            items = Main.messageTray.getSummaryItems();
-        } else {
-            items = Main.messageTray.getSources();
-        }
+        let items = Main.messageTray.getSources();
 
         let item = null;
         let numberOfNotifications = -1;
         for(let index in items) {
-            if(this._isGnome36) {
-                item = items[index].source;
-            } else {
-                item = items[index];
-            }
+            item = items[index];
             if(item.title == "Skype") {
                 if(item.count > numberOfNotifications) {
                     source = item;
@@ -368,11 +357,7 @@ const Skype = new Lang.Class({
         }
         body = body.join("").trim();
 
-        let params = {};
-        if(!this._isGnome36) {
-            params["gicon"] = Gio.icon_new_for_string(icon);
-        }
-
+        let params = { "gicon": Gio.icon_new_for_string(icon) };
         if(this._notificationSource.count == 0) {
             this._activeNotification = new MessageTray.Notification(this._notificationSource, 
                     summary, body, params);
