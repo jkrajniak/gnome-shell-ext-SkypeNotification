@@ -81,12 +81,11 @@ const Skype = new Lang.Class({
         this._authenticated = false;
         this._currentUserHandle = "";
         this._currentPresence = "ONLINE";
-        this._missedChats = "CHATS #dummy";
+        this._missedChats = "CHATS";
         this._config = null;
         this._searchProvider = null;
         this._skypeMenu = null;
-        this._skypeMenuChatAlert = true;
-        this._skypeMenuCallAlert = false;
+        this._skypeMenuAlert = false;
         this._skypeMenuEnabled = true;
         this._apiExtension = new SkypeAPIExtension(Lang.bind(this, this.NotifyCallback));
 
@@ -101,9 +100,6 @@ const Skype = new Lang.Class({
 
         this._settings = null;
         this._settingsSignal = null;
-
-        this._focusChangedShellSignal = null;
-        this._focusChangedMainSignal = null;
 
         this._userPresenceCallbacks = [];
         this._addUserPresenceCallback(Lang.bind(this, this._setUserPresenceMenuIcon));
@@ -168,8 +164,7 @@ const Skype = new Lang.Class({
             }
 
             if(this._searchProvider != null) {
-                Main.overview.removeSearchProvider(this._searchProvider);
-                this._searchProvider = null;
+                this._searchProvider.setContacts([]);
             }
         }
         if(this._authenticated && answer == "ERROR 68") {
@@ -182,14 +177,14 @@ const Skype = new Lang.Class({
     },
 
     _onMissedChat: function(answer) {
-        if(answer != null) {
-            if(answer[0].length < this._missedChats.length) {
-                if(this._skypeMenuChatAlert) {
-                    this._skypeMenuChatAlert = false;
-                    this._runUserPresenceCallbacks();
-                }
+        if(this._skypeMenuAlert) {
+            if(this._isSkypeChatWindowFocused()) {
+                this._skypeMenuAlert = false;
+                this._runUserPresenceCallbacks();
             }
-            this._missedChats = answer[0];
+            if(answer != null) {
+                this._missedChats = answer[0];
+            }
         }
 
         if(this._enabled && this._skypeMenuEnabled) {
@@ -212,11 +207,6 @@ const Skype = new Lang.Class({
         this._apiExtension.enable();
         this._settingsSignal = this._settings.connect("changed::" + SETTINGS_SHOW_PANEL_BUTTON_KEY,
                 Lang.bind(this, this._onSettingsChanged));
-
-        this._focusChangedShellSignal = Shell.WindowTracker.get_default().connect('notify::focus-app',
-                Lang.bind(this, this._onFocusAppChanged));
-        this._focusChangedMainSignal = Main.overview.connect('hidden',
-                Lang.bind(this, this._onFocusAppChanged));
     },
 
     disable: function() {
@@ -229,21 +219,12 @@ const Skype = new Lang.Class({
             this._skypeMenu = null;
         }
         if(this._searchProvider != null) {
-            Main.overview.removeSearchProvider(this._searchProvider);
-            this._searchProvider = null;
+            this._searchProvider.setContacts([]);
         }
         this._apiExtension.disable();
         if(this._settingsSignal != null) {
             this._settings.disconnect(this._settingsSignal);
             this._settingsSignal = null;
-        }
-        if(this._focusChangedShellSignal != null) {
-            Shell.WindowTracker.get_default().disconnect(this._focusChangedShellSignal);
-            this._focusChangedShellSignal = null;
-        }
-        if(this._focusChangedMainSignal != null) {
-            Main.overview.disconnect(this._focusChangedMainSignal);
-            this._focusChangedMainSignal = null;
         }
     },
 
@@ -477,7 +458,7 @@ const Skype = new Lang.Class({
         }
 
         let type = "-symbolic";
-        if(this._skypeMenuChatAlert || this._skypeMenuCallAlert) {
+        if(this._skypeMenuAlert) {
             type = "-alert-symbolic";
         }
 
@@ -499,13 +480,8 @@ const Skype = new Lang.Class({
             if(this._isSkypeChatWindowFocused()) {
                 return;
             }
-            if(!this._skypeMenuChatAlert) {
-                this._skypeMenuChatAlert = true;
-                this._missedChats = "CHATS #dummy";
-                this._runUserPresenceCallbacks();
-            }
-            if(!this._skypeMenuCallAlert) {
-                this._skypeMenuCallAlert = true;
+            if(!this._skypeMenuAlert) {
+                this._skypeMenuAlert = true;
                 this._runUserPresenceCallbacks();
             }
         }
@@ -608,20 +584,6 @@ const Skype = new Lang.Class({
             if(title.indexOf(" - ") === -1) {
                 Main.activateWindow(windows[i]);
                 break;
-            }
-        }
-    },
-
-    _onFocusAppChanged: function() {
-        if(global.display.focus_window != null) {
-            let metaWindow = global.display.focus_window;
-            if(metaWindow.get_wm_class() == "Skype") {
-                if(metaWindow.get_title().indexOf(" - ") !== -1) {
-                    if(this._skypeMenuCallAlert) {
-                        this._skypeMenuCallAlert = false;
-                        this._runUserPresenceCallbacks();
-                    }
-                }
             }
         }
     },

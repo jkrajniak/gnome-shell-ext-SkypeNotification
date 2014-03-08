@@ -124,9 +124,5 @@ const SkypeSearchProvider = new Lang.Class({
             GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, Lang.bind(this, this._focusSkypeChatWindow));
             Main.overview.hide();
         }
-    },
-
-    launchSearch: function(terms) {
-        global.log("launchSearch");
     }
 });
