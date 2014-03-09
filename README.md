@@ -18,7 +18,8 @@ This extension simplifies the life for Microsoft Skype users. It makes use of th
 At the moment there are 2 possibilities:
 
 - Visit the [Skype Integration page](https://extensions.gnome.org/extension/696/skype-integration/) on extensions.gnome.org, click on the switch ("OFF" => "ON"), click on the install button.
-- Or, download the source from [here](https://github.com/chrisss404/gnome-shell-ext-SkypeNotification/archive/master.zip), copy the folder `SkypeNotification@chrisss404.gmail.com` from the downloaded archive to `~/.local/share/gnome-shell/extensions/`, restart GNOME Shell (`Alt`+`F2`, `r`, `Enter`) and enable the extension through *gnome-tweak-tool*.
+- Or, download the source ([3.6](https://github.com/chrisss404/gnome-shell-ext-SkypeNotification/archive/3.6.zip), [3.8, 3.10, 3.12](https://github.com/chrisss404/gnome-shell-ext-SkypeNotification/archive/master.zip)), copy the folder `SkypeNotification@chrisss404.gmail.com` from the downloaded archive to `~/.local/share/gnome-shell/extensions/`, restart GNOME Shell (`Alt`+`F2`, `r`, `Enter`) and enable the extension through *gnome-tweak-tool*.
+
 
 #### Dependencies:
     
@@ -33,6 +34,11 @@ At the moment there are 2 possibilities:
 #### How can I enable and disable individual notifications?
 
 Go to Options > Notifications and click on `Advanced View`. If the option `Execute the following script` is checked, the notification is enabled otherwise it is disabled ([initial question](https://github.com/chrisss404/gnome-shell-ext-SkypeNotification/issues/9)). [Here](https://github.com/chrisss404/gnome-shell-ext-SkypeNotification/blob/master/SkypeNotification%40chrisss404.gmail.com/skypeConfig.js#L45) is a list of all supported notifications.
+
+
+#### Top bar menu icon shows, but I get no notifications, what can I do?
+
+Make sure that you have installed Python D-Bus bindings. You can check by executing `python ~/.local/share/gnome-shell/extensions/SkypeNotification@chrisss404.gmail.com/notify.py -e"ChatIncoming" -n"Test" -f"%fname" -p"%fpath" -m"hello" -s"%fsize" -u"%sskype"`.
 
 
 #### Can't install anymore after recent update, what shall I do?

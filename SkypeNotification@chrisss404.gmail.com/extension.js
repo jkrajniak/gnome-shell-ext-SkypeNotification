@@ -42,13 +42,13 @@ function init() {
 function enable() {
     skype.enable();
 
-    if(MessageTrayMenuButton) {
+    if(typeof MessageTrayMenuButton !== "undefined") {
         MessageTrayMenuButton.prototype._iconForPresenceOrig = MessageTrayMenuButton.prototype._iconForPresence;
         MessageTrayMenuButton.prototype._iconForPresence = function(presence) {
             skype.updateSkypeStatus(presence);
             return this._iconForPresenceOrig(presence);
         };
-    } else if(IMStatusChooserItem) {
+    } else if(typeof IMStatusChooserItem !== "undefined") {
         IMStatusChooserItem.prototype._setComboboxPresenceOrig = IMStatusChooserItem.prototype._setComboboxPresence;
         IMStatusChooserItem.prototype._setComboboxPresence = function(presence) {
             skype.updateSkypeStatus(presence);
@@ -60,11 +60,15 @@ function enable() {
 function disable() {
     skype.disable();
 
-    if(typeof MessageTrayMenuButton.prototype._iconForPresenceOrig === "function") {
-        MessageTrayMenuButton.prototype._iconForPresence = MessageTrayMenuButton.prototype._iconForPresenceOrig;
-        MessageTrayMenuButton.prototype._iconForPresenceOrig = undefined;
-    } else if(typeof IMStatusChooserItem.prototype._setComboboxPresenceOrig === "function") {
-        IMStatusChooserItem.prototype._setComboboxPresence = IMStatusChooserItem.prototype._setComboboxPresenceOrig;
-        IMStatusChooserItem.prototype._setComboboxPresenceOrig = undefined;
+    if(typeof MessageTrayMenuButton !== "undefined") {
+        if(typeof MessageTrayMenuButton.prototype._iconForPresenceOrig === "function") {
+            MessageTrayMenuButton.prototype._iconForPresence = MessageTrayMenuButton.prototype._iconForPresenceOrig;
+            MessageTrayMenuButton.prototype._iconForPresenceOrig = undefined;
+        }
+    } else if(typeof IMStatusChooserItem !== "undefined") {
+        if(typeof IMStatusChooserItem.prototype._setComboboxPresenceOrig === "function") {
+            IMStatusChooserItem.prototype._setComboboxPresence = IMStatusChooserItem.prototype._setComboboxPresenceOrig;
+            IMStatusChooserItem.prototype._setComboboxPresenceOrig = undefined;
+        }
     }
 }
