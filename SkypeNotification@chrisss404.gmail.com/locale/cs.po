@@ -111,7 +111,7 @@ msgstr "Přenos kompletní"
 
 #: ../skypeConfig.js:90
 msgid "{filename} saved to {filepath}"
-msgstr "{filename} uložen do {filepath}"
+msgstr "{filename} uloženo do {filepath}"
 
 #: ../skypeConfig.js:93
 msgid "Transfer Failed"
@@ -119,11 +119,11 @@ msgstr "Přenos se nezdařil"
 
 #: ../skypeConfig.js:96
 msgid "SMS Sent"
-msgstr ""
+msgstr "SMS zpráva poslána"
 
 #: ../skypeConfig.js:99
 msgid "SMS Failed"
-msgstr "SMS zpráva poslána"
+msgstr "Poslání SMS zprávy se nezdařilo"
 
 #: ../skypeConfig.js:102
 msgid "{contact} has a birthday tomorrow"
