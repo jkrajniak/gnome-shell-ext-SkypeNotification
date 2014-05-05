@@ -1,142 +1,142 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Czech translations for SkypeNotification@chrisss package.
+# Copyright (C) 2014 THE SkypeNotification@chrisss'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the SkypeNotification@chrisss package.
+# Karel Mácha <karel.macha@karlitos.net>, 2014.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: SkypeNotification@chrisss 404.gmail.com\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-05-02 10:30+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2014-05-02 10:33+0200\n"
+"Last-Translator: Karel Mácha <karel.macha@karlitos.net>\n"
+"Language-Team: Czech\n"
+"Language: cs\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../skypeMenuButton.js:58
 msgid "Recent Chats"
-msgstr ""
+msgstr "Poslední chaty"
 
 #: ../skypeMenuButton.js:60
 msgid "Change Status"
-msgstr ""
+msgstr "Změnit status"
 
 #: ../skypeMenuButton.js:63
 msgid "Online"
-msgstr ""
+msgstr "Online"
 
 #: ../skypeMenuButton.js:67
 msgid "Away"
-msgstr ""
+msgstr "Nepřítomný"
 
 #: ../skypeMenuButton.js:71
 msgid "Do Not Disturb"
-msgstr ""
+msgstr "Nerušit"
 
 #: ../skypeMenuButton.js:75
 msgid "Invisible"
-msgstr ""
+msgstr "Neviditelný"
 
 #: ../skypeMenuButton.js:79
 msgid "Offline"
-msgstr ""
+msgstr "Offline"
 
 #: ../skypeMenuButton.js:93
 msgid "Show Contact List"
-msgstr ""
+msgstr "Zobrazit Seznam Kontaktů"
 
 #: ../skypeMenuButton.js:96
 msgid "Add a Contact"
-msgstr ""
+msgstr "Přidat Kontakt"
 
 #: ../skypeMenuButton.js:99
 msgid "Microphone"
-msgstr ""
+msgstr "Mikrofon"
 
 #: ../skypeMenuButton.js:102
 msgid "Quit"
-msgstr ""
+msgstr "Ukončit"
 
 #: ../skypeConfig.js:48
 msgid "Call Missed"
-msgstr ""
+msgstr "Zmeškaný Hovor"
 
 #: ../skypeConfig.js:51
 msgid "Voicemail Received"
-msgstr ""
+msgstr "Přijata hlasová zpráva"
 
 #: ../skypeConfig.js:54
 msgid "Voicemail Sent"
-msgstr ""
+msgstr "Hlasová zpráva odeslána"
 
 #: ../skypeConfig.js:57
 msgid "{contact} has appeared online"
-msgstr ""
+msgstr "{contact} se připojil"
 
 #: ../skypeConfig.js:60
 msgid "{contact} has gone offline"
-msgstr ""
+msgstr "{contact} se odpojil"
 
 #: ../skypeConfig.js:63
 msgid "Contact request from {contact}"
-msgstr ""
+msgstr "Žádost o přijetí kontaktu od {contact}"
 
 #: ../skypeConfig.js:66
 msgid "{contact} has been added to your contact list"
-msgstr ""
+msgstr "{contact} byl přidán do seznamu kontaktů"
 
 #: ../skypeConfig.js:69
 msgid "{contact} has been deleted from your contact list"
-msgstr ""
+msgstr "{contact} byl odstraněn ze seznamu kontaktů"
 
 #: ../skypeConfig.js:81
 msgid "{contact} joined chat"
-msgstr ""
+msgstr "{contact} se připojil do chatu"
 
 #: ../skypeConfig.js:84
 msgid "{contact} left chat"
-msgstr ""
+msgstr "{contact} opustil chat"
 
 #: ../skypeConfig.js:87
 msgid "Incoming file from {contact}"
-msgstr ""
+msgstr "Příchozí soubor od {contact}"
 
 #: ../skypeConfig.js:90
 msgid "Transfer Complete"
-msgstr ""
+msgstr "Přenos kompletní"
 
 #: ../skypeConfig.js:90
 msgid "{filename} saved to {filepath}"
-msgstr ""
+msgstr "{filename} uloženo do {filepath}"
 
 #: ../skypeConfig.js:93
 msgid "Transfer Failed"
-msgstr ""
+msgstr "Přenos se nezdařil"
 
 #: ../skypeConfig.js:96
 msgid "SMS Sent"
-msgstr ""
+msgstr "SMS zpráva poslána"
 
 #: ../skypeConfig.js:99
 msgid "SMS Failed"
-msgstr ""
+msgstr "Poslání SMS zprávy se nezdařilo"
 
 #: ../skypeConfig.js:102
 msgid "{contact} has a birthday tomorrow"
-msgstr ""
+msgstr "{contact} má zítra narozeniny"
 
 #: ../skypeConfig.js:105
 msgid "Happy Birthday {contact}"
-msgstr ""
+msgstr "Vše Nejlepší {contact}"
 
 #: ../prefs.js:66
 msgid "Show top bar icon"
-msgstr ""
+msgstr "Zobraz ikonu v horním panelu"
 
 #: ../prefs.js:77 ../prefs.js:78
 msgid "Shall the top bar icon be displayed"
-msgstr ""
+msgstr "Ikona v horním panelu se má zobrazovat"
