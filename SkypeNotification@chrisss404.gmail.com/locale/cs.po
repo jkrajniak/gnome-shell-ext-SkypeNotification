@@ -143,10 +143,10 @@ msgstr "Ikona v horním panelu se má zobrazovat"
 
 #: ../prefs.js:93
 msgid "Open contacts on left click on top bar icon"
-msgstr ""
+msgstr "Otevři seznam kontaktů po kliknutí levým tlačítkem na ikonu v panelu"
 
 #: ../prefs.js:104 ../prefs.js:105
 msgid ""
 "Shall the Skype contact list be opened when the top bar icon is clicked by "
 "the left mouse button"
-msgstr ""
+msgstr "Seznam kontaktů se má zobrazit po kliknutí levým tlačítkem na ikonu v panelu."
