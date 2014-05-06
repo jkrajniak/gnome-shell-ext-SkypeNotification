@@ -548,7 +548,7 @@ const Skype = new Lang.Class({
         let windows = global.get_window_actors();
         for(let i in windows) {
             let metaWindow = windows[i].get_meta_window();
-            if(metaWindow.get_wm_class() == "Skype") {
+            if(metaWindow.get_wm_class().indexOf("Skype") == 0) {
                 skypeWindows.push(metaWindow);
             }
         }
@@ -591,7 +591,7 @@ const Skype = new Lang.Class({
     _isSkypeChatWindowFocused: function() {
         if(global.display.focus_window != null) {
             let metaWindow = global.display.focus_window;
-            if(metaWindow.get_wm_class() == "Skype") {
+            if(metaWindow.get_wm_class().indexOf("Skype") == 0) {
                 let title = metaWindow.get_title();
                 if(title.indexOf(" - ") !== -1 && title.indexOf(this._currentUserHandle) === -1) {
                     return true;
