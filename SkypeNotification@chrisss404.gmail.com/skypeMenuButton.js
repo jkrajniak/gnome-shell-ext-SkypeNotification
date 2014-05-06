@@ -21,6 +21,7 @@
 
 const Lang = imports.lang;
 
+const Clutter = imports.gi.Clutter;
 const GLib = imports.gi.GLib;
 const St = imports.gi.St;
 
@@ -39,6 +40,7 @@ const SkypeMenuButton = new Lang.Class({
 
     _init: function(skype) {
         this.parent(0.0, "skype");
+        this._isShowContactsOnLeftClickActive = Lang.bind(skype, skype._isShowContactsOnLeftClickActive);
         this._icon = new St.Icon({style_class: "system-status-icon"});
         
         let hbox = new St.BoxLayout({ style_class: "panel-status-menu-box" });
@@ -46,6 +48,7 @@ const SkypeMenuButton = new Lang.Class({
         
         this.actor.add_child(hbox);
         this.actor.add_style_class_name("panel-status-button");
+        this.actor.connect('button-press-event', Lang.bind(this, this._onButtonPressEvent));
         
         this._proxy = skype._proxy;
         this._skypeApp = skype._skypeApp;
@@ -121,6 +124,15 @@ const SkypeMenuButton = new Lang.Class({
     
     setGIcon: function(gicon) {
         this._icon.gicon = gicon;
+    },
+
+    _onButtonPressEvent: function(actor, event) {
+        if(this._isShowContactsOnLeftClickActive() && event.get_button() == 1) {
+            this.menu.close();
+            this._openContactList();
+            return Clutter.EVENT_STOP;
+        }
+        return Clutter.EVENT_PROPAGATE;
     },
 
     _updateRecentChats: function(event) {

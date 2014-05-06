@@ -71,6 +71,7 @@ const SkypeIfaceExtension = '<node> \
 const SkypeProxy = Gio.DBusProxy.makeProxyWrapper(SkypeIface);
 
 const SETTINGS_SHOW_PANEL_BUTTON_KEY = "show-top-bar-icon";
+const SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY = "open-contacts-on-top-bar-icon-left-click";
 
 
 const Skype = new Lang.Class({
@@ -88,6 +89,7 @@ const Skype = new Lang.Class({
         this._skypeMenu = null;
         this._skypeMenuAlert = false;
         this._skypeMenuEnabled = true;
+        this._showContactsOnLeftClick = false;
         this._apiExtension = new SkypeAPIExtension(Lang.bind(this, this.NotifyCallback));
 
         this._messages = [];
@@ -100,7 +102,8 @@ const Skype = new Lang.Class({
         this._dbusImpl.export(Gio.DBus.session, "/com/Skype/Client");
 
         this._settings = null;
-        this._settingsSignal = null;
+        this._settingsButtonSignal = null;
+        this._settingsClickSignal = null;
 
         this._userPresenceCallbacks = [];
         this._addUserPresenceCallback(Lang.bind(this, this._setUserPresenceMenuIcon));
@@ -119,10 +122,12 @@ const Skype = new Lang.Class({
 
         this._settings = new Gio.Settings({ settings_schema: schemaObj });
         this._skypeMenuEnabled = this._settings.get_boolean(SETTINGS_SHOW_PANEL_BUTTON_KEY);
+        this._showContactsOnLeftClick = this._settings.get_boolean(SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY);
     },
 
     _onSettingsChanged: function() {
         this._skypeMenuEnabled = this._settings.get_boolean(SETTINGS_SHOW_PANEL_BUTTON_KEY);
+        this._showContactsOnLeftClick = this._settings.get_boolean(SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY);
 
         if(this._skypeMenuEnabled && this._skypeMenu == null) {
             this._skypeMenu = new SkypeMenuButton(this);
@@ -211,7 +216,9 @@ const Skype = new Lang.Class({
         this._authenticate();
         this._heartBeat();
         this._apiExtension.enable();
-        this._settingsSignal = this._settings.connect("changed::" + SETTINGS_SHOW_PANEL_BUTTON_KEY,
+        this.settingsButtonSignal = this._settings.connect("changed::" + SETTINGS_SHOW_PANEL_BUTTON_KEY,
+                Lang.bind(this, this._onSettingsChanged));
+        this._settingsClickSignal = this._settings.connect("changed::" + SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY,
                 Lang.bind(this, this._onSettingsChanged));
     },
 
@@ -228,9 +235,13 @@ const Skype = new Lang.Class({
             this._searchProvider.setContacts([]);
         }
         this._apiExtension.disable();
-        if(this._settingsSignal != null) {
-            this._settings.disconnect(this._settingsSignal);
-            this._settingsSignal = null;
+        if(this.settingsButtonSignal != null) {
+            this._settings.disconnect(this.settingsButtonSignal);
+            this.settingsButtonSignal = null;
+        }
+        if(this._settingsClickSignal != null) {
+            this._settings.disconnect(this._settingsClickSignal);
+            this._settingsClickSignal = null;
         }
     },
 
@@ -358,6 +369,10 @@ const Skype = new Lang.Class({
             this._activeNotification.connect("clicked", Lang.bind(this, this._onClicked));
             this._activeNotification.update(summary, body, params);
         }
+    },
+
+    _isShowContactsOnLeftClickActive: function() {
+        return this._showContactsOnLeftClick;
     },
 
     _getContacts: function() {

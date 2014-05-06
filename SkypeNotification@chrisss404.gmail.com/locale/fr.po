@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SkypeNotification@chrisss404.gmail.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-18 13:40+0100\n"
+"POT-Creation-Date: 2014-05-06 17:45+0200\n"
 "PO-Revision-Date: 2013-09-30 18:42+0200\n"
 "Last-Translator: Dalan <remi.bertho@gmail.com>\n"
 "Language-Team: français <wesnoth@ml.free.fr>\n"
@@ -19,47 +19,47 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Gtranslator 2.91.6\n"
 
-#: ../skypeMenuButton.js:58
+#: ../skypeMenuButton.js:62
 msgid "Recent Chats"
 msgstr "Discussions récentes"
 
-#: ../skypeMenuButton.js:60
+#: ../skypeMenuButton.js:64
 msgid "Change Status"
 msgstr "Changer l'état"
 
-#: ../skypeMenuButton.js:63
+#: ../skypeMenuButton.js:67
 msgid "Online"
 msgstr "En ligne"
 
-#: ../skypeMenuButton.js:67
+#: ../skypeMenuButton.js:71
 msgid "Away"
 msgstr "Absent"
 
-#: ../skypeMenuButton.js:71
+#: ../skypeMenuButton.js:75
 msgid "Do Not Disturb"
 msgstr "Ne pas déranger"
 
-#: ../skypeMenuButton.js:75
+#: ../skypeMenuButton.js:79
 msgid "Invisible"
 msgstr "Invisible"
 
-#: ../skypeMenuButton.js:79
+#: ../skypeMenuButton.js:83
 msgid "Offline"
 msgstr "Hors ligne"
 
-#: ../skypeMenuButton.js:93
+#: ../skypeMenuButton.js:97
 msgid "Show Contact List"
 msgstr "Afficher la liste de contacts"
 
-#: ../skypeMenuButton.js:96
+#: ../skypeMenuButton.js:100
 msgid "Add a Contact"
 msgstr "Ajouter un contact"
 
-#: ../skypeMenuButton.js:99
+#: ../skypeMenuButton.js:103
 msgid "Microphone"
 msgstr "Microphone"
 
-#: ../skypeMenuButton.js:102
+#: ../skypeMenuButton.js:106
 msgid "Quit"
 msgstr "Quitter"
 
@@ -135,10 +135,20 @@ msgstr "{contact} fête son anniversaire demain"
 msgid "Happy Birthday {contact}"
 msgstr "Bon anniversaire à {contact}"
 
-#: ../prefs.js:66
+#: ../prefs.js:68
 msgid "Show top bar icon"
 msgstr "Afficher l’icône dans le panneau supérieur"
 
-#: ../prefs.js:77 ../prefs.js:78
+#: ../prefs.js:79 ../prefs.js:80
 msgid "Shall the top bar icon be displayed"
 msgstr "L’icône du panneau supérieur doit-elle être affiché ?"
+
+#: ../prefs.js:93
+msgid "Open contacts on left click on top bar icon"
+msgstr ""
+
+#: ../prefs.js:104 ../prefs.js:105
+msgid ""
+"Shall the Skype contact list be opened when the top bar icon is clicked by "
+"the left mouse button"
+msgstr ""

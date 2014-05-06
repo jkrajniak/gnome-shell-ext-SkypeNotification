@@ -7,5 +7,10 @@
             <summary>Show top bar icon</summary>
             <description>Shall the top bar icon be displayed</description>
         </key>
+        <key name="open-contacts-on-top-bar-icon-left-click" type="b">
+            <default>false</default>
+            <summary>Open contacts on left click on top bar icon</summary>
+            <description>Shall the Skype contact list be opened when the top bar icon is clicked by the left mouse button</description>
+        </key>
     </schema>
 </schemalist>

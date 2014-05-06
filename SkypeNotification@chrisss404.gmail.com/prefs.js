@@ -27,6 +27,7 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 const _ = imports.gettext.domain(Me.uuid).gettext;
 
 const SETTINGS_SHOW_PANEL_BUTTON_KEY = "show-top-bar-icon";
+const SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY = "open-contacts-on-top-bar-icon-left-click";
 
 
 let settings;
@@ -52,35 +53,62 @@ function buildPrefsWidget() {
         border_width: 10
     });
 
-    let hbox = new Gtk.Box({
-        orientation: Gtk.Orientation.HORIZONTAL
-    });
-
     let vbox = new Gtk.Box({
         orientation: Gtk.Orientation.VERTICAL,
         margin: 20,
         margin_top: 10
     });
 
-    let settingLabel = new Gtk.Label({
+
+    let hbox = new Gtk.Box({
+        orientation: Gtk.Orientation.HORIZONTAL
+    });
+
+    let showIconLabel = new Gtk.Label({
         label: _("Show top bar icon"),
         xalign: 0
     });
 
-    let settingSwitch = new Gtk.Switch({
+    let showIconSwitch = new Gtk.Switch({
         active: settings.get_boolean(SETTINGS_SHOW_PANEL_BUTTON_KEY)
     });
-    settingSwitch.connect("notify::active", function(button) {
+    showIconSwitch.connect("notify::active", function(button) {
         settings.set_boolean(SETTINGS_SHOW_PANEL_BUTTON_KEY, button.active);
     });
 
-    settingLabel.set_tooltip_text(_("Shall the top bar icon be displayed"));
-    settingSwitch.set_tooltip_text(_("Shall the top bar icon be displayed"));
+    showIconLabel.set_tooltip_text(_("Shall the top bar icon be displayed"));
+    showIconSwitch.set_tooltip_text(_("Shall the top bar icon be displayed"));
 
-    hbox.pack_start(settingLabel, true, true, 0);
-    hbox.add(settingSwitch);
+    hbox.pack_start(showIconLabel, true, true, 0);
+    hbox.add(showIconSwitch);
 
     vbox.add(hbox);
+
+
+    let hbox = new Gtk.Box({
+        orientation: Gtk.Orientation.HORIZONTAL
+    });
+
+    let onLeftClickLabel = new Gtk.Label({
+        label: _("Open contacts on left click on top bar icon"),
+        xalign: 0
+    });
+
+    let onLeftClickSwitch = new Gtk.Switch({
+        active: settings.get_boolean(SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY)
+    });
+    onLeftClickSwitch.connect("notify::active", function(button) {
+        settings.set_boolean(SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY, button.active);
+    });
+
+    onLeftClickLabel.set_tooltip_text(_("Shall the Skype contact list be opened when the top bar icon is clicked by the left mouse button"));
+    onLeftClickSwitch.set_tooltip_text(_("Shall the Skype contact list be opened when the top bar icon is clicked by the left mouse button"));
+
+    hbox.pack_start(onLeftClickLabel, true, true, 0);
+    hbox.add(onLeftClickSwitch);
+
+    vbox.add(hbox);
+
 
     frame.add(vbox);
     frame.show_all();
