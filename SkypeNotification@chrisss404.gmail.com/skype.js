@@ -82,6 +82,7 @@ const Skype = new Lang.Class({
         this._currentUserHandle = "";
         this._currentPresence = "ONLINE";
         this._missedChats = "CHATS";
+        this._skypeApp = null;
         this._config = null;
         this._searchProvider = null;
         this._skypeMenu = null;
@@ -193,6 +194,11 @@ const Skype = new Lang.Class({
     },
 
     enable: function() {
+        this._skypeApp = Shell.AppSystem.get_default().lookup_app("skype.desktop");
+        if(this._skypeApp == null) {
+            throw new Error("Could not find Skype! Make sure that the Desktop entry file 'skype.desktop' is available.");
+        }
+
         if(this._enabled) {
             return;
         }
@@ -543,20 +549,8 @@ const Skype = new Lang.Class({
         } 
     },
 
-    _getSkypeWindows: function() {
-        let skypeWindows = [];
-        let windows = global.get_window_actors();
-        for(let i in windows) {
-            let metaWindow = windows[i].get_meta_window();
-            if(metaWindow.get_wm_class().indexOf("Skype") == 0) {
-                skypeWindows.push(metaWindow);
-            }
-        }
-        return skypeWindows;
-    },
-
     _focusSkypeMainWindow: function() {
-        let windows = this._getSkypeWindows();
+        let windows = this._skypeApp.get_windows();
         for(let i in windows) {
             let title = windows[i].get_title();
             if(title.indexOf(" - ") !== -1 && title.indexOf(this._currentUserHandle) !== -1) {
@@ -567,7 +561,7 @@ const Skype = new Lang.Class({
     },
 
     _focusSkypeChatWindow: function() {
-        let windows = this._getSkypeWindows();
+        let windows = this._skypeApp.get_windows();
         for(let i in windows) {
             let title = windows[i].get_title();
             if(title.indexOf(" - ") !== -1 && title.indexOf(this._currentUserHandle) === -1) {
@@ -578,7 +572,7 @@ const Skype = new Lang.Class({
     },
 
     _focusSkypeAddFriendWindow: function() {
-        let windows = this._getSkypeWindows();
+        let windows = this._skypeApp.get_windows();
         for(let i in windows) {
             let title = windows[i].get_title();
             if(title.indexOf(" - ") === -1) {
@@ -589,12 +583,16 @@ const Skype = new Lang.Class({
     },
 
     _isSkypeChatWindowFocused: function() {
-        if(global.display.focus_window != null) {
-            let metaWindow = global.display.focus_window;
-            if(metaWindow.get_wm_class().indexOf("Skype") == 0) {
-                let title = metaWindow.get_title();
-                if(title.indexOf(" - ") !== -1 && title.indexOf(this._currentUserHandle) === -1) {
-                    return true;
+        let metaWindow = global.display.focus_window;
+        if(metaWindow != null) {
+            let title = metaWindow.get_title();
+            let windows = this._skypeApp.get_windows();
+
+            for(let i in windows) {
+                if(windows[i] == metaWindow) {
+                    if(title.indexOf(" - ") !== -1 && title.indexOf(this._currentUserHandle) === -1) {
+                        return true;
+                    }
                 }
             }
         }

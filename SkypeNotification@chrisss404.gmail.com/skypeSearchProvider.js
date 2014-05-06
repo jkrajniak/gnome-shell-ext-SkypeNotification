@@ -25,8 +25,6 @@ const GLib = imports.gi.GLib;
 const Shell = imports.gi.Shell;
 const St = imports.gi.St
 
-const Util = imports.misc.util;
-
 const IconGrid = imports.ui.iconGrid;
 const Main = imports.ui.main;
 const Search = imports.ui.search;
@@ -40,6 +38,7 @@ const SkypeSearchProvider = new Lang.Class({
         this.appInfo = Shell.AppSystem.get_default().lookup_app('skype.desktop').get_app_info();
 
         this._proxy = skype._proxy;
+        this._skypeApp = skype._skypeApp;
         this._focusSkypeMainWindow = Lang.bind(skype, skype._focusSkypeMainWindow);
         this._focusSkypeChatWindow = Lang.bind(skype, skype._focusSkypeChatWindow);
         this._contacts = [];
@@ -134,7 +133,7 @@ const SkypeSearchProvider = new Lang.Class({
     },
 
     launchSearch: function(terms) {
-        Util.spawn(["skype"]);
+        this._skypeApp.open_new_window(-1);
         GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, Lang.bind(this, this._focusSkypeMainWindow));
         Main.overview.hide();
     }

@@ -48,6 +48,7 @@ const SkypeMenuButton = new Lang.Class({
         this.actor.add_style_class_name("panel-status-button");
         
         this._proxy = skype._proxy;
+        this._skypeApp = skype._skypeApp;
         this._getRecentChats = Lang.bind(skype, skype._getRecentChats);
         this._focusSkypeMainWindow = Lang.bind(skype, skype._focusSkypeMainWindow);
         this._focusSkypeChatWindow = Lang.bind(skype, skype._focusSkypeChatWindow);
@@ -191,7 +192,7 @@ const SkypeMenuButton = new Lang.Class({
     },
 
     _openContactList: function() {
-        Util.spawn(["skype"]);
+        this._skypeApp.open_new_window(-1);
         GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, Lang.bind(this, this._focusSkypeMainWindow));
     },
 
@@ -224,6 +225,9 @@ const SkypeMenuButton = new Lang.Class({
     },
 
     _quit: function() {
-        Util.spawn(["killall", "skype"]);
+        let pids = this._skypeApp.get_pids();
+        for(let i in pids) {
+            Util.spawn(["kill", JSON.stringify(pids[i])]);
+        }
     }
 });
