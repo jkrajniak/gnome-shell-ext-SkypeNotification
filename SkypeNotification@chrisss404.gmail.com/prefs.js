@@ -27,6 +27,7 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 const _ = imports.gettext.domain(Me.uuid).gettext;
 
 const SETTINGS_SHOW_PANEL_BUTTON_KEY = "show-top-bar-icon";
+const SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY = "follow-system-wide-presence";
 const SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY = "open-contacts-on-top-bar-icon-left-click";
 
 
@@ -81,6 +82,31 @@ function buildPrefsWidget() {
 
     hbox.pack_start(showIconLabel, true, true, 0);
     hbox.add(showIconSwitch);
+
+    vbox.add(hbox);
+
+
+    let hbox = new Gtk.Box({
+        orientation: Gtk.Orientation.HORIZONTAL
+    });
+
+    let onLeftClickLabel = new Gtk.Label({
+        label: _("Follow system-wide presence state"),
+        xalign: 0
+    });
+
+    let onLeftClickSwitch = new Gtk.Switch({
+        active: settings.get_boolean(SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY)
+    });
+    onLeftClickSwitch.connect("notify::active", function(button) {
+        settings.set_boolean(SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY, button.active);
+    });
+
+    onLeftClickLabel.set_tooltip_text(_("Shall Skype online status follow the system-wide presence state"));
+    onLeftClickSwitch.set_tooltip_text(_("Shall Skype online status follow the system-wide presence state"));
+
+    hbox.pack_start(onLeftClickLabel, true, true, 0);
+    hbox.add(onLeftClickSwitch);
 
     vbox.add(hbox);
 

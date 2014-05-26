@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SkypeNotification@chrisss404.gmail.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-06 17:45+0200\n"
+"POT-Creation-Date: 2014-05-26 11:46+0200\n"
 "PO-Revision-Date: 2013-09-07 20:27+0100\n"
 "Last-Translator: Robert Jegliński <koluch@goldap.net.pl>\n"
 "Language-Team: Polish\n"
@@ -129,19 +129,27 @@ msgstr "{contact} ochodzi jutro urodziny"
 msgid "Happy Birthday {contact}"
 msgstr "{contact} obchodzi dzisiaj urodziny"
 
-#: ../prefs.js:68
+#: ../prefs.js:69
 msgid "Show top bar icon"
 msgstr "Pokaż ikonę w górnym pasku stanu"
 
-#: ../prefs.js:79 ../prefs.js:80
+#: ../prefs.js:80 ../prefs.js:81
 msgid "Shall the top bar icon be displayed"
 msgstr "Czy ikona w górnym pasku stanu ma być wyświetlana"
 
-#: ../prefs.js:93
+#: ../prefs.js:94
+msgid "Follow system-wide presence state"
+msgstr ""
+
+#: ../prefs.js:105 ../prefs.js:106
+msgid "Shall Skype online status follow the system-wide presence state"
+msgstr ""
+
+#: ../prefs.js:119
 msgid "Open contacts on left click on top bar icon"
 msgstr ""
 
-#: ../prefs.js:104 ../prefs.js:105
+#: ../prefs.js:130 ../prefs.js:131
 msgid ""
 "Shall the Skype contact list be opened when the top bar icon is clicked by "
 "the left mouse button"

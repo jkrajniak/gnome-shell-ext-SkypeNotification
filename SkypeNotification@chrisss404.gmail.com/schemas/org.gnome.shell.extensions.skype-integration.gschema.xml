@@ -7,6 +7,11 @@
             <summary>Show top bar icon</summary>
             <description>Shall the top bar icon be displayed</description>
         </key>
+        <key name="follow-system-wide-presence" type="b">
+            <default>false</default>
+            <summary>Follow system-wide presence state</summary>
+            <description>Shall Skype online status follow the system-wide presence state</description>
+        </key>
         <key name="open-contacts-on-top-bar-icon-left-click" type="b">
             <default>false</default>
             <summary>Open contacts on left click on top bar icon</summary>

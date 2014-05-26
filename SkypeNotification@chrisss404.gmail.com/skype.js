@@ -71,6 +71,7 @@ const SkypeIfaceExtension = '<node> \
 const SkypeProxy = Gio.DBusProxy.makeProxyWrapper(SkypeIface);
 
 const SETTINGS_SHOW_PANEL_BUTTON_KEY = "show-top-bar-icon";
+const SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY = "follow-system-wide-presence";
 const SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY = "open-contacts-on-top-bar-icon-left-click";
 
 
@@ -89,6 +90,7 @@ const Skype = new Lang.Class({
         this._skypeMenu = null;
         this._skypeMenuAlert = false;
         this._skypeMenuEnabled = true;
+        this._systemWidePresence = false;
         this._showContactsOnLeftClick = false;
         this._apiExtension = new SkypeAPIExtension(Lang.bind(this, this.NotifyCallback));
 
@@ -103,6 +105,7 @@ const Skype = new Lang.Class({
 
         this._settings = null;
         this._settingsButtonSignal = null;
+        this._settingsPresenceSignal = null;
         this._settingsClickSignal = null;
 
         this._userPresenceCallbacks = [];
@@ -122,11 +125,13 @@ const Skype = new Lang.Class({
 
         this._settings = new Gio.Settings({ settings_schema: schemaObj });
         this._skypeMenuEnabled = this._settings.get_boolean(SETTINGS_SHOW_PANEL_BUTTON_KEY);
+        this._systemWidePresence = this._settings.get_boolean(SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY);
         this._showContactsOnLeftClick = this._settings.get_boolean(SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY);
     },
 
     _onSettingsChanged: function() {
         this._skypeMenuEnabled = this._settings.get_boolean(SETTINGS_SHOW_PANEL_BUTTON_KEY);
+        this._systemWidePresence = this._settings.get_boolean(SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY);
         this._showContactsOnLeftClick = this._settings.get_boolean(SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY);
 
         if(this._skypeMenuEnabled && this._skypeMenu == null) {
@@ -218,6 +223,8 @@ const Skype = new Lang.Class({
         this._apiExtension.enable();
         this.settingsButtonSignal = this._settings.connect("changed::" + SETTINGS_SHOW_PANEL_BUTTON_KEY,
                 Lang.bind(this, this._onSettingsChanged));
+        this.settingsPresenceSignal = this._settings.connect("changed::" + SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY,
+                Lang.bind(this, this._onSettingsChanged));
         this._settingsClickSignal = this._settings.connect("changed::" + SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY,
                 Lang.bind(this, this._onSettingsChanged));
     },
@@ -239,6 +246,10 @@ const Skype = new Lang.Class({
             this._settings.disconnect(this.settingsButtonSignal);
             this.settingsButtonSignal = null;
         }
+        if(this.settingsPresenceSignal != null) {
+            this._settings.disconnect(this.settingsPresenceSignal);
+            this.settingsPresenceSignal = null;
+        }
         if(this._settingsClickSignal != null) {
             this._settings.disconnect(this._settingsClickSignal);
             this._settingsClickSignal = null;
@@ -246,22 +257,24 @@ const Skype = new Lang.Class({
     },
 
     updateSkypeStatus: function(presence) {
-        switch(presence) {
-            case Tp.ConnectionPresenceType.BUSY:
-                this._proxy.InvokeRemote("SET USERSTATUS DND");
-                break;
-            case Tp.ConnectionPresenceType.OFFLINE:
-                this._proxy.InvokeRemote("SET USERSTATUS OFFLINE");
-                break;
-            case Tp.ConnectionPresenceType.HIDDEN:
-                this._proxy.InvokeRemote("SET USERSTATUS INVISIBLE");
-                break;
-            case Tp.ConnectionPresenceType.AWAY:
-                this._proxy.InvokeRemote("SET USERSTATUS AWAY");
-                break;
-            case Tp.ConnectionPresenceType.AVAILABLE:
-            default:
-                this._proxy.InvokeRemote("SET USERSTATUS ONLINE");
+        if(this._systemWidePresence) {
+            switch(presence) {
+                case Tp.ConnectionPresenceType.BUSY:
+                    this._proxy.InvokeRemote("SET USERSTATUS DND");
+                    break;
+                case Tp.ConnectionPresenceType.OFFLINE:
+                    this._proxy.InvokeRemote("SET USERSTATUS OFFLINE");
+                    break;
+                case Tp.ConnectionPresenceType.HIDDEN:
+                    this._proxy.InvokeRemote("SET USERSTATUS INVISIBLE");
+                    break;
+                case Tp.ConnectionPresenceType.AWAY:
+                    this._proxy.InvokeRemote("SET USERSTATUS AWAY");
+                    break;
+                case Tp.ConnectionPresenceType.AVAILABLE:
+                default:
+                    this._proxy.InvokeRemote("SET USERSTATUS ONLINE");
+            }
         }
     },
 

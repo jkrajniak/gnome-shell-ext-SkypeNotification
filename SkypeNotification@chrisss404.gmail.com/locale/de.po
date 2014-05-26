@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SkypeNotification@chrisss404.gmail.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-06 17:45+0200\n"
+"POT-Creation-Date: 2014-05-26 11:46+0200\n"
 "PO-Revision-Date: 2013-07-07 18:30+0200\n"
 "Last-Translator: Christian Hofer <chrisss404@gmail.com>\n"
 "Language-Team: German\n"
@@ -133,20 +133,31 @@ msgstr "{contact} hat morgen Geburtstag"
 msgid "Happy Birthday {contact}"
 msgstr "Alles Gute zum Geburtstag {contact}"
 
-#: ../prefs.js:68
+#: ../prefs.js:69
 msgid "Show top bar icon"
 msgstr "Symbol in der oberen Leiste anzeigen"
 
-#: ../prefs.js:79 ../prefs.js:80
+#: ../prefs.js:80 ../prefs.js:81
 msgid "Shall the top bar icon be displayed"
 msgstr "Soll das Symbol in der oberen Leiste angezeigt werden"
 
-#: ../prefs.js:93
-msgid "Open contacts on left click on top bar icon"
-msgstr "Kontakliste bei Linksklick auf das Symbol in der oberen Leiste anzeigen"
+#: ../prefs.js:94
+msgid "Follow system-wide presence state"
+msgstr "Dem systemweiten Anwesenheitsstatus folgen"
 
-#: ../prefs.js:104 ../prefs.js:105
+#: ../prefs.js:105 ../prefs.js:106
+msgid "Shall Skype online status follow the system-wide presence state"
+msgstr "Soll der Skype Online-Status dem systemweiten Anwesenheitsstatus folgen"
+
+#: ../prefs.js:119
+msgid "Open contacts on left click on top bar icon"
+msgstr ""
+"Kontakliste bei Linksklick auf das Symbol in der oberen Leiste anzeigen"
+
+#: ../prefs.js:130 ../prefs.js:131
 msgid ""
 "Shall the Skype contact list be opened when the top bar icon is clicked by "
 "the left mouse button"
-msgstr "Soll die Skype Kontakliste geöffnet werden, wenn das Symbol in der oberen Leiste mit der linken Maustaste angeklickt wird"
+msgstr ""
+"Soll die Skype Kontakliste geöffnet werden, wenn das Symbol in der oberen "
+"Leiste mit der linken Maustaste angeklickt wird"
