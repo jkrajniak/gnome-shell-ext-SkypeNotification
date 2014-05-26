@@ -1,7 +1,7 @@
 /**
  * gnome-shell-extension-SkypeNotification
  * Skype GnomeShell Integration.
- *  
+ *
  * This file is part of gnome-shell-extension-SkypeNotification.
  *
  * gnome-shell-ext-SkypeNotification is free software: you can redistribute it and/or modify
@@ -111,7 +111,7 @@ const Skype = new Lang.Class({
 
     _initSettings: function() {
         const GioSSS = Gio.SettingsSchemaSource;
-        let schemaSource = GioSSS.new_from_directory(Me.path + "/schemas", 
+        let schemaSource = GioSSS.new_from_directory(Me.path + "/schemas",
                 GioSSS.get_default(), false);
 
         let schemaObj = schemaSource.lookup(Me.metadata["settings-schema"], true);
@@ -330,7 +330,7 @@ const Skype = new Lang.Class({
             return;
         }
 
-        let items = this._messages; 
+        let items = this._messages;
         items.reverse();
 
         let summary = "Skype";
@@ -357,7 +357,7 @@ const Skype = new Lang.Class({
 
         let params = { "gicon": Gio.icon_new_for_string(icon) };
         if(this._notificationSource.count == 0) {
-            this._activeNotification = new MessageTray.Notification(this._notificationSource, 
+            this._activeNotification = new MessageTray.Notification(this._notificationSource,
                     summary, body, params);
             this._activeNotification.setUrgency(MessageTray.Urgency.HIGH);
             this._activeNotification.connect("clicked", Lang.bind(this, this._onClicked));
@@ -413,7 +413,7 @@ const Skype = new Lang.Class({
         if(chats == "") {
             return [];
         }
-        
+
         let results = [];
         chats = chats.split(",");
         for(let index in chats) {
@@ -506,7 +506,7 @@ const Skype = new Lang.Class({
                 this._runUserPresenceCallbacks();
             }
         }
-        
+
         if(this._config != null) {
             this._pushMessage(this._config.getNotification(type, params));
         }
@@ -561,7 +561,7 @@ const Skype = new Lang.Class({
         } else if(message.indexOf("USERSTATUS ") !== -1) {
             this._currentPresence = message.split(" ")[1];
             this._runUserPresenceCallbacks();
-        } 
+        }
     },
 
     _focusSkypeMainWindow: function() {
