@@ -168,6 +168,10 @@ const Skype = new Lang.Class({
     },
 
     _onHeartBeat: function(answer) {
+        // SKYPEVERSION 171 ... Client: 4.3.0.37
+        // SKYPEVERSION 171 ... Client: 4.2.0.13
+        // SKYPEVERSION 171 ... Client: 4.2.0.11
+
         if(answer == null) {
             if(this._skypeMenu != null) {
                 this._skypeMenu.destroy();
@@ -204,16 +208,16 @@ const Skype = new Lang.Class({
     },
 
     enable: function() {
+        if(this._enabled) {
+            return;
+        }
+        this._enabled = true;
+
         this._skypeApp = Shell.AppSystem.get_default().lookup_app("skype.desktop");
         if(this._skypeApp == null) {
             throw new Error("Could not find Skype! Make sure that the Desktop entry file 'skype.desktop' is available.");
         }
 
-        if(this._enabled) {
-            return;
-        }
-
-        this._enabled = true;
         if(this._config != null) {
             this._config.toggle(this._enabled);
         }
@@ -510,6 +514,13 @@ const Skype = new Lang.Class({
     },
 
     NotifyCallback: function(type, params) {
+        // remove the contact name from the message (Skpye 4.3.0.37)
+        if(type == "ChatIncomingInitial" || type == "ChatIncoming") {
+            if(params['message'].indexOf(params['contact']) === 0) {
+                params['message'] = params['message'].substring(params['contact'].length + 2);
+            }
+        }
+
         if(type == "ChatIncomingInitial" || type == "ChatIncoming" || type == "CallMissed") {
             if(this._isSkypeChatWindowFocused()) {
                 return;

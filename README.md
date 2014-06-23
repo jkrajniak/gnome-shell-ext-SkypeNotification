@@ -1,6 +1,6 @@
 ## GNOME Shell Skype Integration
 
-This extension simplifies the life for Microsoft Skype users. It makes use of the [Skype API](https://github.com/chrisss404/gnome-shell-ext-SkypeNotification/raw/master/docs/Skype%20Developer%20-%20Skype%20Desktop%20API%20Reference%20Manual.pdf), which is unfortunately no longer supported, but still works with Skype version 4.2.0.11 and 4.2.0.13.
+This extension simplifies the life for Microsoft Skype users. It makes use of the [Skype API](https://github.com/chrisss404/gnome-shell-ext-SkypeNotification/raw/master/docs/Skype%20Developer%20-%20Skype%20Desktop%20API%20Reference%20Manual.pdf), which is unfortunately no longer supported, but still works with Skype version 4.2.0.11, 4.2.0.13, and 4.3.0.37.
 
 #### Integrated features:
 
@@ -15,11 +15,14 @@ This extension simplifies the life for Microsoft Skype users. It makes use of th
 
 ### Installation
 
-At the moment there are two possibilities:
+There are two possibilities:
 
 - Visit the [Skype Integration page](https://extensions.gnome.org/extension/696/skype-integration/) on extensions.gnome.org, click on the switch ("OFF" => "ON"), click on the install button.
 - Or, download the source ([3.6](https://github.com/chrisss404/gnome-shell-ext-SkypeNotification/archive/3.6.zip), [3.8, 3.10, 3.12](https://github.com/chrisss404/gnome-shell-ext-SkypeNotification/archive/master.zip)), copy the folder `SkypeNotification@chrisss404.gmail.com` from the downloaded archive to `~/.local/share/gnome-shell/extensions/`, restart GNOME Shell (`Alt`+`F2`, `r`, `Enter`) and enable the extension through *gnome-tweak-tool*.
 
+#### Enable notifications for Skype version 4.3.0.37:
+
+This version does not propagate setting changes, which are made to the config.xml file. In order to enable the proper settings it is necessary to go to `Options` > `Notifications` > `Contact Came Online` and press `Apply`.
 
 #### Dependencies:
     

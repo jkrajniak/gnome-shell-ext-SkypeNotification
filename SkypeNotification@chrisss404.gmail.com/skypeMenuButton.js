@@ -241,9 +241,6 @@ const SkypeMenuButton = new Lang.Class({
             attempts = 0;
         }
 
-        if(attempts == 0) {
-            this._skypeApp.open_new_window(-1);
-        }
         if(attempts < 20) {
             let pids = this._skypeApp.get_pids();
             for(let i in pids) {
@@ -251,6 +248,9 @@ const SkypeMenuButton = new Lang.Class({
             }
 
             if(pids.length == 0) {
+                if(attempts == 0) {
+                    this._skypeApp.open_new_window(-1);
+                }
                 GLib.timeout_add(GLib.PRIORITY_DEFAULT, 250, Lang.bind(this, this._quit, actor, event, attempts + 1));
             }
         }
