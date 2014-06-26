@@ -432,7 +432,7 @@ const Skype = new Lang.Class({
         }
 
         let results = [];
-        chats = chats.split(",");
+        chats = chats.split(", ");
         for(let index in chats) {
             let [topic] = this._proxy.InvokeSync("GET CHAT " + chats[index] + " TOPIC");
             topic = topic.split(" TOPIC ");
