@@ -1,6 +1,7 @@
 ## GNOME Shell Skype Integration
 
-This extension simplifies the life for Microsoft Skype users. It makes use of the [Skype API](https://github.com/chrisss404/gnome-shell-ext-SkypeNotification/raw/master/docs/Skype%20Developer%20-%20Skype%20Desktop%20API%20Reference%20Manual.pdf), which is unfortunately no longer supported, but still works with Skype version 4.2.0.11, 4.2.0.13, and 4.3.0.37.
+This extension simplifies the life for Microsoft Skype users. It makes use of the [Skype API](https://github.com/chrisss404/gnome-shell-ext-SkypeNotification/raw/master/docs/Skype%20Developer%20-%20Skype%20Desktop%20API%20Reference%20Manual.pdf), which is unfortunately no longer supported, but still works with Skype version ~~4.2.0.11, 4.2.0.13, and~~[¹](http://community.skype.com/t5/Linux/Having-trouble-signing-in-Retirement-of-older-versions-of-Skype/td-p/3439685) 4.3.0.37.
+
 
 #### Integrated features:
 
@@ -66,4 +67,7 @@ Inspired by
 Credits to
 
 - https://github.com/whhglyphs/webhostinghub-glyphs/ (thanks keynslug for telling me about this awesome icons)
+
+
+[[1] Retirement of older versions of Skype](http://community.skype.com/t5/Linux/Having-trouble-signing-in-Retirement-of-older-versions-of-Skype/td-p/3439685)
 

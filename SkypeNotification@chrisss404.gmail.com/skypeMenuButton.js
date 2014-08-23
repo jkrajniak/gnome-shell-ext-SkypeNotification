@@ -58,6 +58,7 @@ const SkypeMenuButton = new Lang.Class({
         this._focusSkypeAddFriendWindow = Lang.bind(skype, skype._focusSkypeAddFriendWindow);
         this._getCurrentPresence = Lang.bind(skype, skype._getCurrentPresence);
         this._isThereAnActiveCall = Lang.bind(skype, skype._isThereAnActiveCall);
+        this._quitSkype = Lang.bind(skype, skype._quit);
 
         this._recentChatsSection = new PopupMenu.PopupSubMenuMenuItem(_("Recent Chats"));
 
@@ -104,7 +105,7 @@ const SkypeMenuButton = new Lang.Class({
         this._muteSwitch.connect("toggled", Lang.bind(this, this._toggleMute));
 
         let quit = new PopupMenu.PopupMenuItem(_("Quit"));
-        quit.connect("activate", Lang.bind(this, this._quit, 0));
+        quit.connect("activate", Lang.bind(this, this._quitSkype, 0));
 
         this.menu.addMenuItem(this._recentChatsSection);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
@@ -234,25 +235,5 @@ const SkypeMenuButton = new Lang.Class({
     _toggleMute: function(actor) {
         this._setMute(actor.state ? "OFF" : "ON");
         GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, Lang.bind(this, this._updateMuteSwitch, this.menu));
-    },
-
-    _quit: function(actor, event, attempts) {
-        if(typeof attempts === "undefined") {
-            attempts = 0;
-        }
-
-        if(attempts < 20) {
-            let pids = this._skypeApp.get_pids();
-            for(let i in pids) {
-                Util.spawn(["kill", JSON.stringify(pids[i])]);
-            }
-
-            if(pids.length == 0) {
-                if(attempts == 0) {
-                    this._skypeApp.open_new_window(-1);
-                }
-                GLib.timeout_add(GLib.PRIORITY_DEFAULT, 250, Lang.bind(this, this._quit, actor, event, attempts + 1));
-            }
-        }
     }
 });

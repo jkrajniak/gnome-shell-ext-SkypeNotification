@@ -28,9 +28,11 @@ const Tp = imports.gi.TelepathyGLib;
 
 const Config = imports.misc.config;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
+const Util = imports.misc.util;
 
 const Main = imports.ui.main;
-const MessageTray = imports.ui.messageTray;
+const MessageTray = imports.ui.messageTray
+const Scripting = imports.ui.scripting;
 
 const SkypeConfig = Me.imports.skypeConfig.SkypeConfig;
 const SkypeMenuButton = Me.imports.skypeMenuButton.SkypeMenuButton;
@@ -80,6 +82,7 @@ const Skype = new Lang.Class({
 
     _init: function() {
         this._enabled = false;
+        this._active = false;
         this._authenticated = false;
         this._currentUserHandle = "";
         this._currentPresence = "ONLINE";
@@ -101,7 +104,6 @@ const Skype = new Lang.Class({
 
         this._proxy = new SkypeProxy(Gio.DBus.session, "com.Skype.API", "/com/Skype");
         this._dbusImpl = Gio.DBusExportedObject.wrapJSObject(SkypeIfaceClient, this);
-        this._dbusImpl.export(Gio.DBus.session, "/com/Skype/Client");
 
         this._settings = null;
         this._settingsButtonSignal = null;
@@ -171,8 +173,9 @@ const Skype = new Lang.Class({
         // SKYPEVERSION 171 ... Client: 4.3.0.37
         // SKYPEVERSION 171 ... Client: 4.2.0.13
         // SKYPEVERSION 171 ... Client: 4.2.0.11
-
+        
         if(answer == null) {
+            this._active = false;
             if(this._skypeMenu != null) {
                 this._skypeMenu.destroy();
                 this._skypeMenu = null;
@@ -181,6 +184,8 @@ const Skype = new Lang.Class({
             if(this._searchProvider != null) {
                 this._searchProvider.setContacts([]);
             }
+        } else {
+            this._active = true;
         }
         if(this._authenticated && answer == "ERROR 68") {
             this._authenticated = false;
@@ -197,9 +202,10 @@ const Skype = new Lang.Class({
                 this._skypeMenuAlert = false;
                 this._runUserPresenceCallbacks();
             }
-            if(answer != null) {
-                this._missedChats = answer[0];
-            }
+        }
+
+        if(answer != null) {
+            this._missedChats = answer[0];
         }
 
         if(this._enabled && this._skypeMenuEnabled) {
@@ -212,16 +218,19 @@ const Skype = new Lang.Class({
             return;
         }
         this._enabled = true;
+        this._dbusImpl.export(Gio.DBus.session, "/com/Skype/Client");
 
         this._skypeApp = Shell.AppSystem.get_default().lookup_app("skype.desktop");
         if(this._skypeApp == null) {
             throw new Error("Could not find Skype! Make sure that the Desktop entry file 'skype.desktop' is available.");
         }
+        this._initSettings();
 
         if(this._config != null) {
-            this._config.toggle(this._enabled);
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, Lang.bind(this, function() {
+                this._config.toggle(this._enabled);
+            }));
         }
-        this._initSettings();
         this._authenticate();
         this._heartBeat();
         this._apiExtension.enable();
@@ -235,6 +244,8 @@ const Skype = new Lang.Class({
 
     disable: function() {
         this._enabled = false;
+        this._dbusImpl.unexport();
+
         if(this._config != null) {
             this._config.toggle(this._enabled);
         }
@@ -394,15 +405,19 @@ const Skype = new Lang.Class({
 
     _getContacts: function() {
         let results = []
-        let [contacts] = this._proxy.InvokeSync("SEARCH FRIENDS");
+        try {
+            let [contacts] = this._proxy.InvokeSync("SEARCH FRIENDS");
 
-        if(contacts.indexOf("USERS ") !== -1) {
-            contacts = contacts.replace("USERS ", "").split(",");
-            for(let contact in contacts) {
-                let userName = this._getUserName(contacts[contact]);
-                let item = { "handle": contacts[contact], "name": userName };
-                results.push(item);
+            if(contacts.indexOf("USERS ") !== -1) {
+                contacts = contacts.replace("USERS ", "").split(",");
+                for(let contact in contacts) {
+                    let userName = this._getUserName(contacts[contact]);
+                    let item = { "handle": contacts[contact], "name": userName };
+                    results.push(item);
+                }
             }
+        } catch(e) {
+            global.log("skype._getContacts: " + e);
         }
         return results;
     },
@@ -410,59 +425,72 @@ const Skype = new Lang.Class({
     _getUserName: function(userHandle) {
         userHandle = userHandle.trim();
 
-        let [displayName] = this._proxy.InvokeSync("GET USER %s DISPLAYNAME".format(userHandle));
-        displayName = displayName.replace("USER %s DISPLAYNAME ".format(userHandle), "");
-        if(displayName != "") {
-            return displayName;
-        }
+        try {
+            let [displayName] = this._proxy.InvokeSync("GET USER %s DISPLAYNAME".format(userHandle));
+            displayName = displayName.replace("USER %s DISPLAYNAME ".format(userHandle), "");
+            if(displayName != "") {
+                return displayName;
+            }
 
-        let [userName] = this._proxy.InvokeSync("GET USER %s FULLNAME".format(userHandle));
-        userName = userName.replace("USER %s FULLNAME ".format(userHandle), "");
-        if(userName != "") {
-            return userName;
+            let [userName] = this._proxy.InvokeSync("GET USER %s FULLNAME".format(userHandle));
+            userName = userName.replace("USER %s FULLNAME ".format(userHandle), "");
+            if(userName != "") {
+                return userName;
+            }
+        } catch(e) {
+            global.log("skype._getUserName: " + e);
         }
         return userHandle;
     },
 
     _getRecentChats: function() {
-        let [chats] = this._proxy.InvokeSync("SEARCH RECENTCHATS");
-        chats = chats.replace("CHATS ", "")
-        if(chats == "") {
-            return [];
+        let chats = "";
+        try {
+            let [answer] = this._proxy.InvokeSync("SEARCH RECENTCHATS");
+            chats = answer.replace("CHATS ", "")
+            if(chats == "") {
+                return [];
+            }
+        } catch(e) {
+            global.log("skype._getRecentChats: " + e);
         }
 
         let results = [];
         chats = chats.split(", ");
-        for(let index in chats) {
-            let [topic] = this._proxy.InvokeSync("GET CHAT " + chats[index] + " TOPIC");
-            topic = topic.split(" TOPIC ");
+        try {
+            for(let index in chats) {
+                let [topic] = this._proxy.InvokeSync("GET CHAT " + chats[index] + " TOPIC");
+                topic = topic.split(" TOPIC ");
 
-            let record = { "chat": chats[index], "title": "" };
-            if(topic[1] == "") {
-                let [members] = this._proxy.InvokeSync("GET CHAT " + chats[index] + " MEMBERS");
-                members = members.split(" MEMBERS ");
-                members = members[1].split(" ");
+                let record = { "chat": chats[index], "title": "" };
+                if(topic[1] == "") {
+                    let [members] = this._proxy.InvokeSync("GET CHAT " + chats[index] + " MEMBERS");
+                    members = members.split(" MEMBERS ");
+                    members = members[1].split(" ");
 
-                let participants = [];
-                for(let item in members) {
-                    if(members[item] != this._currentUserHandle) {
-                        participants.push(this._getUserName(members[item]));
+                    let participants = [];
+                    for(let item in members) {
+                        if(members[item] != this._currentUserHandle) {
+                            participants.push(this._getUserName(members[item]));
+                        }
                     }
+                    record["title"] = participants.join(", ");
+                } else {
+                    record["title"] = topic[1];
                 }
-                record["title"] = participants.join(", ");
-            } else {
-                record["title"] = topic[1];
-            }
 
-            if(record["title"].length > 39) {
-                record["title"] = record["title"].substr(0, 39) + "...";
-            }
+                if(record["title"].length > 39) {
+                    record["title"] = record["title"].substr(0, 39) + "...";
+                }
 
-            if(this._missedChats.indexOf(chats[index]) !== -1) {
-                record["title"] = "* " + record["title"];
-            }
+                if(this._missedChats.indexOf(chats[index]) !== -1) {
+                    record["title"] = "* " + record["title"];
+                }
 
-            results.push(record);
+                results.push(record);
+            }
+        } catch(e) {
+            global.log("skype._getRecentChats: " + e);
         }
         return results;
     },
@@ -548,7 +576,7 @@ const Skype = new Lang.Class({
             if(this._currentUserHandle != userHandle) {
                 this._currentUserHandle = userHandle;
                 if(this._currentUserHandle != "") {
-                    this._config = new SkypeConfig(this._currentUserHandle);
+                    this._config = new SkypeConfig(this, this._currentUserHandle);
                     this._config.toggle(this._enabled);
                 } else {
                     global.log("userHandle is not set");
@@ -639,11 +667,39 @@ const Skype = new Lang.Class({
     },
 
     _isThereAnActiveCall: function() {
-        let [calls] = this._proxy.InvokeSync("SEARCH ACTIVECALLS");
-        if(calls != "CALLS ") {
-            return true;
+        try {
+            let [calls] = this._proxy.InvokeSync("SEARCH ACTIVECALLS");
+            if(calls != "CALLS ") {
+                return true;
+            }
+        } catch(e) {
+            global.log("skype._isThereAnActiveCall: " + e);
         }
         return false;
+    },
+    
+    _isSkypeRunning: function() {
+        return this._active;
+    },
+
+    _quit: function(actor, event, attempts) {
+        if(typeof attempts === "undefined") {
+            attempts = 0;
+        }
+
+        if(this._active && attempts < 20) {
+            let pids = this._skypeApp.get_pids();
+            for(let i in pids) {
+                Util.spawn(["kill", JSON.stringify(pids[i])]);
+            }
+
+            if(pids.length == 0) {
+                if(attempts == 0 && this._skypeApp.get_state() != Shell.AppState.RUNNING) {
+                    this._skypeApp.open_new_window(-1);
+                }
+                GLib.timeout_add(GLib.PRIORITY_DEFAULT, 250, Lang.bind(this, this._quit, actor, event, attempts + 1));
+            }
+        }
     }
 });
 
@@ -654,16 +710,17 @@ const SkypeAPIExtension = new Lang.Class({
     _init: function(callback) {
          this._notify = callback;
          this._dbusImpl = Gio.DBusExportedObject.wrapJSObject(SkypeIfaceExtension, this);
-         this._dbusImpl.export(Gio.DBus.session, "/com/Skype/Extension");
          this._dbusId = null;
     },
 
     enable: function() {
+         this._dbusImpl.export(Gio.DBus.session, "/com/Skype/Extension");
          this._dbusId = Gio.DBus.session.own_name('com.Skype.API.Extension',
                  Gio.BusNameOwnerFlags.ALLOW_REPLACEMENT, null, null);
     },
 
     disable: function() {
+         this._dbusImpl.unexport();
          Gio.DBus.session.unown_name(this._dbusId);
     },
 

@@ -34,8 +34,12 @@ const _ = imports.gettext.domain(Me.uuid).gettext;
 const SkypeConfig = new Lang.Class({
     Name: "SkypeConfig",
 
-    _init: function(currentUserHandle) {
+    _init: function(skype, currentUserHandle) {
+        this._skypeApp = skype._skypeApp;
+        this._isSkypeRunning = Lang.bind(skype, skype._isSkypeRunning);
+        this._quitSkype = Lang.bind(skype, skype._quit);
         this._file = GLib.get_home_dir() + "/.Skype/" + currentUserHandle + "/config.xml";
+        this._lastToggleState = undefined;
 
         let config = Gio.file_new_for_path(this._file);
         if(!config.query_exists(null)) {
@@ -175,6 +179,11 @@ const SkypeConfig = new Lang.Class({
     },
 
     toggle: function(toggle) {
+        if(this._lastToggleState == toggle) {
+            return;
+        }
+        this._lastToggleState = toggle;
+
         let xml = new SimpleXML();
         xml.parseFile(this._file);
 
@@ -193,6 +202,22 @@ const SkypeConfig = new Lang.Class({
         this._options["CallMissed"].enabled = true;
         this._options["ChatIncomingInitial"].enabled = true;
 
-        xml.write(this._file);
+        let isRunning = this._isSkypeRunning();
+        if(isRunning) {
+            this._quitSkype();
+        }
+        this._writeXML(xml, isRunning);
+    },
+    
+    _writeXML: function(xml, launchSkype) {
+        if(this._isSkypeRunning()) {
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 250, Lang.bind(this, this._writeXML, xml, launchSkype));
+        } else {
+            xml.write(this._file);
+            if(launchSkype) {
+                this._skypeApp.open_new_window(-1);
+            }
+            
+        }
     }
 });
