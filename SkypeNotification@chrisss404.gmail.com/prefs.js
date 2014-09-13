@@ -54,21 +54,15 @@ function buildPrefsWidget() {
         border_width: 10
     });
 
-    let vbox = new Gtk.Box({
-        orientation: Gtk.Orientation.VERTICAL,
-        margin: 20,
-        margin_top: 10
-    });
-
 
     let hbox = new Gtk.Box({
         orientation: Gtk.Orientation.HORIZONTAL
     });
 
     let showIconLabel = new Gtk.Label({
-        label: _("Show top bar icon"),
         xalign: 0
     });
+    showIconLabel.set_markup("<span size='medium'><b>" + _("Show top bar icon") + "</b></span>");
 
     let showIconSwitch = new Gtk.Switch({
         active: settings.get_boolean(SETTINGS_SHOW_PANEL_BUTTON_KEY)
@@ -80,10 +74,10 @@ function buildPrefsWidget() {
     showIconLabel.set_tooltip_text(_("Shall the top bar icon be displayed"));
     showIconSwitch.set_tooltip_text(_("Shall the top bar icon be displayed"));
 
-    hbox.pack_start(showIconLabel, true, true, 0);
-    hbox.add(showIconSwitch);
+    hbox.pack_start(showIconSwitch, false, false, 10);
+    hbox.add(showIconLabel);
 
-    vbox.add(hbox);
+    frame.pack_start(hbox, false, false, 10);
 
 
     let hbox = new Gtk.Box({
@@ -91,9 +85,9 @@ function buildPrefsWidget() {
     });
 
     let onLeftClickLabel = new Gtk.Label({
-        label: _("Follow system-wide presence state"),
         xalign: 0
     });
+    onLeftClickLabel.set_markup("<span size='medium'><b>" + _("Follow system-wide presence state") + "</b></span>");
 
     let onLeftClickSwitch = new Gtk.Switch({
         active: settings.get_boolean(SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY)
@@ -105,10 +99,10 @@ function buildPrefsWidget() {
     onLeftClickLabel.set_tooltip_text(_("Shall Skype online status follow the system-wide presence state"));
     onLeftClickSwitch.set_tooltip_text(_("Shall Skype online status follow the system-wide presence state"));
 
-    hbox.pack_start(onLeftClickLabel, true, true, 0);
-    hbox.add(onLeftClickSwitch);
+    hbox.pack_start(onLeftClickSwitch, false, false, 10);
+    hbox.add(onLeftClickLabel);
 
-    vbox.add(hbox);
+    frame.pack_start(hbox, false, false, 10);
 
 
     let hbox = new Gtk.Box({
@@ -116,9 +110,9 @@ function buildPrefsWidget() {
     });
 
     let onLeftClickLabel = new Gtk.Label({
-        label: _("Open contacts on left click on top bar icon"),
         xalign: 0
     });
+    onLeftClickLabel.set_markup("<span size='medium'><b>" + _("Open contacts on left click on top bar icon") + "</b></span>");
 
     let onLeftClickSwitch = new Gtk.Switch({
         active: settings.get_boolean(SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY)
@@ -130,13 +124,12 @@ function buildPrefsWidget() {
     onLeftClickLabel.set_tooltip_text(_("Shall the Skype contact list be opened when the top bar icon is clicked by the left mouse button"));
     onLeftClickSwitch.set_tooltip_text(_("Shall the Skype contact list be opened when the top bar icon is clicked by the left mouse button"));
 
-    hbox.pack_start(onLeftClickLabel, true, true, 0);
-    hbox.add(onLeftClickSwitch);
+    hbox.pack_start(onLeftClickSwitch, false, false, 10);
+    hbox.add(onLeftClickLabel);
 
-    vbox.add(hbox);
+    frame.pack_start(hbox, false, false, 10);
 
 
-    frame.add(vbox);
     frame.show_all();
     return frame;
 }

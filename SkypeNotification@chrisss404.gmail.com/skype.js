@@ -173,7 +173,7 @@ const Skype = new Lang.Class({
         // SKYPEVERSION 171 ... Client: 4.3.0.37
         // SKYPEVERSION 171 ... Client: 4.2.0.13
         // SKYPEVERSION 171 ... Client: 4.2.0.11
-        
+
         if(answer == null) {
             this._active = false;
             if(this._skypeMenu != null) {
