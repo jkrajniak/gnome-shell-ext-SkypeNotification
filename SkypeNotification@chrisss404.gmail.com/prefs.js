@@ -27,6 +27,7 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 const _ = imports.gettext.domain(Me.uuid).gettext;
 
 const SETTINGS_SHOW_PANEL_BUTTON_KEY = "show-top-bar-icon";
+const SETTINGS_NATIVE_NOTIFICATIONS_KEY = "native-notifications";
 const SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY = "follow-system-wide-presence";
 const SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY = "open-contacts-on-top-bar-icon-left-click";
 
@@ -76,6 +77,31 @@ function buildPrefsWidget() {
 
     hbox.pack_start(showIconSwitch, false, false, 10);
     hbox.add(showIconLabel);
+
+    frame.pack_start(hbox, false, false, 10);
+
+
+    let hbox = new Gtk.Box({
+        orientation: Gtk.Orientation.HORIZONTAL
+    });
+
+    let onLeftClickLabel = new Gtk.Label({
+        xalign: 0
+    });
+    onLeftClickLabel.set_markup("<span size='medium'><b>" + _("Native notifications") + "</b></span>");
+
+    let onLeftClickSwitch = new Gtk.Switch({
+        active: settings.get_boolean(SETTINGS_NATIVE_NOTIFICATIONS_KEY)
+    });
+    onLeftClickSwitch.connect("notify::active", function(button) {
+        settings.set_boolean(SETTINGS_NATIVE_NOTIFICATIONS_KEY, button.active);
+    });
+
+    onLeftClickLabel.set_tooltip_text(_("Shall Skype make use of native notifications"));
+    onLeftClickSwitch.set_tooltip_text(_("Shall Skype make use of native notifications"));
+
+    hbox.pack_start(onLeftClickSwitch, false, false, 10);
+    hbox.add(onLeftClickLabel);
 
     frame.pack_start(hbox, false, false, 10);
 

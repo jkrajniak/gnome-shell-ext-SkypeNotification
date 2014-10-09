@@ -214,10 +214,13 @@ const SkypeConfig = new Lang.Class({
             GLib.timeout_add(GLib.PRIORITY_DEFAULT, 250, Lang.bind(this, this._writeXML, xml, launchSkype));
         } else {
             xml.write(this._file);
-            if(launchSkype) {
-                this._skypeApp.open_new_window(-1);
-            }
-            
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 5000, Lang.bind(this, this._launchSkype, launchSkype));
+        }
+    },
+    
+    _launchSkype: function(launchSkype) {
+        if(launchSkype) {
+            this._skypeApp.open_new_window(-1);
         }
     }
 });

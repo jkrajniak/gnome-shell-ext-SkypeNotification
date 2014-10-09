@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SkypeNotification@chrisss404.gmail.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-26 11:46+0200\n"
+"POT-Creation-Date: 2014-10-09 14:31+0200\n"
 "PO-Revision-Date: 2013-10-28 12:42+0200\n"
 "Last-Translator: Gipawu <gipawu@gmail.com>\n"
 "Language-Team: Italian\n"
@@ -17,143 +17,151 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../skypeMenuButton.js:62
+#: ../skypeMenuButton.js:63
 msgid "Recent Chats"
 msgstr "Chat Recenti"
 
-#: ../skypeMenuButton.js:64
+#: ../skypeMenuButton.js:65
 msgid "Change Status"
 msgstr "Cambia Stato"
 
-#: ../skypeMenuButton.js:67
+#: ../skypeMenuButton.js:68
 msgid "Online"
 msgstr "Online"
 
-#: ../skypeMenuButton.js:71
+#: ../skypeMenuButton.js:72
 msgid "Away"
 msgstr "Assente"
 
-#: ../skypeMenuButton.js:75
+#: ../skypeMenuButton.js:76
 msgid "Do Not Disturb"
 msgstr "Non Disturbare"
 
-#: ../skypeMenuButton.js:79
+#: ../skypeMenuButton.js:80
 msgid "Invisible"
 msgstr "Invisibile"
 
-#: ../skypeMenuButton.js:83
+#: ../skypeMenuButton.js:84
 msgid "Offline"
 msgstr "Offline"
 
-#: ../skypeMenuButton.js:97
+#: ../skypeMenuButton.js:98
 msgid "Show Contact List"
 msgstr "Mostra Contatti"
 
-#: ../skypeMenuButton.js:100
+#: ../skypeMenuButton.js:101
 msgid "Add a Contact"
 msgstr "Aggiungi un Contatto"
 
-#: ../skypeMenuButton.js:103
+#: ../skypeMenuButton.js:104
 msgid "Microphone"
 msgstr "Microfono"
 
-#: ../skypeMenuButton.js:106
+#: ../skypeMenuButton.js:107
 msgid "Quit"
 msgstr "Esci"
 
-#: ../skypeConfig.js:48
+#: ../skypeConfig.js:52
 msgid "Call Missed"
 msgstr "Chiamata persa"
 
-#: ../skypeConfig.js:51
+#: ../skypeConfig.js:55
 msgid "Voicemail Received"
 msgstr "Messaggio vocale ricevuto"
 
-#: ../skypeConfig.js:54
+#: ../skypeConfig.js:58
 msgid "Voicemail Sent"
 msgstr "Messaggio vocale inviato"
 
-#: ../skypeConfig.js:57
+#: ../skypeConfig.js:61
 msgid "{contact} has appeared online"
 msgstr "{contact} è online"
 
-#: ../skypeConfig.js:60
+#: ../skypeConfig.js:64
 msgid "{contact} has gone offline"
 msgstr "{contact} è offline"
 
-#: ../skypeConfig.js:63
+#: ../skypeConfig.js:67
 msgid "Contact request from {contact}"
 msgstr "Richiesta di contatto da {contact}"
 
-#: ../skypeConfig.js:66
+#: ../skypeConfig.js:70
 msgid "{contact} has been added to your contact list"
 msgstr "{contact} è stato aggiunto ai tuoi contatti"
 
-#: ../skypeConfig.js:69
+#: ../skypeConfig.js:73
 msgid "{contact} has been deleted from your contact list"
 msgstr "{contact} è stato cancellato dai tuoi contatti"
 
-#: ../skypeConfig.js:81
+#: ../skypeConfig.js:85
 msgid "{contact} joined chat"
 msgstr "{contact} si è unito alla conversazione"
 
-#: ../skypeConfig.js:84
+#: ../skypeConfig.js:88
 msgid "{contact} left chat"
 msgstr "{contact} ha abbandonato la conversazione"
 
-#: ../skypeConfig.js:87
+#: ../skypeConfig.js:91
 msgid "Incoming file from {contact}"
 msgstr "File in arrivo da {contact}"
 
-#: ../skypeConfig.js:90
+#: ../skypeConfig.js:94
 msgid "Transfer Complete"
 msgstr "Trasferimento completato"
 
-#: ../skypeConfig.js:90
+#: ../skypeConfig.js:94
 msgid "{filename} saved to {filepath}"
 msgstr "{filename} salvato in {filepath}"
 
-#: ../skypeConfig.js:93
+#: ../skypeConfig.js:97
 msgid "Transfer Failed"
 msgstr "Trasferimento fallito"
 
-#: ../skypeConfig.js:96
+#: ../skypeConfig.js:100
 msgid "SMS Sent"
 msgstr "SMS inviato"
 
-#: ../skypeConfig.js:99
+#: ../skypeConfig.js:103
 msgid "SMS Failed"
 msgstr "Invio SMS non riuscito"
 
-#: ../skypeConfig.js:102
+#: ../skypeConfig.js:106
 msgid "{contact} has a birthday tomorrow"
 msgstr "{contact} festeggia il compleanno domani"
 
-#: ../skypeConfig.js:105
+#: ../skypeConfig.js:109
 msgid "Happy Birthday {contact}"
 msgstr "Buon compleanno {contact}"
 
-#: ../prefs.js:69
+#: ../prefs.js:66
 msgid "Show top bar icon"
 msgstr "Mostra icona nel pannello superiore"
 
-#: ../prefs.js:80 ../prefs.js:81
+#: ../prefs.js:75 ../prefs.js:76
 msgid "Shall the top bar icon be displayed"
 msgstr "L'icona deve essere mostrata nel pannello superiore?"
 
-#: ../prefs.js:94
+#: ../prefs.js:91
+msgid "Native notifications"
+msgstr ""
+
+#: ../prefs.js:100 ../prefs.js:101
+msgid "Shall Skype make use of native notifications"
+msgstr ""
+
+#: ../prefs.js:116
 msgid "Follow system-wide presence state"
 msgstr ""
 
-#: ../prefs.js:105 ../prefs.js:106
+#: ../prefs.js:125 ../prefs.js:126
 msgid "Shall Skype online status follow the system-wide presence state"
 msgstr ""
 
-#: ../prefs.js:119
+#: ../prefs.js:141
 msgid "Open contacts on left click on top bar icon"
 msgstr ""
 
-#: ../prefs.js:130 ../prefs.js:131
+#: ../prefs.js:150 ../prefs.js:151
 msgid ""
 "Shall the Skype contact list be opened when the top bar icon is clicked by "
 "the left mouse button"

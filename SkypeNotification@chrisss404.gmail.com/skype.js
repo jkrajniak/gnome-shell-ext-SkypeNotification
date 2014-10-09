@@ -31,7 +31,7 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Util = imports.misc.util;
 
 const Main = imports.ui.main;
-const MessageTray = imports.ui.messageTray
+const MessageTray = imports.ui.messageTray;
 const Scripting = imports.ui.scripting;
 
 const SkypeConfig = Me.imports.skypeConfig.SkypeConfig;
@@ -73,8 +73,10 @@ const SkypeIfaceExtension = '<node> \
 const SkypeProxy = Gio.DBusProxy.makeProxyWrapper(SkypeIface);
 
 const SETTINGS_SHOW_PANEL_BUTTON_KEY = "show-top-bar-icon";
+const SETTINGS_NATIVE_NOTIFICATIONS_KEY = "native-notifications";
 const SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY = "follow-system-wide-presence";
 const SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY = "open-contacts-on-top-bar-icon-left-click";
+const SETTINGS_IS_FIRST_RUN_KEY = "is-first-run";
 
 
 const Skype = new Lang.Class({
@@ -93,6 +95,7 @@ const Skype = new Lang.Class({
         this._skypeMenu = null;
         this._skypeMenuAlert = false;
         this._skypeMenuEnabled = true;
+        this._skypeNativeNotifications = true;
         this._systemWidePresence = false;
         this._showContactsOnLeftClick = false;
         this._apiExtension = new SkypeAPIExtension(Lang.bind(this, this.NotifyCallback));
@@ -106,9 +109,7 @@ const Skype = new Lang.Class({
         this._dbusImpl = Gio.DBusExportedObject.wrapJSObject(SkypeIfaceClient, this);
 
         this._settings = null;
-        this._settingsButtonSignal = null;
-        this._settingsPresenceSignal = null;
-        this._settingsClickSignal = null;
+        this._settingsChangedSignal = null;
 
         this._userPresenceCallbacks = [];
         this._addUserPresenceCallback(Lang.bind(this, this._setUserPresenceMenuIcon));
@@ -127,6 +128,7 @@ const Skype = new Lang.Class({
 
         this._settings = new Gio.Settings({ settings_schema: schemaObj });
         this._skypeMenuEnabled = this._settings.get_boolean(SETTINGS_SHOW_PANEL_BUTTON_KEY);
+        this._skypeNativeNotifications = this._settings.get_boolean(SETTINGS_NATIVE_NOTIFICATIONS_KEY);
         this._systemWidePresence = this._settings.get_boolean(SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY);
         this._showContactsOnLeftClick = this._settings.get_boolean(SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY);
     },
@@ -135,6 +137,17 @@ const Skype = new Lang.Class({
         this._skypeMenuEnabled = this._settings.get_boolean(SETTINGS_SHOW_PANEL_BUTTON_KEY);
         this._systemWidePresence = this._settings.get_boolean(SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY);
         this._showContactsOnLeftClick = this._settings.get_boolean(SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY);
+
+        let skypeNativeNotifications = this._settings.get_boolean(SETTINGS_NATIVE_NOTIFICATIONS_KEY);
+        if(skypeNativeNotifications != this._skypeNativeNotifications) {
+            if(this._config != null) {
+                this._skypeNativeNotifications = skypeNativeNotifications;
+                this._config.toggle(skypeNativeNotifications);
+            } else {
+                this._settings.set_boolean(SETTINGS_NATIVE_NOTIFICATIONS_KEY,
+                                            this._skypeNativeNotifications);
+            }
+        }
 
         if(this._skypeMenuEnabled && this._skypeMenu == null) {
             this._skypeMenu = new SkypeMenuButton(this);
@@ -226,19 +239,10 @@ const Skype = new Lang.Class({
         }
         this._initSettings();
 
-        if(this._config != null) {
-            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, Lang.bind(this, function() {
-                this._config.toggle(this._enabled);
-            }));
-        }
         this._authenticate();
         this._heartBeat();
         this._apiExtension.enable();
-        this.settingsButtonSignal = this._settings.connect("changed::" + SETTINGS_SHOW_PANEL_BUTTON_KEY,
-                Lang.bind(this, this._onSettingsChanged));
-        this.settingsPresenceSignal = this._settings.connect("changed::" + SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY,
-                Lang.bind(this, this._onSettingsChanged));
-        this._settingsClickSignal = this._settings.connect("changed::" + SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY,
+        this._settingsChangedSignal = this._settings.connect("changed",
                 Lang.bind(this, this._onSettingsChanged));
     },
 
@@ -246,9 +250,6 @@ const Skype = new Lang.Class({
         this._enabled = false;
         this._dbusImpl.unexport();
 
-        if(this._config != null) {
-            this._config.toggle(this._enabled);
-        }
         if(this._skypeMenu != null) {
             this._skypeMenu.destroy();
             this._skypeMenu = null;
@@ -257,17 +258,9 @@ const Skype = new Lang.Class({
             this._searchProvider.setContacts([]);
         }
         this._apiExtension.disable();
-        if(this.settingsButtonSignal != null) {
-            this._settings.disconnect(this.settingsButtonSignal);
-            this.settingsButtonSignal = null;
-        }
-        if(this.settingsPresenceSignal != null) {
-            this._settings.disconnect(this.settingsPresenceSignal);
-            this.settingsPresenceSignal = null;
-        }
-        if(this._settingsClickSignal != null) {
-            this._settings.disconnect(this._settingsClickSignal);
-            this._settingsClickSignal = null;
+        if(this._settingsChangedSignal != null) {
+            this._settings.disconnect(this._settingsChangedSignal);
+            this._settingsChangedSignal = null;
         }
     },
 
@@ -577,7 +570,15 @@ const Skype = new Lang.Class({
                 this._currentUserHandle = userHandle;
                 if(this._currentUserHandle != "") {
                     this._config = new SkypeConfig(this, this._currentUserHandle);
-                    this._config.toggle(this._enabled);
+                    
+                    if(this._settings != null && this._settings.get_boolean(SETTINGS_IS_FIRST_RUN_KEY)) {
+                        this._skypeNativeNotifications = true;
+                        this._config.toggle(this._skypeNativeNotifications);
+
+                        this._settings.set_boolean(SETTINGS_NATIVE_NOTIFICATIONS_KEY,
+                                                    this._skypeNativeNotifications);
+                        this._settings.set_boolean(SETTINGS_IS_FIRST_RUN_KEY, false);
+                    }
                 } else {
                     global.log("userHandle is not set");
                     global.log(message);

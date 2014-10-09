@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-26 11:46+0200\n"
+"POT-Creation-Date: 2014-10-09 14:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,143 +17,151 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../skypeMenuButton.js:62
+#: ../skypeMenuButton.js:63
 msgid "Recent Chats"
 msgstr ""
 
-#: ../skypeMenuButton.js:64
+#: ../skypeMenuButton.js:65
 msgid "Change Status"
 msgstr ""
 
-#: ../skypeMenuButton.js:67
+#: ../skypeMenuButton.js:68
 msgid "Online"
 msgstr ""
 
-#: ../skypeMenuButton.js:71
+#: ../skypeMenuButton.js:72
 msgid "Away"
 msgstr ""
 
-#: ../skypeMenuButton.js:75
+#: ../skypeMenuButton.js:76
 msgid "Do Not Disturb"
 msgstr ""
 
-#: ../skypeMenuButton.js:79
+#: ../skypeMenuButton.js:80
 msgid "Invisible"
 msgstr ""
 
-#: ../skypeMenuButton.js:83
+#: ../skypeMenuButton.js:84
 msgid "Offline"
 msgstr ""
 
-#: ../skypeMenuButton.js:97
+#: ../skypeMenuButton.js:98
 msgid "Show Contact List"
 msgstr ""
 
-#: ../skypeMenuButton.js:100
+#: ../skypeMenuButton.js:101
 msgid "Add a Contact"
 msgstr ""
 
-#: ../skypeMenuButton.js:103
+#: ../skypeMenuButton.js:104
 msgid "Microphone"
 msgstr ""
 
-#: ../skypeMenuButton.js:106
+#: ../skypeMenuButton.js:107
 msgid "Quit"
 msgstr ""
 
-#: ../skypeConfig.js:48
+#: ../skypeConfig.js:52
 msgid "Call Missed"
 msgstr ""
 
-#: ../skypeConfig.js:51
+#: ../skypeConfig.js:55
 msgid "Voicemail Received"
 msgstr ""
 
-#: ../skypeConfig.js:54
+#: ../skypeConfig.js:58
 msgid "Voicemail Sent"
 msgstr ""
 
-#: ../skypeConfig.js:57
+#: ../skypeConfig.js:61
 msgid "{contact} has appeared online"
 msgstr ""
 
-#: ../skypeConfig.js:60
+#: ../skypeConfig.js:64
 msgid "{contact} has gone offline"
 msgstr ""
 
-#: ../skypeConfig.js:63
+#: ../skypeConfig.js:67
 msgid "Contact request from {contact}"
 msgstr ""
 
-#: ../skypeConfig.js:66
+#: ../skypeConfig.js:70
 msgid "{contact} has been added to your contact list"
 msgstr ""
 
-#: ../skypeConfig.js:69
+#: ../skypeConfig.js:73
 msgid "{contact} has been deleted from your contact list"
 msgstr ""
 
-#: ../skypeConfig.js:81
+#: ../skypeConfig.js:85
 msgid "{contact} joined chat"
 msgstr ""
 
-#: ../skypeConfig.js:84
+#: ../skypeConfig.js:88
 msgid "{contact} left chat"
 msgstr ""
 
-#: ../skypeConfig.js:87
+#: ../skypeConfig.js:91
 msgid "Incoming file from {contact}"
 msgstr ""
 
-#: ../skypeConfig.js:90
+#: ../skypeConfig.js:94
 msgid "Transfer Complete"
 msgstr ""
 
-#: ../skypeConfig.js:90
+#: ../skypeConfig.js:94
 msgid "{filename} saved to {filepath}"
 msgstr ""
 
-#: ../skypeConfig.js:93
+#: ../skypeConfig.js:97
 msgid "Transfer Failed"
 msgstr ""
 
-#: ../skypeConfig.js:96
+#: ../skypeConfig.js:100
 msgid "SMS Sent"
 msgstr ""
 
-#: ../skypeConfig.js:99
+#: ../skypeConfig.js:103
 msgid "SMS Failed"
 msgstr ""
 
-#: ../skypeConfig.js:102
+#: ../skypeConfig.js:106
 msgid "{contact} has a birthday tomorrow"
 msgstr ""
 
-#: ../skypeConfig.js:105
+#: ../skypeConfig.js:109
 msgid "Happy Birthday {contact}"
 msgstr ""
 
-#: ../prefs.js:69
+#: ../prefs.js:66
 msgid "Show top bar icon"
 msgstr ""
 
-#: ../prefs.js:80 ../prefs.js:81
+#: ../prefs.js:75 ../prefs.js:76
 msgid "Shall the top bar icon be displayed"
 msgstr ""
 
-#: ../prefs.js:94
+#: ../prefs.js:91
+msgid "Native notifications"
+msgstr ""
+
+#: ../prefs.js:100 ../prefs.js:101
+msgid "Shall Skype make use of native notifications"
+msgstr ""
+
+#: ../prefs.js:116
 msgid "Follow system-wide presence state"
 msgstr ""
 
-#: ../prefs.js:105 ../prefs.js:106
+#: ../prefs.js:125 ../prefs.js:126
 msgid "Shall Skype online status follow the system-wide presence state"
 msgstr ""
 
-#: ../prefs.js:119
+#: ../prefs.js:141
 msgid "Open contacts on left click on top bar icon"
 msgstr ""
 
-#: ../prefs.js:130 ../prefs.js:131
+#: ../prefs.js:150 ../prefs.js:151
 msgid ""
 "Shall the Skype contact list be opened when the top bar icon is clicked by "
 "the left mouse button"

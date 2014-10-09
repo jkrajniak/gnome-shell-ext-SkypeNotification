@@ -7,6 +7,11 @@
             <summary>Show top bar icon</summary>
             <description>Shall the top bar icon be displayed</description>
         </key>
+        <key name="native-notifications" type="b">
+            <default>true</default>
+            <summary>Native notifications</summary>
+            <description>Shall Skype make use of native notifications</description>
+        </key>
         <key name="follow-system-wide-presence" type="b">
             <default>false</default>
             <summary>Follow system-wide presence state</summary>
@@ -16,6 +21,9 @@
             <default>false</default>
             <summary>Open contacts on left click on top bar icon</summary>
             <description>Shall the Skype contact list be opened when the top bar icon is clicked by the left mouse button</description>
+        </key>
+        <key name="is-first-run" type="b">
+            <default>true</default>
         </key>
     </schema>
 </schemalist>
