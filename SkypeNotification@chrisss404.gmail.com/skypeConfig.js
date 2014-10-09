@@ -183,7 +183,16 @@ const SkypeConfig = new Lang.Class({
             return;
         }
         this._lastToggleState = toggle;
+        let xml = this.detectOptions(toggle);
 
+        let isRunning = this._isSkypeRunning();
+        if(isRunning) {
+            this._quitSkype();
+        }
+        this._writeXML(xml, isRunning);
+    },
+
+    detectOptions: function(state) {
         let xml = new SimpleXML();
         xml.parseFile(this._file);
 
@@ -195,18 +204,14 @@ const SkypeConfig = new Lang.Class({
         let notificationsEnableScripts = this._get(xml, notificationsEnable, "Scripts", "");
         let notificationsScripts = this._get(xml, notifications, "Scripts", "");
 
-        let params = [xml, toggle, notify, notificationsEnableScripts, notificationsScripts];
+        let params = [xml, state, notify, notificationsEnableScripts, notificationsScripts];
         for(let key in this._options) {
             this._options[key].enabled = this._set(params.concat(this._options[key].config));
         }
-        this._options["CallMissed"].enabled = true;
-        this._options["ChatIncomingInitial"].enabled = true;
-
-        let isRunning = this._isSkypeRunning();
-        if(isRunning) {
-            this._quitSkype();
-        }
-        this._writeXML(xml, isRunning);
+        this._options["CallMissed"].enabled = state;
+        this._options["ChatIncomingInitial"].enabled = state;
+        
+        return xml;
     },
     
     _writeXML: function(xml, launchSkype) {

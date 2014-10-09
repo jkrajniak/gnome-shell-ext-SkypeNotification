@@ -239,6 +239,11 @@ const Skype = new Lang.Class({
         }
         this._initSettings();
 
+        if(this._config != null) {
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, Lang.bind(this, function() {
+                this._config.detectOptions(this._skypeNativeNotifications);
+            }));
+        }
         this._authenticate();
         this._heartBeat();
         this._apiExtension.enable();
@@ -249,7 +254,10 @@ const Skype = new Lang.Class({
     disable: function() {
         this._enabled = false;
         this._dbusImpl.unexport();
-
+        
+        if(this._config != null) {
+            this._config.detectOptions(this._skypeNativeNotifications);
+        }
         if(this._skypeMenu != null) {
             this._skypeMenu.destroy();
             this._skypeMenu = null;
@@ -578,6 +586,8 @@ const Skype = new Lang.Class({
                         this._settings.set_boolean(SETTINGS_NATIVE_NOTIFICATIONS_KEY,
                                                     this._skypeNativeNotifications);
                         this._settings.set_boolean(SETTINGS_IS_FIRST_RUN_KEY, false);
+                    } else {
+                        this._config.detectOptions(this._skypeNativeNotifications);
                     }
                 } else {
                     global.log("userHandle is not set");
