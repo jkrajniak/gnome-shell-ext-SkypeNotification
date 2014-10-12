@@ -254,7 +254,7 @@ const Skype = new Lang.Class({
     disable: function() {
         this._enabled = false;
         this._dbusImpl.unexport();
-        
+
         if(this._config != null) {
             this._config.detectOptions(this._skypeNativeNotifications);
         }
@@ -604,12 +604,17 @@ const Skype = new Lang.Class({
             if(this._searchProvider == null) {
                 this._searchProvider = new SkypeSearchProvider("SKYPE", this);
                 if(typeof Main.overview.viewSelector === "object" &&
-                   typeof Main.overview.viewSelector._searchResults === "object" &&
-                   typeof Main.overview.viewSelector._searchResults._searchSystem === "object" &&
-                   typeof Main.overview.viewSelector._searchResults._searchSystem.addProvider === "function") {
-                    Main.overview.viewSelector._searchResults._searchSystem.addProvider(this._searchProvider);
-                } else if(typeof Main.overview.addSearchProvider === "function") {
-                    Main.overview.addSearchProvider(this._searchProvider);
+                   typeof Main.overview.viewSelector._searchResults === "object") {
+
+                    if(typeof Main.overview.viewSelector._searchResults._registerProvider === "function") { //3.14
+                        Main.overview.viewSelector._searchResults._registerProvider(this._searchProvider);
+                    } else if(typeof Main.overview.addSearchProvider === "function") { //3.12
+                        Main.overview.addSearchProvider(this._searchProvider);
+                    } else if(typeof Main.overview.viewSelector._searchResults._searchSystem === "object" &&
+                            typeof Main.overview.viewSelector._searchResults._searchSystem.addProvider === "function") { //older
+                        Main.overview.viewSelector._searchResults._searchSystem.addProvider(this._searchProvider);
+                    }
+
                 }
             }
             this._searchProvider.setContacts(this._getContacts());
