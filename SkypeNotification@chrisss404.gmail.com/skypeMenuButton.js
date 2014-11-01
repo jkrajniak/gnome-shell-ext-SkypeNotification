@@ -41,13 +41,13 @@ const SkypeMenuButton = new Lang.Class({
     _init: function(skype) {
         this.parent(0.0, "skype");
         this._isShowContactsOnLeftClickActive = Lang.bind(skype, skype._isShowContactsOnLeftClickActive);
-        this._icon = new St.Icon({style_class: "system-status-icon skypeIconColor"});
+        this._icon = new St.Icon({style_class: "system-status-icon" });
 
         let hbox = new St.BoxLayout({ style_class: "panel-status-menu-box" });
         hbox.add_child(this._icon);
 
         this.actor.add_child(hbox);
-        this.actor.add_style_class_name("panel-status-button");
+        this.actor.add_style_class_name("panel-status-button skypeIconColor");
         this.actor.connect('button-press-event', Lang.bind(this, this._onButtonPressEvent));
 
         this._proxy = skype._proxy;
