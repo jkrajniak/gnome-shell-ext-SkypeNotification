@@ -1,10 +1,8 @@
-<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" inkscape:version="0.48" height="16" width="16">
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" sodipodi:docname="skype-presence-do-not-disturb-symbolic.svg" inkscape:version="0.48.5 r10040" x="0px" y="0px" width="24px" height="24px" viewBox="-402.5 403.5 24 24" enable-background="new -402.5 403.5 24 24" xml:space="preserve">
   <metadata>
     <rdf:RDF>
       <cc:Work rdf:about="">
-        <dc:format>
-          image/svg+xml
-        </dc:format>
+        <dc:format>image/svg+xml</dc:format>
         <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
         <dc:title>
           Skype Symbolic Icon Theme
@@ -16,7 +14,7 @@
     Skype Symbolic Icon Theme
   </title>
   <g inkscape:label="status" transform="translate(-101,-277)" inkscape:groupmode="layer">
-    <path inkscape:connector-curvature="0" d="m117 289q0 1.66-1.17 2.83Q114.66 293 113 293q-1.61 0-2.77-1.11Q109.59 292 109 292q-1.42 0-2.72-0.55-1.3-0.55-2.23-1.49-0.94-0.94-1.49-2.23Q102 286.42 102 285q0-0.59 0.11-1.23Q101 282.61 101 281q0-1.66 1.17-2.83Q103.34 277 105 277q1.61 0 2.77 1.11Q108.41 278 109 278q1.42 0 2.72 0.55 1.3 0.55 2.23 1.49 0.94 0.94 1.49 2.23Q116 283.58 116 285q0 0.59-0.11 1.23Q117 287.39 117 289zm-5-5h-6q-0.42 0-0.71 0.3Q105 284.59 105 285q0 0.41 0.29 0.7Q105.58 286 106 286h6q0.41 0 0.7-0.3Q113 285.41 113 285q0-0.41-0.3-0.7Q112.41 284 112 284z" fill="#bebebe"/>
+    <path inkscape:connector-curvature="0" d="m -277.5,698.5 q 0,2.49 -1.755,4.245 -1.755,1.755 -4.245,1.755 -2.415,0 -4.155,-1.665 -0.96,0.165 -1.845,0.165 -2.13,0 -4.08,-0.825 -1.95,-0.825 -3.345,-2.235 -1.41,-1.41 -2.235,-3.345 -0.84,-1.965 -0.84,-4.095 0,-0.885 0.165,-1.845 -1.665,-1.74 -1.665,-4.155 0,-2.49 1.755,-4.245 1.755,-1.755 4.245,-1.755 2.415,0 4.155,1.665 0.96,-0.165 1.845,-0.165 2.13,0 4.08,0.825 1.95,0.825 3.345,2.235 1.41,1.41 2.235,3.345 0.84,1.965 0.84,4.095 0,0.885 -0.165,1.845 1.665,1.74 1.665,4.155 z M -285,691 h -9 q -0.63,0 -1.065,0.45 -0.435,0.435 -0.435,1.05 0,0.615 0.435,1.05 0.435,0.45 1.065,0.45 h 9 q 0.615,0 1.05,-0.45 0.45,-0.435 0.45,-1.05 0,-0.615 -0.45,-1.05 Q -284.385,691 -285,691 z" style="fill:#bebebe"/>
   </g>
   <g inkscape:label="devices" transform="translate(-101,-277)" inkscape:groupmode="layer"/>
   <g inkscape:label="apps" transform="translate(-101,-277)" inkscape:groupmode="layer"/>

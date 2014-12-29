@@ -1,10 +1,8 @@
-<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" inkscape:version="0.48" height="16" width="16">
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" sodipodi:docname="skype-presence-away-symbolic.svg" inkscape:version="0.48.5 r10040" x="0px" y="0px" width="24px" height="24px" viewBox="-402.5 403.5 24 24" enable-background="new -402.5 403.5 24 24" xml:space="preserve">
   <metadata>
     <rdf:RDF>
       <cc:Work rdf:about="">
-        <dc:format>
-          image/svg+xml
-        </dc:format>
+        <dc:format>image/svg+xml</dc:format>
         <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
         <dc:title>
           Skype Symbolic Icon Theme
@@ -16,7 +14,7 @@
     Skype Symbolic Icon Theme
   </title>
   <g inkscape:label="status" transform="translate(-101,-277)" inkscape:groupmode="layer">
-    <path inkscape:connector-curvature="0" d="m117 289q0 1.66-1.17 2.83Q114.66 293 113 293q-1.61 0-2.77-1.11-0.64 0.11-1.23 0.11-1.42 0-2.72-0.55-1.3-0.55-2.23-1.49-0.94-0.94-1.49-2.23Q102 286.42 102 285q0-0.59 0.11-1.23Q101 282.61 101 281q0-1.66 1.17-2.83Q103.34 277 105 277q1.61 0 2.77 1.11 0.64-0.11 1.23-0.11 1.42 0 2.72 0.55 1.3 0.55 2.23 1.49 0.94 0.94 1.49 2.23 0.55 1.3 0.55 2.72 0 0.59-0.11 1.23Q117 287.39 117 289zM112.47 286.03 110 284.42V282q0-0.41-0.3-0.7Q109.41 281 108.99 281q-0.41 0-0.7 0.3Q108 281.59 108 282v3 0.02 0.02q-0.02 0.64 0.53 0.94l2.89 1.89q0.38 0.22 0.8 0.11 0.42-0.11 0.64-0.49 0.22-0.38 0.1-0.8-0.12-0.42-0.49-0.64z" fill="#bebebe"/>
+    <path inkscape:connector-curvature="0" d="m -277.5,698.5 q 0,2.49 -1.755,4.245 -1.755,1.755 -4.245,1.755 -2.415,0 -4.155,-1.665 -0.96,0.165 -1.845,0.165 -2.13,0 -4.08,-0.825 -1.95,-0.825 -3.345,-2.235 -1.41,-1.41 -2.235,-3.345 -0.84,-1.965 -0.84,-4.095 0,-0.885 0.165,-1.845 -1.665,-1.74 -1.665,-4.155 0,-2.49 1.755,-4.245 1.755,-1.755 4.245,-1.755 2.415,0 4.155,1.665 0.96,-0.165 1.845,-0.165 2.13,0 4.08,0.825 1.95,0.825 3.345,2.235 1.41,1.41 2.235,3.345 0.825,1.95 0.825,4.08 0,0.885 -0.165,1.845 1.68,1.755 1.68,4.17 z m -6.795,-4.455 L -288,691.63 V 688 q 0,-0.615 -0.45,-1.05 -0.435,-0.45 -1.065,-0.45 -0.615,0 -1.05,0.45 Q -291,687.385 -291,688 v 4.5 0.03 0.03 q -0.03,0.96 0.795,1.41 l 4.335,2.835 q 0.57,0.33 1.2,0.165 0.63,-0.165 0.96,-0.735 0.33,-0.57 0.15,-1.2 -0.18,-0.63 -0.735,-0.96 z" style="fill:#bebebe"/>
   </g>
   <g inkscape:label="devices" transform="translate(-101,-277)" inkscape:groupmode="layer"/>
   <g inkscape:label="apps" transform="translate(-101,-277)" inkscape:groupmode="layer"/>
