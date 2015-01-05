@@ -123,8 +123,8 @@ const SkypeMenuButton = new Lang.Class({
         this.menu.connect("open-state-changed", Lang.bind(this, this._updateStatusDots));
     },
 
-    setGIcon: function(gicon) {
-        this._icon.gicon = gicon;
+    setIcon: function(icon) {
+        this._icon.icon_name = icon;
     },
 
     _onButtonPressEvent: function(actor, event) {

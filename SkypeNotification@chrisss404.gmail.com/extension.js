@@ -19,6 +19,7 @@
  *
  */
 
+const Gtk = imports.gi.Gtk;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 //Gnome 3.8
@@ -35,7 +36,8 @@ const Skype = Me.imports.skype.Skype;
 
 let skype = null;
 function init() {
-    imports.gettext.bindtextdomain(Me.uuid, Me.path + "/locale");
+    imports.gettext.bindtextdomain(Me.uuid, Me.dir.get_child('locale').get_path());
+    Gtk.IconTheme.get_default().append_search_path(Me.dir.get_child('icons').get_path());
     skype = new Skype();
 }
 

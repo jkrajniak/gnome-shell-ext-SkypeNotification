@@ -530,15 +530,15 @@ const Skype = new Lang.Class({
         }
 
         if(this._currentPresence == "ONLINE") {
-            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-online" + type + ".svg"));
+            this._skypeMenu.setIcon("gnome-skype-presence-online" + type);
         } else if(this._currentPresence == "AWAY") {
-            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-away" + type + ".svg"));
+            this._skypeMenu.setIcon("gnome-skype-presence-away" + type);
         } else if(this._currentPresence == "DND") {
-            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-do-not-disturb" + type + ".svg"));
+            this._skypeMenu.setIcon("gnome-skype-presence-do-not-disturb" + type);
         } else if(this._currentPresence == "INVISIBLE") {
-            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-invisible" + type + ".svg"));
+            this._skypeMenu.setIcon("gnome-skype-presence-invisible" + type);
         } else if(this._currentPresence == "OFFLINE") {
-            this._skypeMenu.setGIcon(Gio.icon_new_for_string(Me.path + "/icons/scalable/skype-presence-offline" + type + ".svg"));
+            this._skypeMenu.setIcon("gnome-skype-presence-offline" + type);
         }
     },
 
