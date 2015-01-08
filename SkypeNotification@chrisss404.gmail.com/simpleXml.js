@@ -70,6 +70,9 @@ const SimpleXML = new Lang.Class({
     },
 
     find: function(root, name) {
+        if(typeof root === "undefined") {
+            return undefined;
+        }
         for(let index in root.data) {
             if(root.data[index].name == name) {
                 return root.data[index]; 
@@ -80,7 +83,11 @@ const SimpleXML = new Lang.Class({
 
     subElement: function(root, name) {
         let element = { "name": name, "data": [], "attr": [] };
-        root.data.push(element);
+        if(typeof root === "undefined") {
+            this._doc.data.push(element);
+        } else {
+            root.data.push(element);
+        }
         return element;
     },
 
