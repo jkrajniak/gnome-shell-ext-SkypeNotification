@@ -614,8 +614,9 @@ const Skype = new Lang.Class({
                             typeof Main.overview.viewSelector._searchResults._searchSystem.addProvider === "function") { //older
                         Main.overview.viewSelector._searchResults._searchSystem.addProvider(this._searchProvider);
                     }
-
-                }
+                } else {
+                    Main.overview.addSearchProvider(this._searchProvider); //3.8
+				}
             }
             this._searchProvider.setContacts(this._getContacts());
         } else if(message.indexOf("USER ") !== -1) {
