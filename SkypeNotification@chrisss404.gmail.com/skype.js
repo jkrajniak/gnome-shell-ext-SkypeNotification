@@ -99,10 +99,14 @@ const Skype = new Lang.Class({
         this._systemWidePresence = false;
         this._showContactsOnLeftClick = false;
         this._apiExtension = new SkypeAPIExtension(Lang.bind(this, this.NotifyCallback));
+        this._isGnome316 = (Config.PACKAGE_VERSION.indexOf("3.16") == 0);
 
         this._messages = [];
         this._closeTimer = null;
         this._notificationSource = 0;
+        this._recentChats = [];
+        this._notificationActivity = {};
+        this._notificationSectionCloseSignal = null;
         this._activeNotification = null;
 
         this._proxy = new SkypeProxy(Gio.DBus.session, "com.Skype.API", "/com/Skype");
@@ -206,6 +210,14 @@ const Skype = new Lang.Class({
         }
         if(this._enabled) {
             GLib.timeout_add(GLib.PRIORITY_DEFAULT, 2500, Lang.bind(this, this._heartBeat));
+
+            let [answer] = this._proxy.InvokeSync("SEARCH RECENTCHATS");
+            let chats = answer.replace("CHATS ", "")
+            if(chats == "") {
+                this._recentChats = [];
+            } else {
+                this._recentChats = chats.split(", ");
+            }
         }
     },
 
@@ -214,6 +226,13 @@ const Skype = new Lang.Class({
             if(this._isSkypeChatWindowFocused()) {
                 this._skypeMenuAlert = false;
                 this._runUserPresenceCallbacks();
+                this._messages = [];
+
+                if(this._activeNotification != null) {
+                    this._activeNotification.emit('done-displaying');
+                    this._activeNotification.destroy(MessageTray.NotificationDestroyedReason.DISMISSED);
+                    this._activeNotification = null;
+                }
             }
         }
 
@@ -249,6 +268,11 @@ const Skype = new Lang.Class({
         this._apiExtension.enable();
         this._settingsChangedSignal = this._settings.connect("changed",
                 Lang.bind(this, this._onSettingsChanged));
+
+        let messageList = Main.panel.statusArea.dateMenu._messageList;
+        if(typeof messageList === "object") {
+            this._notificationSectionCloseSignal = messageList._notificationSection._closeButton.connect("clicked", Lang.bind(this, this._onCloseNotificationSection316));
+        }
     },
 
     disable: function() {
@@ -269,6 +293,10 @@ const Skype = new Lang.Class({
         if(this._settingsChangedSignal != null) {
             this._settings.disconnect(this._settingsChangedSignal);
             this._settingsChangedSignal = null;
+        }
+        if(this._notificationSectionCloseSignal != null) {
+            Main.panel.statusArea.dateMenu._messageList._notificationSection._closeButton.disconnect(this._notificationSectionCloseSignal);
+            this._notificationSectionCloseSignal = null;
         }
     },
 
@@ -334,10 +362,123 @@ const Skype = new Lang.Class({
         }
     },
 
+    _onCloseNotificationSection316: function() {
+        this._messages = [];
+
+        if(this._activeNotification != null) {
+            this._activeNotification.emit('done-displaying');
+            this._activeNotification = null;
+        }
+
+        if(this._skypeMenuAlert) {
+            this._skypeMenuAlert = false;
+            this._runUserPresenceCallbacks();
+        }
+    },
+
+    _onClicked316: function(event) {
+        if(event.skype_id == 'group') {
+            this._focusSkypeChatWindow();
+        } else {
+            this._proxy.InvokeRemote("OPEN CHAT " + event.skype_id);
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, Lang.bind(this, this._focusSkypeChatWindow));
+        }
+
+        Main.panel.closeCalendar();
+    },
+
+    _getLastChatActivity316: function(uid) {
+        let chat_id = "";
+        let chats = this._recentChats;
+        for(let index in chats) {
+            if(chats[index].indexOf("#" + this._currentUserHandle + "/$" + uid + ";") !== -1) {
+                chat_id = chats[index];
+                break;
+            }
+            if(chats[index].indexOf("#" + uid + "/$" + this._currentUserHandle + ";") !== -1) {
+                chat_id = chats[index];
+                break;
+            }
+        }
+
+        if(chat_id == "") {
+            return 0;
+        }
+
+        let [timestamp] = this._proxy.InvokeSync("GET CHAT " + chat_id + " ACTIVITY_TIMESTAMP");
+        return parseInt(timestamp.split("ACTIVITY_TIMESTAMP ")[1]);
+    },
+
     _pushMessage: function(message) {
         if(message == null) {
             return;
         }
+
+        if(this._isGnome316) {
+            let uid = message['id'];
+
+            if(typeof this._notificationSource !== "object") {
+                this._notificationSource = new MessageTray.Source("SkypeExtension", 'skype');
+            }
+            if(typeof this._notificationActivity[uid] === 'undefined') {
+                this._notificationActivity[uid] = 0;
+            }
+
+            let addNotificationSource = true;
+            let sources = Main.messageTray.getSources();
+            for(let index in sources) {
+                let item = sources[index];
+                if(item.title == "Skype") {
+                    item.emit('done-displaying');
+                    item.destroy(MessageTray.NotificationDestroyedReason.DISMISSED);
+                }
+                if(item == this._notificationSource) {
+                    addNotificationSource = false;
+                }
+            }
+            if(addNotificationSource) {
+                Main.messageTray.add(this._notificationSource);
+            }
+
+            let last_activity = this._getLastChatActivity316(uid);
+            if(this._notificationActivity[uid] == last_activity) {
+                uid = "group";
+            } else {
+                this._notificationActivity[uid] = last_activity;
+            }
+
+
+            if(this._activeNotification == null) {
+                this._activeNotification = new MessageTray.Notification(this._notificationSource, "", "", {});
+                this._activeNotification.connect("activated", Lang.bind(this, this._onClicked316));
+            }
+            this._activeNotification.skype_id = uid;
+
+
+            if(message['body'] == "") {
+                this._messages.push("%s".format(message['summary']));
+            } else {
+                this._messages.push("<i>%s</i>: %s".format(message['summary'], message['body']));
+            }
+            while(this._messages.length > 5) {
+                this._messages.splice(0, 1);
+            }
+
+            let body = "";
+            for(let i in this._messages) {
+                if(i != 0) {
+                    body += "\n";
+                }
+                body += this._messages[i];
+            }
+
+            let params = { secondaryGIcon: Gio.icon_new_for_string(message.icon), bannerMarkup: true };
+            this._activeNotification.update("Skype", body, params);
+            this._notificationSource.notify(this._activeNotification);
+
+            return;
+        }
+
         this._messages.push(message);
 
         if(this._closeTimer != null) {
@@ -445,19 +586,8 @@ const Skype = new Lang.Class({
     },
 
     _getRecentChats: function() {
-        let chats = "";
-        try {
-            let [answer] = this._proxy.InvokeSync("SEARCH RECENTCHATS");
-            chats = answer.replace("CHATS ", "")
-            if(chats == "") {
-                return [];
-            }
-        } catch(e) {
-            global.log("skype._getRecentChats: " + e);
-        }
-
         let results = [];
-        chats = chats.split(", ");
+        let chats = this._recentChats;
         try {
             for(let index in chats) {
                 let [topic] = this._proxy.InvokeSync("GET CHAT " + chats[index] + " TOPIC");
@@ -737,7 +867,7 @@ const SkypeAPIExtension = new Lang.Class({
     },
 
     Notify: function(type, sname, sskype, smessage, fpath, fsize, fname) {
-         this._notify(type, { "contact": sname, "message": smessage,
+         this._notify(type, { "id": sskype, "contact": sname, "message": smessage,
              "filepath": fpath + "/" + fname, "filename": fname });
     }
 });

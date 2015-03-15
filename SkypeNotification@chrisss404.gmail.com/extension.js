@@ -22,7 +22,9 @@
 const Gtk = imports.gi.Gtk;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
-const MessageTrayMenuButton = imports.ui.messageTray.MessageTrayMenuButton;
+try {
+    const MessageTrayMenuButton = imports.ui.messageTray.MessageTrayMenuButton;
+} catch(e) {}
 
 const Skype = Me.imports.skype.Skype;
 
@@ -37,18 +39,22 @@ function init() {
 function enable() {
     skype.enable();
 
-    MessageTrayMenuButton.prototype._iconForPresenceOrig = MessageTrayMenuButton.prototype._iconForPresence;
-    MessageTrayMenuButton.prototype._iconForPresence = function(presence) {
-        skype.updateSkypeStatus(presence);
-        return this._iconForPresenceOrig(presence);
-    };
+    if(typeof MessageTrayMenuButton !== "undefined") {
+        MessageTrayMenuButton.prototype._iconForPresenceOrig = MessageTrayMenuButton.prototype._iconForPresence;
+        MessageTrayMenuButton.prototype._iconForPresence = function(presence) {
+            skype.updateSkypeStatus(presence);
+            return this._iconForPresenceOrig(presence);
+        };
+    }
 }
 
 function disable() {
     skype.disable();
 
-    if(typeof MessageTrayMenuButton.prototype._iconForPresenceOrig === "function") {
-        MessageTrayMenuButton.prototype._iconForPresence = MessageTrayMenuButton.prototype._iconForPresenceOrig;
-        MessageTrayMenuButton.prototype._iconForPresenceOrig = undefined;
+    if(typeof MessageTrayMenuButton !== "undefined") {
+        if(typeof MessageTrayMenuButton.prototype._iconForPresenceOrig === "function") {
+            MessageTrayMenuButton.prototype._iconForPresence = MessageTrayMenuButton.prototype._iconForPresenceOrig;
+            MessageTrayMenuButton.prototype._iconForPresenceOrig = undefined;
+        }
     }
 }

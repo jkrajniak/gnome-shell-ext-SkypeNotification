@@ -113,7 +113,7 @@ const SkypeConfig = new Lang.Class({
     getNotification: function(type, params) {
         let item = this._options[type];
         if(typeof item !== "undefined" && item.enabled) {
-            let notification = { "summary": item.notification[0],
+            let notification = { "id": params['id'], "summary": item.notification[0],
                     "body": item.notification[1], "icon": item.notification[2] };
             for(let token in params) {
                 notification.summary = notification.summary.replace("{%s}".format(token), params[token]);
