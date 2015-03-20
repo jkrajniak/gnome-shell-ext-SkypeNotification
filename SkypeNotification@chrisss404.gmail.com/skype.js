@@ -211,12 +211,14 @@ const Skype = new Lang.Class({
         if(this._enabled) {
             GLib.timeout_add(GLib.PRIORITY_DEFAULT, 2500, Lang.bind(this, this._heartBeat));
 
-            let [answer] = this._proxy.InvokeSync("SEARCH RECENTCHATS");
-            let chats = answer.replace("CHATS ", "")
-            if(chats == "") {
-                this._recentChats = [];
-            } else {
-                this._recentChats = chats.split(", ");
+            if(this._authenticated) {
+                let [answer] = this._proxy.InvokeSync("SEARCH RECENTCHATS");
+                let chats = answer.replace("CHATS ", "")
+                if(chats == "") {
+                    this._recentChats = [];
+                } else {
+                    this._recentChats = chats.split(", ");
+                }
             }
         }
     },
@@ -467,11 +469,12 @@ const Skype = new Lang.Class({
             let body = "";
             for(let i in this._messages) {
                 if(i != 0) {
-                    body += "\n";
+                    body = "\t\n" + body;
                 }
-                body += this._messages[i];
+                body = this._messages[i] + body;
             }
 
+            message.icon = (message.icon == "skype") ? "" : message.icon;
             let params = { secondaryGIcon: Gio.icon_new_for_string(message.icon), bannerMarkup: true };
             this._activeNotification.update("Skype", body, params);
             this._notificationSource.notify(this._activeNotification);
