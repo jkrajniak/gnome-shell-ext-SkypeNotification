@@ -211,7 +211,7 @@ const Skype = new Lang.Class({
         if(this._enabled) {
             GLib.timeout_add(GLib.PRIORITY_DEFAULT, 2500, Lang.bind(this, this._heartBeat));
 
-            if(this._authenticated) {
+            if(this._active && this._authenticated) {
                 let [answer] = this._proxy.InvokeSync("SEARCH RECENTCHATS");
                 let chats = answer.replace("CHATS ", "")
                 if(chats == "") {
@@ -427,20 +427,20 @@ const Skype = new Lang.Class({
             }
 
             let addNotificationSource = true;
+            let skypeNotificationSource = null;
             let sources = Main.messageTray.getSources();
             for(let index in sources) {
-                let item = sources[index];
-                if(item.title == "Skype") {
-                    item.emit('done-displaying');
-                    item.destroy(MessageTray.NotificationDestroyedReason.DISMISSED);
-                }
-                if(item == this._notificationSource) {
+                if(sources[index].title === "Skype") {
+                    skypeNotificationSource = sources[index];
+                } else if(sources[index].title === "SkypeExtension") {
                     addNotificationSource = false;
                 }
             }
+
             if(addNotificationSource) {
                 Main.messageTray.add(this._notificationSource);
             }
+
 
             let last_activity = this._getLastChatActivity316(uid);
             if(this._notificationActivity[uid] == last_activity) {
@@ -450,6 +450,11 @@ const Skype = new Lang.Class({
             }
 
 
+            if(skypeNotificationSource != null && skypeNotificationSource.notifications.length > 0) {
+                this._activeNotification = skypeNotificationSource.notifications[
+                                                            skypeNotificationSource.notifications.length - 1];
+                this._activeNotification.connect("activated", Lang.bind(this, this._onClicked316));
+            }
             if(this._activeNotification == null) {
                 this._activeNotification = new MessageTray.Notification(this._notificationSource, "", "", {});
                 this._activeNotification.connect("activated", Lang.bind(this, this._onClicked316));
@@ -477,7 +482,11 @@ const Skype = new Lang.Class({
             message.icon = (message.icon == "skype") ? "" : message.icon;
             let params = { secondaryGIcon: Gio.icon_new_for_string(message.icon), bannerMarkup: true };
             this._activeNotification.update("Skype", body, params);
-            this._notificationSource.notify(this._activeNotification);
+            if(skypeNotificationSource != null) {
+                skypeNotificationSource.notify(this._activeNotification);
+            } else {
+                this._notificationSource.notify(this._activeNotification);
+            }
 
             return;
         }
