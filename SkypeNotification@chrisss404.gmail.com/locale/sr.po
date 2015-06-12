@@ -29,11 +29,11 @@ msgstr "Промени стање"
 
 #: ../skypeMenuButton.js:68
 msgid "Online"
-msgstr "Доступан"
+msgstr "Доступан/на"
 
 #: ../skypeMenuButton.js:72
 msgid "Away"
-msgstr "Недоступан"
+msgstr "Недоступан/на"
 
 #: ../skypeMenuButton.js:76
 msgid "Do Not Disturb"
@@ -41,7 +41,7 @@ msgstr "Не узнемиравај"
 
 #: ../skypeMenuButton.js:80
 msgid "Invisible"
-msgstr "Невидљив"
+msgstr "Невидљив(a)"
 
 #: ../skypeMenuButton.js:84
 msgid "Offline"
@@ -77,11 +77,11 @@ msgstr "Говорна порука послата"
 
 #: ../skypeConfig.js:61
 msgid "{contact} has appeared online"
-msgstr "{contact} се пријавио"
+msgstr "{contact} се пријавио/ла"
 
 #: ../skypeConfig.js:64
 msgid "{contact} has gone offline"
-msgstr "{contact} се одјавио"
+msgstr "{contact} се одјавио/ла"
 
 #: ../skypeConfig.js:67
 msgid "Contact request from {contact}"
@@ -97,15 +97,15 @@ msgstr "Уклонили сте {contact} из контаката"
 
 #: ../skypeConfig.js:85
 msgid "{contact} joined chat"
-msgstr "{contact} се придружио ћаскању"
+msgstr "{contact} се придружио/ла ћаскању"
 
 #: ../skypeConfig.js:88
 msgid "{contact} left chat"
-msgstr "{contact} је напустио ћаскање"
+msgstr "{contact} је напустио/ла ћаскање"
 
 #: ../skypeConfig.js:91
 msgid "Incoming file from {contact}"
-msgstr "{contact} вам је послао датотеку"
+msgstr "{contact} вам је послао/ла датотеку"
 
 #: ../skypeConfig.js:94
 msgid "Transfer Complete"
@@ -113,7 +113,7 @@ msgstr "Пренос датотеке готов"
 
 #: ../skypeConfig.js:94
 msgid "{filename} saved to {filepath}"
-msgstr "{filename} је сачуавана у {filepath}"
+msgstr "{filename} је сачувана у {filepath}"
 
 #: ../skypeConfig.js:97
 msgid "Transfer Failed"
