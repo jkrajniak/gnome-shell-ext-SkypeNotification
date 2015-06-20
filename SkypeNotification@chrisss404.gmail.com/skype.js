@@ -74,6 +74,7 @@ const SkypeProxy = Gio.DBusProxy.makeProxyWrapper(SkypeIface);
 
 const SETTINGS_SHOW_PANEL_BUTTON_KEY = "show-top-bar-icon";
 const SETTINGS_NATIVE_NOTIFICATIONS_KEY = "native-notifications";
+const SETTINGS_ENABLE_SEARCH_PROVIDER_KEY = "search-provider";
 const SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY = "follow-system-wide-presence";
 const SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY = "open-contacts-on-top-bar-icon-left-click";
 const SETTINGS_IS_FIRST_RUN_KEY = "is-first-run";
@@ -96,6 +97,7 @@ const Skype = new Lang.Class({
         this._skypeMenuAlert = false;
         this._skypeMenuEnabled = true;
         this._skypeNativeNotifications = true;
+        this._skypeSearchProviderEnabled = true;
         this._systemWidePresence = false;
         this._showContactsOnLeftClick = false;
         this._apiExtension = new SkypeAPIExtension(Lang.bind(this, this.NotifyCallback));
@@ -133,26 +135,13 @@ const Skype = new Lang.Class({
         this._settings = new Gio.Settings({ settings_schema: schemaObj });
         this._skypeMenuEnabled = this._settings.get_boolean(SETTINGS_SHOW_PANEL_BUTTON_KEY);
         this._skypeNativeNotifications = this._settings.get_boolean(SETTINGS_NATIVE_NOTIFICATIONS_KEY);
+        this._skypeSearchProviderEnabled = this._settings.get_boolean(SETTINGS_ENABLE_SEARCH_PROVIDER_KEY);
         this._systemWidePresence = this._settings.get_boolean(SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY);
         this._showContactsOnLeftClick = this._settings.get_boolean(SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY);
     },
 
     _onSettingsChanged: function() {
         this._skypeMenuEnabled = this._settings.get_boolean(SETTINGS_SHOW_PANEL_BUTTON_KEY);
-        this._systemWidePresence = this._settings.get_boolean(SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY);
-        this._showContactsOnLeftClick = this._settings.get_boolean(SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY);
-
-        let skypeNativeNotifications = this._settings.get_boolean(SETTINGS_NATIVE_NOTIFICATIONS_KEY);
-        if(skypeNativeNotifications != this._skypeNativeNotifications) {
-            if(this._config != null) {
-                this._skypeNativeNotifications = skypeNativeNotifications;
-                this._config.toggle(skypeNativeNotifications);
-            } else {
-                this._settings.set_boolean(SETTINGS_NATIVE_NOTIFICATIONS_KEY,
-                                            this._skypeNativeNotifications);
-            }
-        }
-
         if(this._skypeMenuEnabled && this._skypeMenu == null) {
             this._skypeMenu = new SkypeMenuButton(this);
             this._runUserPresenceCallbacks();
@@ -164,6 +153,44 @@ const Skype = new Lang.Class({
             this._skypeMenu.destroy();
             this._skypeMenu = null;
         }
+
+
+        let skypeNativeNotifications = this._settings.get_boolean(SETTINGS_NATIVE_NOTIFICATIONS_KEY);
+        if(skypeNativeNotifications != this._skypeNativeNotifications) {
+            if(this._config != null) {
+                this._skypeNativeNotifications = skypeNativeNotifications;
+                this._config.toggle(skypeNativeNotifications);
+            } else {
+                this._settings.set_boolean(SETTINGS_NATIVE_NOTIFICATIONS_KEY,
+                                            this._skypeNativeNotifications);
+            }
+        }
+        
+
+        this._skypeSearchProviderEnabled = this._settings.get_boolean(SETTINGS_ENABLE_SEARCH_PROVIDER_KEY);
+        if(this._skypeSearchProviderEnabled) {
+            if(this._searchProvider == null) {
+                this._searchProvider = new SkypeSearchProvider("SKYPE", this);
+                if(typeof Main.overview.viewSelector === "object" &&
+                   typeof Main.overview.viewSelector._searchResults === "object") {
+
+                    if(typeof Main.overview.viewSelector._searchResults._registerProvider === "function") { //3.14
+                        Main.overview.viewSelector._searchResults._registerProvider(this._searchProvider);
+                    } else if(typeof Main.overview.addSearchProvider === "function") { //3.12
+                        Main.overview.addSearchProvider(this._searchProvider);
+                    }
+                }
+            }
+            this._searchProvider.setContacts(this._getContacts());
+        }
+
+        if(!this._skypeSearchProviderEnabled && this._searchProvider != null) {
+            this._searchProvider.setContacts([]);
+        }
+
+       
+        this._systemWidePresence = this._settings.get_boolean(SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY);
+        this._showContactsOnLeftClick = this._settings.get_boolean(SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY);
     },
 
     _authenticate: function() {
@@ -743,25 +770,27 @@ const Skype = new Lang.Class({
                 this._missedChat();
             }
 
-            if(this._searchProvider == null) {
-                this._searchProvider = new SkypeSearchProvider("SKYPE", this);
-                if(typeof Main.overview.viewSelector === "object" &&
-                   typeof Main.overview.viewSelector._searchResults === "object") {
+            if(this._skypeSearchProviderEnabled) {
+                if(this._searchProvider == null) {
+                    this._searchProvider = new SkypeSearchProvider("SKYPE", this);
+                    if(typeof Main.overview.viewSelector === "object" &&
+                       typeof Main.overview.viewSelector._searchResults === "object") {
 
-                    if(typeof Main.overview.viewSelector._searchResults._registerProvider === "function") { //3.14
-                        Main.overview.viewSelector._searchResults._registerProvider(this._searchProvider);
-                    } else if(typeof Main.overview.addSearchProvider === "function") { //3.12
-                        Main.overview.addSearchProvider(this._searchProvider);
+                        if(typeof Main.overview.viewSelector._searchResults._registerProvider === "function") { //3.14
+                            Main.overview.viewSelector._searchResults._registerProvider(this._searchProvider);
+                        } else if(typeof Main.overview.addSearchProvider === "function") { //3.12
+                            Main.overview.addSearchProvider(this._searchProvider);
+                        }
                     }
-				}
+                }
+                this._searchProvider.setContacts(this._getContacts());
             }
-            this._searchProvider.setContacts(this._getContacts());
         } else if(message.indexOf("USER ") !== -1) {
             let user = message.split(" ");
             if(user[2] == "ONLINESTATUS" && user[1] == this._currentUserHandle) {
                 this._currentPresence = user[3];
                 this._runUserPresenceCallbacks();
-            } else if(user[2] == "BUDDYSTATUS") {
+            } else if(user[2] == "BUDDYSTATUS" && this._skypeSearchProviderEnabled) {
                 this._searchProvider.setContacts(this._getContacts());
             }
         } else if(message.indexOf("USERSTATUS ") !== -1) {

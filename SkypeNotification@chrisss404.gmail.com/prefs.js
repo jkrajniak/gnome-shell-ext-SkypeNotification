@@ -28,6 +28,7 @@ const _ = imports.gettext.domain(Me.uuid).gettext;
 
 const SETTINGS_SHOW_PANEL_BUTTON_KEY = "show-top-bar-icon";
 const SETTINGS_NATIVE_NOTIFICATIONS_KEY = "native-notifications";
+const SETTINGS_ENABLE_SEARCH_PROVIDER_KEY = "search-provider";
 const SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY = "follow-system-wide-presence";
 const SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY = "open-contacts-on-top-bar-icon-left-click";
 
@@ -85,23 +86,23 @@ function buildPrefsWidget() {
         orientation: Gtk.Orientation.HORIZONTAL
     });
 
-    let onLeftClickLabel = new Gtk.Label({
+    let nativeNotificationsLabel = new Gtk.Label({
         xalign: 0
     });
-    onLeftClickLabel.set_markup("<span size='medium'><b>" + _("Native notifications") + "</b></span>");
+    nativeNotificationsLabel.set_markup("<span size='medium'><b>" + _("Native notifications") + "</b></span>");
 
-    let onLeftClickSwitch = new Gtk.Switch({
+    let nativeNotificationsSwitch = new Gtk.Switch({
         active: settings.get_boolean(SETTINGS_NATIVE_NOTIFICATIONS_KEY)
     });
-    onLeftClickSwitch.connect("notify::active", function(button) {
+    nativeNotificationsSwitch.connect("notify::active", function(button) {
         settings.set_boolean(SETTINGS_NATIVE_NOTIFICATIONS_KEY, button.active);
     });
 
-    onLeftClickLabel.set_tooltip_text(_("Shall Skype make use of native notifications"));
-    onLeftClickSwitch.set_tooltip_text(_("Shall Skype make use of native notifications"));
+    nativeNotificationsLabel.set_tooltip_text(_("Shall Skype make use of native notifications"));
+    nativeNotificationsSwitch.set_tooltip_text(_("Shall Skype make use of native notifications"));
 
-    hbox.pack_start(onLeftClickSwitch, false, false, 10);
-    hbox.add(onLeftClickLabel);
+    hbox.pack_start(nativeNotificationsSwitch, false, false, 10);
+    hbox.add(nativeNotificationsLabel);
 
     frame.pack_start(hbox, false, false, 10);
 
@@ -110,23 +111,48 @@ function buildPrefsWidget() {
         orientation: Gtk.Orientation.HORIZONTAL
     });
 
-    let onLeftClickLabel = new Gtk.Label({
+    let enableSearchProviderLabel = new Gtk.Label({
         xalign: 0
     });
-    onLeftClickLabel.set_markup("<span size='medium'><b>" + _("Follow system-wide presence state") + "</b></span>");
+    enableSearchProviderLabel.set_markup("<span size='medium'><b>" + _("Search provider") + "</b></span>");
 
-    let onLeftClickSwitch = new Gtk.Switch({
+    let enableSearchProviderSwitch = new Gtk.Switch({
+        active: settings.get_boolean(SETTINGS_ENABLE_SEARCH_PROVIDER_KEY)
+    });
+    enableSearchProviderSwitch.connect("notify::active", function(button) {
+        settings.set_boolean(SETTINGS_ENABLE_SEARCH_PROVIDER_KEY, button.active);
+    });
+
+    enableSearchProviderLabel.set_tooltip_text(_("Shall a Skype search provider be added"));
+    enableSearchProviderSwitch.set_tooltip_text(_("Shall a Skype search provider be added"));
+
+    hbox.pack_start(enableSearchProviderSwitch, false, false, 10);
+    hbox.add(enableSearchProviderLabel);
+
+    frame.pack_start(hbox, false, false, 10);
+
+
+    let hbox = new Gtk.Box({
+        orientation: Gtk.Orientation.HORIZONTAL
+    });
+
+    let followSystemPresenceLabel = new Gtk.Label({
+        xalign: 0
+    });
+    followSystemPresenceLabel.set_markup("<span size='medium'><b>" + _("Follow system-wide presence state") + "</b></span>");
+
+    let followSystemPresenceSwitch = new Gtk.Switch({
         active: settings.get_boolean(SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY)
     });
-    onLeftClickSwitch.connect("notify::active", function(button) {
+    followSystemPresenceSwitch.connect("notify::active", function(button) {
         settings.set_boolean(SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY, button.active);
     });
 
-    onLeftClickLabel.set_tooltip_text(_("Shall Skype online status follow the system-wide presence state"));
-    onLeftClickSwitch.set_tooltip_text(_("Shall Skype online status follow the system-wide presence state"));
+    followSystemPresenceLabel.set_tooltip_text(_("Shall Skype online status follow the system-wide presence state"));
+    followSystemPresenceSwitch.set_tooltip_text(_("Shall Skype online status follow the system-wide presence state"));
 
-    hbox.pack_start(onLeftClickSwitch, false, false, 10);
-    hbox.add(onLeftClickLabel);
+    hbox.pack_start(followSystemPresenceSwitch, false, false, 10);
+    hbox.add(followSystemPresenceLabel);
 
     frame.pack_start(hbox, false, false, 10);
 

@@ -12,6 +12,11 @@
             <summary>Native notifications</summary>
             <description>Shall Skype make use of native notifications</description>
         </key>
+        <key name="search-provider" type="b">
+            <default>true</default>
+            <summary>Search provider</summary>
+            <description>Shall a Skype search provider be added</description>
+        </key>
         <key name="follow-system-wide-presence" type="b">
             <default>false</default>
             <summary>Follow system-wide presence state</summary>

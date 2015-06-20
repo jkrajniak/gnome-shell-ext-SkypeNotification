@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SkypeNotification@chrisss404.gmail.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-09 14:31+0200\n"
+"POT-Creation-Date: 2015-06-20 14:32+0200\n"
 "PO-Revision-Date: 2013-07-07 18:30+0200\n"
 "Last-Translator: Christian Hofer <chrisss404@gmail.com>\n"
 "Language-Team: German\n"
@@ -133,37 +133,45 @@ msgstr "{contact} hat morgen Geburtstag"
 msgid "Happy Birthday {contact}"
 msgstr "Alles Gute zum Geburtstag {contact}"
 
-#: ../prefs.js:66
+#: ../prefs.js:67
 msgid "Show top bar icon"
 msgstr "Symbol in der oberen Leiste anzeigen"
 
-#: ../prefs.js:75 ../prefs.js:76
+#: ../prefs.js:76 ../prefs.js:77
 msgid "Shall the top bar icon be displayed"
 msgstr "Soll das Symbol in der oberen Leiste angezeigt werden"
 
-#: ../prefs.js:91
+#: ../prefs.js:92
 msgid "Native notifications"
 msgstr "Native Benachrichtigungen"
 
-#: ../prefs.js:100 ../prefs.js:101
+#: ../prefs.js:101 ../prefs.js:102
 msgid "Shall Skype make use of native notifications"
 msgstr "Soll Skype die nativen Benachrichtigungen verwenden"
 
-#: ../prefs.js:116
+#: ../prefs.js:117
+msgid "Search provider"
+msgstr "Suchanbieter"
+
+#: ../prefs.js:126 ../prefs.js:127
+msgid "Shall a Skype search provider be added"
+msgstr "Soll ein Skype Suchanbieter hinzugefügt werden"
+
+#: ../prefs.js:142
 msgid "Follow system-wide presence state"
 msgstr "Dem systemweiten Anwesenheitsstatus folgen"
 
-#: ../prefs.js:125 ../prefs.js:126
+#: ../prefs.js:151 ../prefs.js:152
 msgid "Shall Skype online status follow the system-wide presence state"
 msgstr ""
 "Soll der Skype Online-Status dem systemweiten Anwesenheitsstatus folgen"
 
-#: ../prefs.js:141
+#: ../prefs.js:167
 msgid "Open contacts on left click on top bar icon"
 msgstr ""
 "Kontakliste bei Linksklick auf das Symbol in der oberen Leiste anzeigen"
 
-#: ../prefs.js:150 ../prefs.js:151
+#: ../prefs.js:176 ../prefs.js:177
 msgid ""
 "Shall the Skype contact list be opened when the top bar icon is clicked by "
 "the left mouse button"
