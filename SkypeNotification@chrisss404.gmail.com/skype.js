@@ -101,7 +101,8 @@ const Skype = new Lang.Class({
         this._systemWidePresence = false;
         this._showContactsOnLeftClick = false;
         this._apiExtension = new SkypeAPIExtension(Lang.bind(this, this.NotifyCallback));
-        this._isGnome316 = (Config.PACKAGE_VERSION.indexOf("3.16") == 0);
+        this._isGnome316orNewer = (Config.PACKAGE_VERSION.indexOf("3.16") == 0) ||
+                                  (Config.PACKAGE_VERSION.indexOf("3.18") == 0);
 
         this._messages = [];
         this._closeTimer = null;
@@ -171,15 +172,7 @@ const Skype = new Lang.Class({
         if(this._skypeSearchProviderEnabled) {
             if(this._searchProvider == null) {
                 this._searchProvider = new SkypeSearchProvider("SKYPE", this);
-                if(typeof Main.overview.viewSelector === "object" &&
-                   typeof Main.overview.viewSelector._searchResults === "object") {
-
-                    if(typeof Main.overview.viewSelector._searchResults._registerProvider === "function") { //3.14
-                        Main.overview.viewSelector._searchResults._registerProvider(this._searchProvider);
-                    } else if(typeof Main.overview.addSearchProvider === "function") { //3.12
-                        Main.overview.addSearchProvider(this._searchProvider);
-                    }
-                }
+                Main.overview.viewSelector._searchResults._registerProvider(this._searchProvider);
             }
             this._searchProvider.setContacts(this._getContacts());
         }
@@ -443,7 +436,7 @@ const Skype = new Lang.Class({
             return;
         }
 
-        if(this._isGnome316) {
+        if(this._isGnome316orNewer) {
             let uid = message['id'];
 
             if(typeof this._notificationSource !== "object") {
@@ -773,15 +766,7 @@ const Skype = new Lang.Class({
             if(this._skypeSearchProviderEnabled) {
                 if(this._searchProvider == null) {
                     this._searchProvider = new SkypeSearchProvider("SKYPE", this);
-                    if(typeof Main.overview.viewSelector === "object" &&
-                       typeof Main.overview.viewSelector._searchResults === "object") {
-
-                        if(typeof Main.overview.viewSelector._searchResults._registerProvider === "function") { //3.14
-                            Main.overview.viewSelector._searchResults._registerProvider(this._searchProvider);
-                        } else if(typeof Main.overview.addSearchProvider === "function") { //3.12
-                            Main.overview.addSearchProvider(this._searchProvider);
-                        }
-                    }
+                    Main.overview.viewSelector._searchResults._registerProvider(this._searchProvider);
                 }
                 this._searchProvider.setContacts(this._getContacts());
             }

@@ -39,7 +39,7 @@ function init() {
 function enable() {
     skype.enable();
 
-    if(typeof MessageTrayMenuButton !== "undefined") {
+    if(typeof MessageTrayMenuButton !== "undefined") { // MessageTrayMenuButton was removed with 3.16
         MessageTrayMenuButton.prototype._iconForPresenceOrig = MessageTrayMenuButton.prototype._iconForPresence;
         MessageTrayMenuButton.prototype._iconForPresence = function(presence) {
             skype.updateSkypeStatus(presence);
