@@ -49,64 +49,84 @@ const SkypeConfig = new Lang.Class({
         this._options = {
                 "CallMissed": {
                     "enabled": true, "config": ["CallMissed", "CallMissed", 1],
-                    "notification": [ _("Call Missed"), "", "skype" ]},
+                    "notification": [ _("Call Missed"), "", "skype" ],
+                    "sticky": true },
                 "VoicemailReceived": {
                     "enabled": false, "config": ["VoicemailReceived", "VoicemailReceived", 1],
-                    "notification": [ "{contact}", _("Voicemail Received"), "emblem-shared" ]},
+                    "notification": [ "{contact}", _("Voicemail Received"), "emblem-shared" ],
+                    "sticky": true },
                 "VoicemailSent": {
                     "enabled": false, "config": ["VoicemailSent", "VoicemailSent", 0],
-                    "notification": [ _("Voicemail Sent"), "", "document-send" ]},
+                    "notification": [ _("Voicemail Sent"), "", "document-send" ],
+                    "sticky": false },
                 "ContactOnline": {
                     "enabled": false, "config": ["Online", "ContactOnline", 1],
-                    "notification": [ _("{contact} has appeared online"), "", "user-available" ]},
+                    "notification": [ _("{contact} has appeared online"), "", "user-available" ],
+                    "sticky": false },
                 "ContactOffline": {
                     "enabled": false, "config": ["Offline", "ContactOffline", 1],
-                    "notification": [ _("{contact} has gone offline"), "", "user-offline" ]},
+                    "notification": [ _("{contact} has gone offline"), "", "user-offline" ],
+                    "sticky": false },
                 "ContactAuthRequest": {
                     "enabled": false, "config": ["Authreq", "ContactAuthRequest", 1],
-                    "notification": [ _("Contact request from {contact}"), "", "contact-new" ]},
+                    "notification": [ _("Contact request from {contact}"), "", "contact-new" ],
+                    "sticky": true },
                 "ContactAdded": {
                     "enabled": false, "config": ["ContactAdded", "ContactAdded", 1],
-                    "notification": [ _("{contact} has been added to your contact list"), "", "address-book-new" ]},
+                    "notification": [ _("{contact} has been added to your contact list"), "", "address-book-new" ],
+                    "sticky": false },
                 "ContactDeleted": {
                     "enabled": false, "config": ["ContactDeleted", "ContactDeleted", 1],
-                    "notification": [ _("{contact} has been deleted from your contact list"), "", "edit-delete" ]},
+                    "notification": [ _("{contact} has been deleted from your contact list"), "", "edit-delete" ],
+                    "sticky": false },
                 "ChatIncomingInitial": {
                     "enabled": true, "config": ["", "", 1],
-                    "notification": [ "{contact}", "{message}", "skype" ]},
+                    "notification": [ "{contact}", "{message}", "skype" ],
+                    "sticky": true },
                 "ChatIncoming": {
                     "enabled": false, "config": ["Chat", "ChatIncoming", 1],
-                    "notification": [ "{contact}", "{message}", "skype" ]},
+                    "notification": [ "{contact}", "{message}", "skype" ],
+                    "sticky": true },
                 "ChatOutgoing": {
                     "enabled": false, "config": ["ChatOutgoing", "ChatOutgoing", 0],
-                    "notification": [ "{contact}", "{message}", "skype" ]},
+                    "notification": [ "{contact}", "{message}", "skype" ],
+                    "sticky": false },
                 "ChatJoined": {
                     "enabled": false, "config": ["ChatJoined", "ChatJoined", 0],
-                    "notification": [ _("{contact} joined chat"), "{message}", "system-users" ]},
+                    "notification": [ _("{contact} joined chat"), "{message}", "system-users" ],
+                    "sticky": false },
                 "ChatParted": {
                     "enabled": false, "config": ["ChatParted", "ChatParted", 0],
-                    "notification": [ _("{contact} left chat"), "{message}", "system-users" ]},
+                    "notification": [ _("{contact} left chat"), "{message}", "system-users" ],
+                    "sticky": false },
                 "TransferRequest": {
                     "enabled": false, "config": ["TransferRequest", "TransferRequest", 1],
-                    "notification": [ _("Incoming file from {contact}"), "", "gtk-save" ]},
+                    "notification": [ _("Incoming file from {contact}"), "", "gtk-save" ],
+                    "sticky": true },
                 "TransferComplete": {
                 	"enabled": false, "config": ["TransferComplete", "TransferComplete", 1],
-                	"notification": [ _("Transfer Complete"), _("{filename} saved to {filepath}"), "gtk-save" ]},
+                	"notification": [ _("Transfer Complete"), _("{filename} saved to {filepath}"), "gtk-save" ],
+                    "sticky": false },
                 "TransferFailed": {
                     "enabled": false, "config": ["TransferFailed", "TransferFailed", 1],
-                    "notification": [ _("Transfer Failed"), "{filename}", "gtk-close" ]},
+                    "notification": [ _("Transfer Failed"), "{filename}", "gtk-close" ],
+                    "sticky": true },
                 "SMSSent": {
                     "enabled": false, "config": ["SMSSent", "SMSSent", 1],
-                    "notification": [ _("SMS Sent"), "", "document-send" ]},
+                    "notification": [ _("SMS Sent"), "", "document-send" ],
+                    "sticky": false },
                 "SMSFailed": {
                     "enabled": false, "config": ["SMSFailed", "SMSFailed", 1],
-                    "notification": [ _("SMS Failed"), "", "gtk-close" ]},
+                    "notification": [ _("SMS Failed"), "", "gtk-close" ],
+                    "sticky": true },
                 "Birthday": {
                     "enabled": false, "config": ["Birthday", "Birthday", 1],
-                    "notification": [ _("{contact} has a birthday tomorrow"), "", "appointment-soon" ]},
+                    "notification": [ _("{contact} has a birthday tomorrow"), "", "appointment-soon" ],
+                    "sticky": true },
                 "OurBirthday": {
                     "enabled": false, "config": ["OurBirthday", "OurBirthday", 1],
-                    "notification": [ _("Happy Birthday {contact}"), "", "emblem-favorite" ]}
+                    "notification": [ _("Happy Birthday {contact}"), "", "emblem-favorite" ],
+                    "sticky": true }
         };
     },
 
@@ -114,7 +134,7 @@ const SkypeConfig = new Lang.Class({
         let item = this._options[type];
         if(typeof item !== "undefined" && item.enabled) {
             let notification = { "id": params['id'], "summary": item.notification[0],
-                    "body": item.notification[1], "icon": item.notification[2] };
+                    "body": item.notification[1], "icon": item.notification[2], "sticky": item.sticky };
             for(let token in params) {
                 notification.summary = notification.summary.replace("{%s}".format(token), params[token]);
                 notification.body = notification.body.replace("{%s}".format(token), params[token]);

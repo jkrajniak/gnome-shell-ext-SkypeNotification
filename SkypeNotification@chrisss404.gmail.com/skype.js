@@ -507,6 +507,25 @@ const Skype = new Lang.Class({
             } else {
                 this._notificationSource.notify(this._activeNotification);
             }
+            
+            if(message['sticky']) {
+                this._activeNotification._sticky = true;
+            }
+
+            if(this._activeNotification._destroyTimer != null || this._activeNotification._sticky) {
+                if(this._activeNotification._destroyTimer != null) {
+                    GLib.source_remove(this._activeNotification._destroyTimer);
+                    this._activeNotification._destroyTimer = null;
+                }
+            }
+
+            if(!this._activeNotification._sticky) {
+                this._activeNotification._destroyTimer = GLib.timeout_add(
+                    GLib.PRIORITY_DEFAULT,
+                    MessageTray.NOTIFICATION_TIMEOUT * 1000,
+                    Lang.bind(this._activeNotification, this._activeNotification.destroy)
+                );
+            }
 
             return;
         }
