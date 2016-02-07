@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SkypeNotification@chrisss404.gmail.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-20 14:32+0200\n"
+"POT-Creation-Date: 2016-02-07 10:48+0100\n"
 "PO-Revision-Date: 2013-09-30 18:42+0200\n"
 "Last-Translator: xyzdario <>\n"
 "Language-Team: Español <>\n"
@@ -66,112 +66,120 @@ msgstr "Salir"
 msgid "Call Missed"
 msgstr "Llamada perdida"
 
-#: ../skypeConfig.js:55
+#: ../skypeConfig.js:56
 msgid "Voicemail Received"
 msgstr "Mensaje de voz recibido"
 
-#: ../skypeConfig.js:58
+#: ../skypeConfig.js:60
 msgid "Voicemail Sent"
 msgstr "Mensaje de voz enviado"
 
-#: ../skypeConfig.js:61
+#: ../skypeConfig.js:64
 msgid "{contact} has appeared online"
 msgstr "{contact} está conectado"
 
-#: ../skypeConfig.js:64
+#: ../skypeConfig.js:68
 msgid "{contact} has gone offline"
 msgstr "{contact} se ha desconectado"
 
-#: ../skypeConfig.js:67
+#: ../skypeConfig.js:72
 msgid "Contact request from {contact}"
 msgstr "Requerimiento de contacto de {contact}"
 
-#: ../skypeConfig.js:70
+#: ../skypeConfig.js:76
 msgid "{contact} has been added to your contact list"
 msgstr "{contact} ha sido agregado a la lista de contactos"
 
-#: ../skypeConfig.js:73
+#: ../skypeConfig.js:80
 msgid "{contact} has been deleted from your contact list"
 msgstr "{contact} ha sido borrado de la lista de contactos"
 
-#: ../skypeConfig.js:85
+#: ../skypeConfig.js:96
 msgid "{contact} joined chat"
 msgstr "{contact} se unió a la conversación"
 
-#: ../skypeConfig.js:88
+#: ../skypeConfig.js:100
 msgid "{contact} left chat"
 msgstr "{contact} dejó la conversación"
 
-#: ../skypeConfig.js:91
+#: ../skypeConfig.js:104
 msgid "Incoming file from {contact}"
 msgstr "{contact} ha enviado un archivo"
 
-#: ../skypeConfig.js:94
+#: ../skypeConfig.js:108
 msgid "Transfer Complete"
 msgstr "Transferencia de archivo completa"
 
-#: ../skypeConfig.js:94
+#: ../skypeConfig.js:108
 msgid "{filename} saved to {filepath}"
 msgstr "{filename} guardado en {filepath}"
 
-#: ../skypeConfig.js:97
+#: ../skypeConfig.js:112
 msgid "Transfer Failed"
 msgstr "Transferencia fallida"
 
-#: ../skypeConfig.js:100
+#: ../skypeConfig.js:116
 msgid "SMS Sent"
 msgstr "SMS enviado"
 
-#: ../skypeConfig.js:103
+#: ../skypeConfig.js:120
 msgid "SMS Failed"
 msgstr "SMS sin enviar"
 
-#: ../skypeConfig.js:106
+#: ../skypeConfig.js:124
 msgid "{contact} has a birthday tomorrow"
 msgstr "Mañana es el cumpleaños de {contact}"
 
-#: ../skypeConfig.js:109
+#: ../skypeConfig.js:128
 msgid "Happy Birthday {contact}"
 msgstr "Feliz cumpleaños, {contact}"
 
-#: ../prefs.js:67
+#: ../prefs.js:68
 msgid "Show top bar icon"
 msgstr "Mostrar ícono en panel superior"
 
-#: ../prefs.js:76 ../prefs.js:77
+#: ../prefs.js:77 ../prefs.js:78
 msgid "Shall the top bar icon be displayed"
 msgstr "Mostrar ícono en panel superior"
 
-#: ../prefs.js:92
+#: ../prefs.js:93
+msgid "Hide original tray icon"
+msgstr "Ocultar ícono de bandeja"
+
+#: ../prefs.js:102 ../prefs.js:103
+msgid "Shall the original tray icon be hidden"
+msgstr "Ocultar ícono de bandeja"
+
+#: ../prefs.js:118
 msgid "Native notifications"
-msgstr ""
+msgstr "Notificaciones nativas"
 
-#: ../prefs.js:101 ../prefs.js:102
+#: ../prefs.js:127 ../prefs.js:128
 msgid "Shall Skype make use of native notifications"
-msgstr ""
+msgstr "Usar notificaciones nativas"
 
-#: ../prefs.js:117
+#: ../prefs.js:143
 msgid "Search provider"
-msgstr ""
+msgstr "Proveedor de búsqueda"
 
-#: ../prefs.js:126 ../prefs.js:127
+#: ../prefs.js:152 ../prefs.js:153
 msgid "Shall a Skype search provider be added"
-msgstr ""
+msgstr "Agregar proveedor de búsqueda"
 
-#: ../prefs.js:142
+#: ../prefs.js:168
 msgid "Follow system-wide presence state"
-msgstr ""
+msgstr "Siga el estado de presencia en todo el sistema"
 
-#: ../prefs.js:151 ../prefs.js:152
+#: ../prefs.js:177 ../prefs.js:178
 msgid "Shall Skype online status follow the system-wide presence state"
-msgstr ""
+msgstr "Siga el estado de presencia en todo el sistema"
 
-#: ../prefs.js:167
+#: ../prefs.js:193
 msgid "Open contacts on left click on top bar icon"
-msgstr ""
+msgstr "Mostrar lista de contactos en el clic izquierdo"
 
-#: ../prefs.js:176 ../prefs.js:177
+#: ../prefs.js:202 ../prefs.js:203
 msgid ""
 "Shall the Skype contact list be opened when the top bar icon is clicked by "
 "the left mouse button"
-msgstr ""
+msgstr "Mostrar lista de contactos en el clic izquierdo sobre ícono en panel superior"

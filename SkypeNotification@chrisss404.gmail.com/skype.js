@@ -73,6 +73,7 @@ const SkypeIfaceExtension = '<node> \
 const SkypeProxy = Gio.DBusProxy.makeProxyWrapper(SkypeIface);
 
 const SETTINGS_SHOW_PANEL_BUTTON_KEY = "show-top-bar-icon";
+const SETTINGS_DESTROY_ORIGINAL_TRAY_ICON_KEY = "destroy-original-tray-icon";
 const SETTINGS_NATIVE_NOTIFICATIONS_KEY = "native-notifications";
 const SETTINGS_ENABLE_SEARCH_PROVIDER_KEY = "search-provider";
 const SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY = "follow-system-wide-presence";
@@ -96,6 +97,7 @@ const Skype = new Lang.Class({
         this._skypeMenu = null;
         this._skypeMenuAlert = false;
         this._skypeMenuEnabled = true;
+        this._skypeHideOriginalTrayIcon = true;
         this._skypeNativeNotifications = true;
         this._skypeSearchProviderEnabled = true;
         this._systemWidePresence = false;
@@ -120,6 +122,8 @@ const Skype = new Lang.Class({
 
         this._userPresenceCallbacks = [];
         this._addUserPresenceCallback(Lang.bind(this, this._setUserPresenceMenuIcon));
+
+        this._trayIconAddedSignal = null;
     },
 
     _initSettings: function() {
@@ -135,6 +139,7 @@ const Skype = new Lang.Class({
 
         this._settings = new Gio.Settings({ settings_schema: schemaObj });
         this._skypeMenuEnabled = this._settings.get_boolean(SETTINGS_SHOW_PANEL_BUTTON_KEY);
+        this._skypeHideOriginalTrayIcon = this._settings.get_boolean(SETTINGS_DESTROY_ORIGINAL_TRAY_ICON_KEY);
         this._skypeNativeNotifications = this._settings.get_boolean(SETTINGS_NATIVE_NOTIFICATIONS_KEY);
         this._skypeSearchProviderEnabled = this._settings.get_boolean(SETTINGS_ENABLE_SEARCH_PROVIDER_KEY);
         this._systemWidePresence = this._settings.get_boolean(SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY);
@@ -153,6 +158,12 @@ const Skype = new Lang.Class({
         if(!this._skypeMenuEnabled && this._skypeMenu != null) {
             this._skypeMenu.destroy();
             this._skypeMenu = null;
+        }
+
+
+        this._skypeHideOriginalTrayIcon = this._settings.get_boolean(SETTINGS_DESTROY_ORIGINAL_TRAY_ICON_KEY);
+        if(this._skypeHideOriginalTrayIcon) {
+            this._destroyOriginalTrayIcon();
         }
 
 
@@ -295,6 +306,13 @@ const Skype = new Lang.Class({
         if(typeof messageList === "object") {
             this._notificationSectionCloseSignal = messageList._notificationSection._closeButton.connect("clicked", Lang.bind(this, this._onCloseNotificationSection316));
         }
+
+        let trayManager = Main.legacyTray._trayManager;
+        if(typeof trayManager === "object") {
+            this._trayIconAddedSignal = trayManager.connect('tray-icon-added',
+                Lang.bind(this, this._onTrayIconAddedRemoveOriginalIcon));
+            this._destroyOriginalTrayIcon();
+        }
     },
 
     disable: function() {
@@ -319,6 +337,10 @@ const Skype = new Lang.Class({
         if(this._notificationSectionCloseSignal != null) {
             Main.panel.statusArea.dateMenu._messageList._notificationSection._closeButton.disconnect(this._notificationSectionCloseSignal);
             this._notificationSectionCloseSignal = null;
+        }
+        if(this._trayIconAddedSignal != null) {
+            Main.legacyTray._trayManager.disconnect(this._trayIconAddedSignal);
+            this._trayIconAddedSignal = null;
         }
     },
 
@@ -889,6 +911,21 @@ const Skype = new Lang.Class({
                 }
                 GLib.timeout_add(GLib.PRIORITY_DEFAULT, 250, Lang.bind(this, this._quit, actor, event, attempts + 1));
             }
+        }
+    },
+
+    _destroyOriginalTrayIcon:  function() {
+        let tray = Main.legacyTray;
+        let children = tray._iconBox.get_n_children();
+        for(let i = 0; i < children; i++) {
+            let button = tray._iconBox.get_child_at_index(0);
+            this._onTrayIconAddedRemoveOriginalIcon(Main.legacyTray._trayManager, button.child);
+        }
+    },
+
+    _onTrayIconAddedRemoveOriginalIcon: function(object, icon) {
+        if(this._skypeHideOriginalTrayIcon && icon.wm_class == "Skype") {
+            icon.get_parent().destroy();
         }
     }
 });
