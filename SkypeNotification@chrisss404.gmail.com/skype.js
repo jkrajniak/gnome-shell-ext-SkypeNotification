@@ -545,7 +545,10 @@ const Skype = new Lang.Class({
                 this._activeNotification._destroyTimer = GLib.timeout_add(
                     GLib.PRIORITY_DEFAULT,
                     MessageTray.NOTIFICATION_TIMEOUT * 1000,
-                    Lang.bind(this._activeNotification, this._activeNotification.destroy)
+                    Lang.bind(this, function() {
+                        this._activeNotification.destroy();
+                        this._messages = [];
+                    })
                 );
             }
 
