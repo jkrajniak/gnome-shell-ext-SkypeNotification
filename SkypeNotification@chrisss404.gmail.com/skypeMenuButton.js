@@ -53,6 +53,7 @@ const SkypeMenuButton = new Lang.Class({
         this._proxy = skype._proxy;
         this._skypeApp = skype._skypeApp;
         this._getRecentChats = Lang.bind(skype, skype._getRecentChats);
+        this._focusWindow = Lang.bind(skype, skype._focusWindow);
         this._focusSkypeMainWindow = Lang.bind(skype, skype._focusSkypeMainWindow);
         this._focusSkypeChatWindow = Lang.bind(skype, skype._focusSkypeChatWindow);
         this._focusSkypeAddFriendWindow = Lang.bind(skype, skype._focusSkypeAddFriendWindow);
@@ -228,13 +229,5 @@ const SkypeMenuButton = new Lang.Class({
     _toggleMute: function(actor) {
         this._setMute(actor.state ? "OFF" : "ON");
         GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, Lang.bind(this, this._updateMuteSwitch, this.menu));
-    },
-
-    _focusWindow: function(callback, tries = 0) {
-        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 5, Lang.bind(this, function() {
-            if(tries < 200 && !callback()) {
-                this._focusWindow(callback, tries + 1);
-            }
-        }));
     }
 });

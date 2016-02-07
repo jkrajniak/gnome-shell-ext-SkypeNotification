@@ -39,6 +39,7 @@ const SkypeSearchProvider = new Lang.Class({
 
         this._proxy = skype._proxy;
         this._skypeApp = skype._skypeApp;
+        this._focusWindow = Lang.bind(skype, skype._focusWindow);
         this._focusSkypeMainWindow = Lang.bind(skype, skype._focusSkypeMainWindow);
         this._focusSkypeChatWindow = Lang.bind(skype, skype._focusSkypeChatWindow);
         this._contacts = [];
@@ -122,13 +123,5 @@ const SkypeSearchProvider = new Lang.Class({
         this._skypeApp.open_new_window(-1);
         this._focusWindow(this._focusSkypeMainWindow);
         Main.overview.hide();
-    },
-
-    _focusWindow: function(callback, tries = 0) {
-        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 5, Lang.bind(this, function() {
-            if(tries < 200 && !callback()) {
-                this._focusWindow(callback, tries + 1);
-            }
-        }));
     }
 });

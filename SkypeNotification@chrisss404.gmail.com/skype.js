@@ -402,7 +402,7 @@ const Skype = new Lang.Class({
         let recent = this._getRecentChats();
         if(recent.length > 0) {
             this._proxy.InvokeRemote("OPEN CHAT " + recent[0]["chat"]);
-            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, Lang.bind(this, this._focusSkypeChatWindow));
+            this._focusWindow(this._focusSkypeChatWindow);
         }
     },
 
@@ -425,7 +425,7 @@ const Skype = new Lang.Class({
             this._focusSkypeChatWindow();
         } else {
             this._proxy.InvokeRemote("OPEN CHAT " + event.skype_id);
-            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, Lang.bind(this, this._focusSkypeChatWindow));
+            this._focusWindow(this._focusSkypeChatWindow);
         }
 
         Main.panel.closeCalendar();
@@ -823,6 +823,14 @@ const Skype = new Lang.Class({
             this._currentPresence = message.split(" ")[1];
             this._runUserPresenceCallbacks();
         }
+    },
+
+    _focusWindow: function(callback, tries = 0) {
+        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 5, Lang.bind(this, function() {
+            if(tries < 200 && !callback()) {
+                this._focusWindow(callback, tries + 1);
+            }
+        }));
     },
 
     _focusSkypeMainWindow: function() {
