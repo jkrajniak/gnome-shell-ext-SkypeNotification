@@ -113,14 +113,22 @@ const SkypeSearchProvider = new Lang.Class({
     activateResult: function(event) {
         if(this._contacts[event]) {
             this._proxy.InvokeRemote("OPEN IM " + this._contacts[event].handle);
-            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, Lang.bind(this, this._focusSkypeChatWindow));
+            this._focusWindow(this._focusSkypeChatWindow);
             Main.overview.hide();
         }
     },
 
     launchSearch: function(terms) {
         this._skypeApp.open_new_window(-1);
-        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, Lang.bind(this, this._focusSkypeMainWindow));
+        this._focusWindow(this._focusSkypeMainWindow);
         Main.overview.hide();
+    },
+
+    _focusWindow: function(callback, tries = 0) {
+        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 5, Lang.bind(this, function() {
+            if(tries < 200 && !callback()) {
+                this._focusWindow(callback, tries + 1);
+            }
+        }));
     }
 });
