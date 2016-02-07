@@ -163,7 +163,7 @@ const SkypeMenuButton = new Lang.Class({
     _openChat: function(actor) {
         if(this._proxy != null) {
             this._proxy.InvokeRemote("OPEN CHAT " + actor.chatId);
-            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, Lang.bind(this, this._focusSkypeChatWindow));
+            this._focusWindow(this._focusSkypeChatWindow);
         }
     },
 
@@ -199,13 +199,13 @@ const SkypeMenuButton = new Lang.Class({
 
     _openContactList: function() {
         this._skypeApp.open_new_window(-1);
-        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, Lang.bind(this, this._focusSkypeMainWindow));
+        this._focusWindow(this._focusSkypeMainWindow);
     },
 
     _openAddContact: function() {
         if(this._proxy != null) {
             this._proxy.InvokeRemote("OPEN ADDAFRIEND");
-            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, Lang.bind(this, this._focusSkypeAddFriendWindow));
+            this._focusWindow(this._focusSkypeAddFriendWindow);
         }
     },
 
@@ -228,5 +228,13 @@ const SkypeMenuButton = new Lang.Class({
     _toggleMute: function(actor) {
         this._setMute(actor.state ? "OFF" : "ON");
         GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, Lang.bind(this, this._updateMuteSwitch, this.menu));
+    },
+
+    _focusWindow: function(callback, tries = 0) {
+        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 5, Lang.bind(this, function() {
+            if(tries < 200 && !callback()) {
+                this._focusWindow(callback, tries + 1);
+            }
+        }));
     }
 });

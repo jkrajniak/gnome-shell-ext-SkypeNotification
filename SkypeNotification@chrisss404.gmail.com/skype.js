@@ -809,9 +809,10 @@ const Skype = new Lang.Class({
             let title = windows[i].get_title();
             if(title.indexOf(" - ") !== -1 && title.indexOf(this._currentUserHandle) !== -1) {
                 Main.activateWindow(windows[i]);
-                break;
+                return true;
             }
         }
+        return false;
     },
 
     _focusSkypeChatWindow: function() {
@@ -820,9 +821,10 @@ const Skype = new Lang.Class({
             let title = windows[i].get_title();
             if(title.indexOf(" - ") !== -1 && title.indexOf(this._currentUserHandle) === -1) {
                 Main.activateWindow(windows[i]);
-                break;
+                return true;
             }
         }
+        return false;
     },
 
     _focusSkypeAddFriendWindow: function() {
@@ -831,9 +833,10 @@ const Skype = new Lang.Class({
             let title = windows[i].get_title();
             if(title.indexOf(" - ") === -1) {
                 Main.activateWindow(windows[i]);
-                break;
+                return true;
             }
         }
+        return false;
     },
 
     _isSkypeChatWindowFocused: function() {
