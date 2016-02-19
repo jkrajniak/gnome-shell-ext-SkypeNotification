@@ -925,7 +925,11 @@ const Skype = new Lang.Class({
         }
     },
 
-    _destroyOriginalTrayIcon:  function() {
+    _getCurrentUserHandle: function() {
+        return this._currentUserHandle;
+    },
+
+    _destroyOriginalTrayIcon: function() {
         let tray = Main.legacyTray;
         let children = tray._iconBox.get_n_children();
         for(let i = 0; i < children; i++) {
@@ -936,7 +940,10 @@ const Skype = new Lang.Class({
 
     _onTrayIconAddedRemoveOriginalIcon: function(object, icon) {
         if(this._skypeHideOriginalTrayIcon && icon.wm_class == "Skype") {
-            icon.get_parent().destroy();
+            let button = icon.get_parent();
+            if(button != null) {
+                button.destroy();
+            }
         }
     }
 });

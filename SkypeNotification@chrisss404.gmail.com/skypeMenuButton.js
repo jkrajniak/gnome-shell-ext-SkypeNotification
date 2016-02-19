@@ -60,6 +60,7 @@ const SkypeMenuButton = new Lang.Class({
         this._getCurrentPresence = Lang.bind(skype, skype._getCurrentPresence);
         this._isThereAnActiveCall = Lang.bind(skype, skype._isThereAnActiveCall);
         this._quitSkype = Lang.bind(skype, skype._quit);
+        this._getCurrentUserHandle = Lang.bind(skype, skype._getCurrentUserHandle);
 
         this._recentChatsSection = new PopupMenu.PopupSubMenuMenuItem(_("Recent Chats"));
 
@@ -131,7 +132,7 @@ const SkypeMenuButton = new Lang.Class({
     _onButtonPressEvent: function(actor, event) {
         if(this._isShowContactsOnLeftClickActive() && event.get_button() == 1) {
             this.menu.close();
-            this._openContactList();
+            this._toggleSkypeMainWindow();
             return Clutter.EVENT_STOP;
         }
         return Clutter.EVENT_PROPAGATE;
@@ -201,6 +202,24 @@ const SkypeMenuButton = new Lang.Class({
     _openContactList: function() {
         this._skypeApp.open_new_window(-1);
         this._focusWindow(this._focusSkypeMainWindow);
+    },
+
+    _toggleSkypeMainWindow: function() {
+        let closed = false;
+        let windows = this._skypeApp.get_windows();
+        for(let i in windows) {
+            let title = windows[i].get_title();
+            if(title.indexOf(" - ") !== -1 && title.indexOf(this._getCurrentUserHandle()) !== -1) {
+                windows[i].delete(global.get_current_time());
+                closed = true;
+                break;
+            }
+        }
+
+        if(!closed) {
+            this._skypeApp.open_new_window(-1);
+            this._focusWindow(this._focusSkypeMainWindow)
+        }
     },
 
     _openAddContact: function() {
