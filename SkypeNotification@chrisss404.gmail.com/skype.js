@@ -103,9 +103,6 @@ const Skype = new Lang.Class({
         this._systemWidePresence = false;
         this._showContactsOnLeftClick = false;
         this._apiExtension = new SkypeAPIExtension(Lang.bind(this, this.NotifyCallback));
-        this._isGnome316orNewer = (Config.PACKAGE_VERSION.indexOf("3.16") == 0) ||
-                                  (Config.PACKAGE_VERSION.indexOf("3.18") == 0) ||
-                                  (Config.PACKAGE_VERSION.indexOf("3.20") == 0);
 
         this._messages = [];
         this._closeTimer = null;
@@ -305,7 +302,7 @@ const Skype = new Lang.Class({
 
         let messageList = Main.panel.statusArea.dateMenu._messageList;
         if(typeof messageList === "object") {
-            this._notificationSectionCloseSignal = messageList._notificationSection._closeButton.connect("clicked", Lang.bind(this, this._onCloseNotificationSection316));
+            this._notificationSectionCloseSignal = messageList._notificationSection._closeButton.connect("clicked", Lang.bind(this, this._onCloseNotificationSection));
         }
 
         let trayManager = Main.legacyTray._trayManager;
@@ -367,47 +364,7 @@ const Skype = new Lang.Class({
         }
     },
 
-    _updateNotifySource: function() {
-        let source = null;
-        let items = Main.messageTray.getSources();
-
-        let item = null;
-        let numberOfNotifications = -1;
-        for(let index in items) {
-            item = items[index];
-            if(item.title == "Skype") {
-                if(item.count > numberOfNotifications) {
-                    source = item;
-                    numberOfNotifications = item.count;
-                }
-            }
-        }
-
-        if(source == null) {
-            this._notificationSource++;
-        } else {
-            this._notificationSource = source;
-        }
-    },
-
-    _onClose: function() {
-        this._messages = [];
-
-        if(this._activeNotification != null && !Main.messageTray._trayHovered) {
-            this._activeNotification.emit("destroy", MessageTray.NotificationDestroyedReason.EXPIRED);
-            this._activeNotification = null;
-        }
-    },
-
-    _onClicked: function() {
-        let recent = this._getRecentChats();
-        if(recent.length > 0) {
-            this._proxy.InvokeRemote("OPEN CHAT " + recent[0]["chat"]);
-            this._focusWindow(this._focusSkypeChatWindow);
-        }
-    },
-
-    _onCloseNotificationSection316: function() {
+    _onCloseNotificationSection: function() {
         this._messages = [];
 
         if(this._activeNotification != null) {
@@ -421,7 +378,7 @@ const Skype = new Lang.Class({
         }
     },
 
-    _onClicked316: function(event) {
+    _onClicked: function(event) {
         if(event.skype_id == 'group') {
             this._focusSkypeChatWindow();
         } else {
@@ -432,7 +389,7 @@ const Skype = new Lang.Class({
         Main.panel.closeCalendar();
     },
 
-    _getLastChatActivity316: function(uid) {
+    _getLastChatActivity: function(uid) {
         let chat_id = "";
         let chats = this._recentChats;
         for(let index in chats) {
@@ -459,162 +416,97 @@ const Skype = new Lang.Class({
             return;
         }
 
-        if(this._isGnome316orNewer) {
-            let uid = message['id'];
+        let uid = message['id'];
 
-            if(typeof this._notificationSource !== "object") {
-                this._notificationSource = new MessageTray.Source("SkypeExtension", 'skype');
-            }
-            if(typeof this._notificationActivity[uid] === 'undefined') {
-                this._notificationActivity[uid] = 0;
-            }
-
-            let addNotificationSource = true;
-            let skypeNotificationSource = null;
-            let sources = Main.messageTray.getSources();
-            for(let index in sources) {
-                if(sources[index].title === "Skype") {
-                    skypeNotificationSource = sources[index];
-                } else if(sources[index].title === "SkypeExtension") {
-                    addNotificationSource = false;
-                }
-            }
-
-            if(addNotificationSource) {
-                Main.messageTray.add(this._notificationSource);
-            }
-
-
-            let last_activity = this._getLastChatActivity316(uid);
-            if(this._notificationActivity[uid] == last_activity) {
-                uid = "group";
-            } else {
-                this._notificationActivity[uid] = last_activity;
-            }
-
-
-            if(skypeNotificationSource != null && skypeNotificationSource.notifications.length > 0) {
-                this._activeNotification = skypeNotificationSource.notifications[
-                                                            skypeNotificationSource.notifications.length - 1];
-                this._activeNotification.connect("activated", Lang.bind(this, this._onClicked316));
-            }
-            if(this._activeNotification == null) {
-                this._activeNotification = new MessageTray.Notification(this._notificationSource, "", "", {});
-                this._activeNotification.connect("activated", Lang.bind(this, this._onClicked316));
-            }
-            this._activeNotification.skype_id = uid;
-
-
-            if(message['body'] == "") {
-                this._messages.push("%s".format(message['summary']));
-            } else {
-                this._messages.push("<i>%s</i>: %s".format(message['summary'], message['body']));
-            }
-            while(this._messages.length > 5) {
-                this._messages.splice(0, 1);
-            }
-
-            let body = "";
-            for(let i in this._messages) {
-                if(i != 0) {
-                    body = "\t\n" + body;
-                }
-                body = this._messages[i] + body;
-            }
-
-            message.icon = (message.icon == "skype") ? "" : message.icon;
-            let params = { secondaryGIcon: Gio.icon_new_for_string(message.icon), bannerMarkup: true };
-            this._activeNotification.update("Skype", body, params);
-            if(skypeNotificationSource != null) {
-                skypeNotificationSource.notify(this._activeNotification);
-            } else {
-                this._notificationSource.notify(this._activeNotification);
-            }
-            
-            if(message['sticky']) {
-                this._activeNotification._sticky = true;
-            }
-
-            if(this._activeNotification._destroyTimer != null || this._activeNotification._sticky) {
-                if(this._activeNotification._destroyTimer != null) {
-                    GLib.source_remove(this._activeNotification._destroyTimer);
-                    this._activeNotification._destroyTimer = null;
-                }
-            }
-
-            if(!this._activeNotification._sticky) {
-                this._activeNotification._destroyTimer = GLib.timeout_add(
-                    GLib.PRIORITY_DEFAULT,
-                    MessageTray.NOTIFICATION_TIMEOUT * 1000,
-                    Lang.bind(this, function() {
-                        this._activeNotification.destroy();
-                        this._messages = [];
-                    })
-                );
-            }
-
-            return;
-        }
-
-        this._messages.push(message);
-
-        if(this._closeTimer != null) {
-            GLib.source_remove(this._closeTimer);
-            this._closeTimer = null;
-        }
-        this._closeTimer = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 10000, Lang.bind(this, this._onClose));
-        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, Lang.bind(this, this._notify));
-    },
-
-    _notify: function() {
-        this._updateNotifySource();
         if(typeof this._notificationSource !== "object") {
-            if(this._notificationSource < 10) {
-                GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, Lang.bind(this, this._notify));
-            } else {
-                this._notificationSource = 0;
-            }
-            return;
+            this._notificationSource = new MessageTray.Source("SkypeExtension", 'skype');
+        }
+        if(typeof this._notificationActivity[uid] === 'undefined') {
+            this._notificationActivity[uid] = 0;
         }
 
-        let items = this._messages;
-        items.reverse();
-
-        let summary = "Skype";
-        let body = [];
-        let icon = "skype";
-
-        if(this._messages.length > 1) {
-            for(let index in items) {
-                if(items[index].body.length > 0) {
-                    body.push([items[index].summary, items[index].body].join(": "));
-                } else {
-                    body.push(items[index].summary);
-                }
-                body.push("\n");
+        let addNotificationSource = true;
+        let skypeNotificationSource = null;
+        let sources = Main.messageTray.getSources();
+        for(let index in sources) {
+            if(sources[index].title === "Skype") {
+                skypeNotificationSource = sources[index];
+            } else if(sources[index].title === "SkypeExtension") {
+                addNotificationSource = false;
             }
+        }
+
+        if(addNotificationSource) {
+            Main.messageTray.add(this._notificationSource);
+        }
+
+
+        let last_activity = this._getLastChatActivity(uid);
+        if(this._notificationActivity[uid] == last_activity) {
+            uid = "group";
         } else {
-            for(let index in items) {
-                summary = items[index].summary;
-                body.push(items[index].body);
-                icon = items[index].icon;
-            }
+            this._notificationActivity[uid] = last_activity;
         }
-        body = body.join("").trim();
 
-        let params = { "gicon": Gio.icon_new_for_string(icon) };
-        if(this._notificationSource.count == 0) {
-            this._activeNotification = new MessageTray.Notification(this._notificationSource,
-                    summary, body, params);
-            this._activeNotification.setUrgency(MessageTray.Urgency.HIGH);
-            this._activeNotification.connect("clicked", Lang.bind(this, this._onClicked));
+
+        if(skypeNotificationSource != null && skypeNotificationSource.notifications.length > 0) {
+            this._activeNotification = skypeNotificationSource.notifications[
+                                                        skypeNotificationSource.notifications.length - 1];
+            this._activeNotification.connect("activated", Lang.bind(this, this._onClicked));
+        }
+        if(this._activeNotification == null) {
+            this._activeNotification = new MessageTray.Notification(this._notificationSource, "", "", {});
+            this._activeNotification.connect("activated", Lang.bind(this, this._onClicked));
+        }
+        this._activeNotification.skype_id = uid;
+
+
+        if(message['body'] == "") {
+            this._messages.push("%s".format(message['summary']));
+        } else {
+            this._messages.push("<i>%s</i>: %s".format(message['summary'], message['body']));
+        }
+        while(this._messages.length > 5) {
+            this._messages.splice(0, 1);
+        }
+
+        let body = "";
+        for(let i in this._messages) {
+            if(i != 0) {
+                body = "\t\n" + body;
+            }
+            body = this._messages[i] + body;
+        }
+
+        message.icon = (message.icon == "skype") ? "" : message.icon;
+        let params = { secondaryGIcon: Gio.icon_new_for_string(message.icon), bannerMarkup: true };
+        this._activeNotification.update("Skype", body, params);
+        if(skypeNotificationSource != null) {
+            skypeNotificationSource.notify(this._activeNotification);
+        } else {
             this._notificationSource.notify(this._activeNotification);
-        } else {
-            this._activeNotification = this._notificationSource.notifications[0];
-            this._activeNotification.setTransient(true);
-            this._activeNotification.setUrgency(MessageTray.Urgency.HIGH);
-            this._activeNotification.connect("clicked", Lang.bind(this, this._onClicked));
-            this._activeNotification.update(summary, body, params);
+        }
+        
+        if(message['sticky']) {
+            this._activeNotification._sticky = true;
+        }
+
+        if(this._activeNotification._destroyTimer != null || this._activeNotification._sticky) {
+            if(this._activeNotification._destroyTimer != null) {
+                GLib.source_remove(this._activeNotification._destroyTimer);
+                this._activeNotification._destroyTimer = null;
+            }
+        }
+
+        if(!this._activeNotification._sticky) {
+            this._activeNotification._destroyTimer = GLib.timeout_add(
+                GLib.PRIORITY_DEFAULT,
+                MessageTray.NOTIFICATION_TIMEOUT * 1000,
+                Lang.bind(this, function() {
+                    this._activeNotification.destroy();
+                    this._messages = [];
+                })
+            );
         }
     },
 
