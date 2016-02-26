@@ -104,7 +104,8 @@ const Skype = new Lang.Class({
         this._showContactsOnLeftClick = false;
         this._apiExtension = new SkypeAPIExtension(Lang.bind(this, this.NotifyCallback));
         this._isGnome316orNewer = (Config.PACKAGE_VERSION.indexOf("3.16") == 0) ||
-                                  (Config.PACKAGE_VERSION.indexOf("3.18") == 0);
+                                  (Config.PACKAGE_VERSION.indexOf("3.18") == 0) ||
+                                  (Config.PACKAGE_VERSION.indexOf("3.20") == 0);
 
         this._messages = [];
         this._closeTimer = null;

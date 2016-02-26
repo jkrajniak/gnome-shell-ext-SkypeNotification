@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SkypeNotification@chrisss404.gmail.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-07 10:48+0100\n"
+"POT-Creation-Date: 2016-02-26 17:07+0100\n"
 "PO-Revision-Date: 2013-09-30 18:42+0200\n"
 "Last-Translator: xyzdario <>\n"
 "Language-Team: Español <>\n"
@@ -18,47 +18,47 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Gtranslator 2.91.6\n"
 
-#: ../skypeMenuButton.js:63
+#: ../skypeMenuButton.js:65
 msgid "Recent Chats"
 msgstr "Conversaciones recientes"
 
-#: ../skypeMenuButton.js:65
+#: ../skypeMenuButton.js:67
 msgid "Change Status"
 msgstr "Cambio de estado"
 
-#: ../skypeMenuButton.js:68
+#: ../skypeMenuButton.js:70
 msgid "Online"
 msgstr "En linea"
 
-#: ../skypeMenuButton.js:72
+#: ../skypeMenuButton.js:74
 msgid "Away"
 msgstr "Ausente"
 
-#: ../skypeMenuButton.js:76
+#: ../skypeMenuButton.js:78
 msgid "Do Not Disturb"
 msgstr "No molestar"
 
-#: ../skypeMenuButton.js:80
+#: ../skypeMenuButton.js:82
 msgid "Invisible"
 msgstr "Invisible"
 
-#: ../skypeMenuButton.js:84
+#: ../skypeMenuButton.js:86
 msgid "Offline"
 msgstr "Fuera de linea"
 
-#: ../skypeMenuButton.js:98
+#: ../skypeMenuButton.js:100
 msgid "Show Contact List"
 msgstr "Mostrar lista de contactos"
 
-#: ../skypeMenuButton.js:101
+#: ../skypeMenuButton.js:103
 msgid "Add a Contact"
 msgstr "Agregar un contacto"
 
-#: ../skypeMenuButton.js:104
+#: ../skypeMenuButton.js:106
 msgid "Microphone"
 msgstr "Micrófono"
 
-#: ../skypeMenuButton.js:107
+#: ../skypeMenuButton.js:109
 msgid "Quit"
 msgstr "Salir"
 
@@ -143,8 +143,8 @@ msgid "Shall the top bar icon be displayed"
 msgstr "Mostrar ícono en panel superior"
 
 #: ../prefs.js:93
-msgid "Hide original tray icon"
-msgstr "Ocultar ícono de bandeja"
+msgid "Hide original tray icon (restart required)"
+msgstr "Ocultar ícono de bandeja (reinicio requerido)"
 
 #: ../prefs.js:102 ../prefs.js:103
 msgid "Shall the original tray icon be hidden"

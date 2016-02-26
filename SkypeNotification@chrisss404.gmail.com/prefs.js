@@ -90,7 +90,7 @@ function buildPrefsWidget() {
     let hideTrayIconLabel = new Gtk.Label({
         xalign: 0
     });
-    hideTrayIconLabel.set_markup("<span size='medium'><b>" + _("Hide original tray icon") + "</b></span>");
+    hideTrayIconLabel.set_markup("<span size='medium'><b>" + _("Hide original tray icon (restart required)") + "</b></span>");
 
     let hideTrayIconSwitch = new Gtk.Switch({
         active: settings.get_boolean(SETTINGS_DESTROY_ORIGINAL_TRAY_ICON_KEY)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-07 10:48+0100\n"
+"POT-Creation-Date: 2016-02-26 17:07+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,47 +17,47 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../skypeMenuButton.js:63
+#: ../skypeMenuButton.js:65
 msgid "Recent Chats"
 msgstr ""
 
-#: ../skypeMenuButton.js:65
+#: ../skypeMenuButton.js:67
 msgid "Change Status"
 msgstr ""
 
-#: ../skypeMenuButton.js:68
+#: ../skypeMenuButton.js:70
 msgid "Online"
 msgstr ""
 
-#: ../skypeMenuButton.js:72
+#: ../skypeMenuButton.js:74
 msgid "Away"
 msgstr ""
 
-#: ../skypeMenuButton.js:76
+#: ../skypeMenuButton.js:78
 msgid "Do Not Disturb"
 msgstr ""
 
-#: ../skypeMenuButton.js:80
+#: ../skypeMenuButton.js:82
 msgid "Invisible"
 msgstr ""
 
-#: ../skypeMenuButton.js:84
+#: ../skypeMenuButton.js:86
 msgid "Offline"
 msgstr ""
 
-#: ../skypeMenuButton.js:98
+#: ../skypeMenuButton.js:100
 msgid "Show Contact List"
 msgstr ""
 
-#: ../skypeMenuButton.js:101
+#: ../skypeMenuButton.js:103
 msgid "Add a Contact"
 msgstr ""
 
-#: ../skypeMenuButton.js:104
+#: ../skypeMenuButton.js:106
 msgid "Microphone"
 msgstr ""
 
-#: ../skypeMenuButton.js:107
+#: ../skypeMenuButton.js:109
 msgid "Quit"
 msgstr ""
 
@@ -142,7 +142,7 @@ msgid "Shall the top bar icon be displayed"
 msgstr ""
 
 #: ../prefs.js:93
-msgid "Hide original tray icon"
+msgid "Hide original tray icon (restart required)"
 msgstr ""
 
 #: ../prefs.js:102 ../prefs.js:103

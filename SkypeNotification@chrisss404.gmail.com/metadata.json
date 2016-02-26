@@ -1,8 +1,8 @@
 {
-    "shell-version": ["3.14", "3.16", "3.18"],
+    "shell-version": ["3.14", "3.16", "3.18", "3.20"],
     "settings-schema": "org.gnome.shell.extensions.skype-integration", 
     "uuid": "SkypeNotification@chrisss404.gmail.com", 
     "name": "Skype Integration", 
-    "description": "Integrated Skype features: use shell notifications, add search provider to find Skype contacts, add Skype menu button that displays the current online presence and more. (Make sure you have the D-Bus Python Bindings installed)",
+    "description": "Integrated features: shell notifications, search provider for Skype contacts, top bar menu button indicating missed messages and current online presence. (Make sure you have Skype and D-Bus Python bindings installed)",
     "url": "https://github.com/chrisss404/gnome-shell-ext-SkypeNotification"
 }

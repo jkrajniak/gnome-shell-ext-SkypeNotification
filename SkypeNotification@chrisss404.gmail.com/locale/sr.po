@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SkypeNotification@chrisss 404.gmail.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-07 10:48+0100\n"
+"POT-Creation-Date: 2016-02-26 17:07+0100\n"
 "PO-Revision-Date: 2015-06-11 12:35+0200\n"
 "Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail."
 "com>\n"
@@ -20,47 +20,47 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../skypeMenuButton.js:63
+#: ../skypeMenuButton.js:65
 msgid "Recent Chats"
 msgstr "Скорашња ћаскања"
 
-#: ../skypeMenuButton.js:65
+#: ../skypeMenuButton.js:67
 msgid "Change Status"
 msgstr "Промени стање"
 
-#: ../skypeMenuButton.js:68
+#: ../skypeMenuButton.js:70
 msgid "Online"
 msgstr "Доступан/на"
 
-#: ../skypeMenuButton.js:72
+#: ../skypeMenuButton.js:74
 msgid "Away"
 msgstr "Недоступан/на"
 
-#: ../skypeMenuButton.js:76
+#: ../skypeMenuButton.js:78
 msgid "Do Not Disturb"
 msgstr "Не узнемиравај"
 
-#: ../skypeMenuButton.js:80
+#: ../skypeMenuButton.js:82
 msgid "Invisible"
 msgstr "Невидљив(a)"
 
-#: ../skypeMenuButton.js:84
+#: ../skypeMenuButton.js:86
 msgid "Offline"
 msgstr "Ван мреже"
 
-#: ../skypeMenuButton.js:98
+#: ../skypeMenuButton.js:100
 msgid "Show Contact List"
 msgstr "Прикажи контакте"
 
-#: ../skypeMenuButton.js:101
+#: ../skypeMenuButton.js:103
 msgid "Add a Contact"
 msgstr "Додај контакт"
 
-#: ../skypeMenuButton.js:104
+#: ../skypeMenuButton.js:106
 msgid "Microphone"
 msgstr "Микрофон"
 
-#: ../skypeMenuButton.js:107
+#: ../skypeMenuButton.js:109
 msgid "Quit"
 msgstr "Изађи"
 
@@ -145,7 +145,7 @@ msgid "Shall the top bar icon be displayed"
 msgstr "Подешава приказ иконице у горњој траци"
 
 #: ../prefs.js:93
-msgid "Hide original tray icon"
+msgid "Hide original tray icon (restart required)"
 msgstr ""
 
 #: ../prefs.js:102 ../prefs.js:103
