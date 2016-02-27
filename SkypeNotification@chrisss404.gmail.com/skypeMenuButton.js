@@ -61,7 +61,6 @@ const SkypeMenuButton = new Lang.Class({
         this._getCurrentPresence = Lang.bind(skype, skype._getCurrentPresence);
         this._isThereAnActiveCall = Lang.bind(skype, skype._isThereAnActiveCall);
         this._quitSkype = Lang.bind(skype, skype._quit);
-        this._getCurrentUserHandle = Lang.bind(skype, skype._getCurrentUserHandle);
 
         this._recentChatsSection = new PopupMenu.PopupSubMenuMenuItem(_("Recent Chats"));
 

@@ -100,7 +100,6 @@ const Skype = new Lang.Class({
         this._skypeHideOriginalTrayIcon = true;
         this._skypeNativeNotifications = true;
         this._skypeSearchProviderEnabled = true;
-        this._systemWidePresence = false;
         this._showContactsOnLeftClick = false;
         this._apiExtension = new SkypeAPIExtension(Lang.bind(this, this.NotifyCallback));
 
@@ -140,7 +139,6 @@ const Skype = new Lang.Class({
         this._skypeHideOriginalTrayIcon = this._settings.get_boolean(SETTINGS_DESTROY_ORIGINAL_TRAY_ICON_KEY);
         this._skypeNativeNotifications = this._settings.get_boolean(SETTINGS_NATIVE_NOTIFICATIONS_KEY);
         this._skypeSearchProviderEnabled = this._settings.get_boolean(SETTINGS_ENABLE_SEARCH_PROVIDER_KEY);
-        this._systemWidePresence = this._settings.get_boolean(SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY);
         this._showContactsOnLeftClick = this._settings.get_boolean(SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY);
     },
 
@@ -191,7 +189,6 @@ const Skype = new Lang.Class({
         }
 
        
-        this._systemWidePresence = this._settings.get_boolean(SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY);
         this._showContactsOnLeftClick = this._settings.get_boolean(SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY);
     },
 
@@ -339,28 +336,6 @@ const Skype = new Lang.Class({
         if(this._trayIconAddedSignal != null) {
             Main.legacyTray._trayManager.disconnect(this._trayIconAddedSignal);
             this._trayIconAddedSignal = null;
-        }
-    },
-
-    updateSkypeStatus: function(presence) {
-        if(this._systemWidePresence) {
-            switch(presence) {
-                case Tp.ConnectionPresenceType.BUSY:
-                    this._proxy.InvokeRemote("SET USERSTATUS DND");
-                    break;
-                case Tp.ConnectionPresenceType.OFFLINE:
-                    this._proxy.InvokeRemote("SET USERSTATUS OFFLINE");
-                    break;
-                case Tp.ConnectionPresenceType.HIDDEN:
-                    this._proxy.InvokeRemote("SET USERSTATUS INVISIBLE");
-                    break;
-                case Tp.ConnectionPresenceType.AWAY:
-                    this._proxy.InvokeRemote("SET USERSTATUS AWAY");
-                    break;
-                case Tp.ConnectionPresenceType.AVAILABLE:
-                default:
-                    this._proxy.InvokeRemote("SET USERSTATUS ONLINE");
-            }
         }
     },
 

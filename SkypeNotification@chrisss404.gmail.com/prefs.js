@@ -30,7 +30,6 @@ const SETTINGS_SHOW_PANEL_BUTTON_KEY = "show-top-bar-icon";
 const SETTINGS_DESTROY_ORIGINAL_TRAY_ICON_KEY = "destroy-original-tray-icon";
 const SETTINGS_NATIVE_NOTIFICATIONS_KEY = "native-notifications";
 const SETTINGS_ENABLE_SEARCH_PROVIDER_KEY = "search-provider";
-const SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY = "follow-system-wide-presence";
 const SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY = "open-contacts-on-top-bar-icon-left-click";
 
 
@@ -154,31 +153,6 @@ function buildPrefsWidget() {
 
     hbox.pack_start(enableSearchProviderSwitch, false, false, 10);
     hbox.add(enableSearchProviderLabel);
-
-    frame.pack_start(hbox, false, false, 10);
-
-
-    let hbox = new Gtk.Box({
-        orientation: Gtk.Orientation.HORIZONTAL
-    });
-
-    let followSystemPresenceLabel = new Gtk.Label({
-        xalign: 0
-    });
-    followSystemPresenceLabel.set_markup("<span size='medium'><b>" + _("Follow system-wide presence state") + "</b></span>");
-
-    let followSystemPresenceSwitch = new Gtk.Switch({
-        active: settings.get_boolean(SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY)
-    });
-    followSystemPresenceSwitch.connect("notify::active", function(button) {
-        settings.set_boolean(SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY, button.active);
-    });
-
-    followSystemPresenceLabel.set_tooltip_text(_("Shall Skype online status follow the system-wide presence state"));
-    followSystemPresenceSwitch.set_tooltip_text(_("Shall Skype online status follow the system-wide presence state"));
-
-    hbox.pack_start(followSystemPresenceSwitch, false, false, 10);
-    hbox.add(followSystemPresenceLabel);
 
     frame.pack_start(hbox, false, false, 10);
 
