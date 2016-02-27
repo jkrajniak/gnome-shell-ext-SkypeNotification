@@ -53,6 +53,7 @@ const SkypeMenuButton = new Lang.Class({
         this._proxy = skype._proxy;
         this._skypeApp = skype._skypeApp;
         this._getRecentChats = Lang.bind(skype, skype._getRecentChats);
+        this._toggleSkypeMainWindow = Lang.bind(skype, skype._toggleSkypeMainWindow);
         this._focusWindow = Lang.bind(skype, skype._focusWindow);
         this._focusSkypeMainWindow = Lang.bind(skype, skype._focusSkypeMainWindow);
         this._focusSkypeChatWindow = Lang.bind(skype, skype._focusSkypeChatWindow);
@@ -202,24 +203,6 @@ const SkypeMenuButton = new Lang.Class({
     _openContactList: function() {
         this._skypeApp.open_new_window(-1);
         this._focusWindow(this._focusSkypeMainWindow);
-    },
-
-    _toggleSkypeMainWindow: function() {
-        let closed = false;
-        let windows = this._skypeApp.get_windows();
-        for(let i in windows) {
-            let title = windows[i].get_title();
-            if(title.indexOf(" - ") !== -1 && title.indexOf(this._getCurrentUserHandle()) !== -1) {
-                windows[i].delete(global.get_current_time());
-                closed = true;
-                break;
-            }
-        }
-
-        if(!closed) {
-            this._skypeApp.open_new_window(-1);
-            this._focusWindow(this._focusSkypeMainWindow)
-        }
     },
 
     _openAddContact: function() {

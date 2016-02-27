@@ -380,10 +380,10 @@ const Skype = new Lang.Class({
 
     _onClicked: function(event) {
         if(event.skype_id == 'group') {
-            this._focusSkypeChatWindow();
+            this._focusWindow(Lang.bind(this, this._focusSkypeChatWindow));
         } else {
             this._proxy.InvokeRemote("OPEN CHAT " + event.skype_id);
-            this._focusWindow(this._focusSkypeChatWindow);
+            this._focusWindow(Lang.bind(this, this._focusSkypeChatWindow));
         }
 
         Main.panel.closeCalendar();
@@ -718,6 +718,24 @@ const Skype = new Lang.Class({
         } else if(message.indexOf("USERSTATUS ") !== -1) {
             this._currentPresence = message.split(" ")[1];
             this._runUserPresenceCallbacks();
+        }
+    },
+
+    _toggleSkypeMainWindow: function() {
+        let closed = false;
+        let windows = this._skypeApp.get_windows();
+        for(let i in windows) {
+            let title = windows[i].get_title();
+            if(title.indexOf(" - ") !== -1 && title.indexOf(this._getCurrentUserHandle()) !== -1) {
+                windows[i].delete(global.get_current_time());
+                closed = true;
+                break;
+            }
+        }
+
+        if(!closed) {
+            this._skypeApp.open_new_window(-1);
+            this._focusWindow(Lang.bind(this, this._focusSkypeMainWindow));
         }
     },
 
