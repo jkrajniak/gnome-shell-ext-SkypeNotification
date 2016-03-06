@@ -31,6 +31,11 @@ There are two possibilities:
 
 ### FAQs
 
+#### How can I find debug/error output?
+
+- `Alt`+`F2`, `lg`, `Enter`, navigate to `Extensions` tab and find `Show errors`
+-  and / or `journalctl -xn -f /usr/bin/gnome-shell`
+
 #### How can I enable and disable individual notifications?
 
 Go to Options > Notifications and click on `Advanced View`. If the option `Execute the following script` is checked, the notification is enabled otherwise it is disabled ([initial question](https://github.com/chrisss404/gnome-shell-ext-SkypeNotification/issues/9)). [Here](https://github.com/chrisss404/gnome-shell-ext-SkypeNotification/blob/master/SkypeNotification%40chrisss404.gmail.com/skypeConfig.js#L45) is a list of all supported notifications.

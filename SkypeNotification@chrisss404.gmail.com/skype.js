@@ -24,7 +24,6 @@ const Lang = imports.lang;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Shell = imports.gi.Shell;
-const Tp = imports.gi.TelepathyGLib;
 
 const Config = imports.misc.config;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
@@ -78,6 +77,7 @@ const SETTINGS_NATIVE_NOTIFICATIONS_KEY = "native-notifications";
 const SETTINGS_ENABLE_SEARCH_PROVIDER_KEY = "search-provider";
 const SETTINGS_FOLLOW_SYSTEM_WIDE_PRESENCE_KEY = "follow-system-wide-presence";
 const SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY = "open-contacts-on-top-bar-icon-left-click";
+const SETTINGS_PANEL_BUTTON_POSITION_KEY = "panel-button-position";
 const SETTINGS_IS_FIRST_RUN_KEY = "is-first-run";
 
 
@@ -101,6 +101,7 @@ const Skype = new Lang.Class({
         this._skypeNativeNotifications = true;
         this._skypeSearchProviderEnabled = true;
         this._showContactsOnLeftClick = false;
+        this._skypeMenuPosition = 0;
         this._apiExtension = new SkypeAPIExtension(Lang.bind(this, this.NotifyCallback));
 
         this._messages = [];
@@ -140,14 +141,19 @@ const Skype = new Lang.Class({
         this._skypeNativeNotifications = this._settings.get_boolean(SETTINGS_NATIVE_NOTIFICATIONS_KEY);
         this._skypeSearchProviderEnabled = this._settings.get_boolean(SETTINGS_ENABLE_SEARCH_PROVIDER_KEY);
         this._showContactsOnLeftClick = this._settings.get_boolean(SETTINGS_OPEN_CONTACTS_ON_LEFT_CLICK_KEY);
+        this._skypeMenuPosition = this._settings.get_int(SETTINGS_PANEL_BUTTON_POSITION_KEY);
     },
 
     _onSettingsChanged: function() {
         this._skypeMenuEnabled = this._settings.get_boolean(SETTINGS_SHOW_PANEL_BUTTON_KEY);
-        if(this._skypeMenuEnabled && this._skypeMenu == null) {
+        this._skypeMenuPosition = this._settings.get_int(SETTINGS_PANEL_BUTTON_POSITION_KEY);
+        if(this._skypeMenuEnabled) {
+            if(this._skypeMenu != null) {
+                this._skypeMenu.destroy();
+            }
             this._skypeMenu = new SkypeMenuButton(this);
             this._runUserPresenceCallbacks();
-            Main.panel.addToStatusArea("skypeMenu", this._skypeMenu);
+            this._addToStatusArea("skypeMenu");
             this._missedChat();
         }
 
@@ -671,7 +677,7 @@ const Skype = new Lang.Class({
 
             if(this._skypeMenuEnabled && this._skypeMenu == null) {
                 this._skypeMenu = new SkypeMenuButton(this);
-                Main.panel.addToStatusArea("skypeMenu", this._skypeMenu);
+                this._addToStatusArea("skypeMenu");
                 this._missedChat();
             }
 
@@ -694,6 +700,21 @@ const Skype = new Lang.Class({
             this._currentPresence = message.split(" ")[1];
             this._runUserPresenceCallbacks();
         }
+    },
+
+    _addToStatusArea: function(role) {
+        if(this._skypeMenu == null) {
+            return;
+        }
+
+        if (Main.panel.statusArea[role]) {
+            throw new Error('Extension point conflict: there is already a status indicator for role ' + role);
+        }
+
+        let index = Main.panel._rightBox.get_n_children() - this._skypeMenuPosition - 1;
+
+        Main.panel.statusArea[role] = this._skypeMenu;
+        Main.panel._addToPanelBox(role, this._skypeMenu, index, Main.panel._rightBox);
     },
 
     _toggleSkypeMainWindow: function() {

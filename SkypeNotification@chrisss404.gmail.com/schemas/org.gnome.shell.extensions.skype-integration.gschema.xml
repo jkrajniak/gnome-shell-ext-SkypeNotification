@@ -27,6 +27,11 @@
             <summary>Open contacts on left click on top bar icon</summary>
             <description>Shall the Skype contact list be opened when the top bar icon is clicked by the left mouse button</description>
         </key>
+        <key name="panel-button-position" type="i">
+            <default>0</default>
+            <summary>Panel button position</summary>
+            <description>Define panel button's position</description>
+        </key>
         <key name="is-first-run" type="b">
             <default>true</default>
         </key>

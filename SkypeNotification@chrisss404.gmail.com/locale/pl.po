@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SkypeNotification@chrisss404.gmail.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-27 09:30+0100\n"
+"POT-Creation-Date: 2016-03-06 13:20+0100\n"
 "PO-Revision-Date: 2013-09-07 20:27+0100\n"
 "Last-Translator: Robert Jegliński <koluch@goldap.net.pl>\n"
 "Language-Team: Polish\n"
@@ -129,44 +129,52 @@ msgstr "{contact} ochodzi jutro urodziny"
 msgid "Happy Birthday {contact}"
 msgstr "{contact} obchodzi dzisiaj urodziny"
 
-#: ../prefs.js:67
+#: ../prefs.js:70
 msgid "Show top bar icon"
 msgstr "Pokaż ikonę w górnym pasku stanu"
 
-#: ../prefs.js:76 ../prefs.js:77
+#: ../prefs.js:80 ../prefs.js:81
 msgid "Shall the top bar icon be displayed"
 msgstr "Czy ikona w górnym pasku stanu ma być wyświetlana"
 
-#: ../prefs.js:92
+#: ../prefs.js:96
 msgid "Hide original tray icon (restart required)"
 msgstr ""
 
-#: ../prefs.js:101 ../prefs.js:102
+#: ../prefs.js:106 ../prefs.js:107
 msgid "Shall the original tray icon be hidden"
 msgstr ""
 
-#: ../prefs.js:117
+#: ../prefs.js:122
 msgid "Native notifications"
 msgstr ""
 
-#: ../prefs.js:126 ../prefs.js:127
+#: ../prefs.js:132 ../prefs.js:133
 msgid "Shall Skype make use of native notifications"
 msgstr ""
 
-#: ../prefs.js:142
+#: ../prefs.js:148
 msgid "Search provider"
 msgstr ""
 
-#: ../prefs.js:151 ../prefs.js:152
+#: ../prefs.js:158 ../prefs.js:159
 msgid "Shall a Skype search provider be added"
 msgstr ""
 
-#: ../prefs.js:167
+#: ../prefs.js:174
 msgid "Open contacts on left click on top bar icon"
 msgstr ""
 
-#: ../prefs.js:176 ../prefs.js:177
+#: ../prefs.js:184 ../prefs.js:185
 msgid ""
 "Shall the Skype contact list be opened when the top bar icon is clicked by "
 "the left mouse button"
+msgstr ""
+
+#: ../prefs.js:200
+msgid "Panel button position"
+msgstr ""
+
+#: ../prefs.js:210 ../prefs.js:211
+msgid "Define panel button's position"
 msgstr ""

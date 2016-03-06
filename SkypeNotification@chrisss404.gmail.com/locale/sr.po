@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SkypeNotification@chrisss 404.gmail.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-27 09:30+0100\n"
+"POT-Creation-Date: 2016-03-06 13:20+0100\n"
 "PO-Revision-Date: 2015-06-11 12:35+0200\n"
 "Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail."
 "com>\n"
@@ -136,49 +136,57 @@ msgstr "{contact} сутра слави рођендан"
 msgid "Happy Birthday {contact}"
 msgstr "Срећан рођендан {contact}"
 
-#: ../prefs.js:67
+#: ../prefs.js:70
 msgid "Show top bar icon"
 msgstr "Прикажи иконицу у горњој траци"
 
-#: ../prefs.js:76 ../prefs.js:77
+#: ../prefs.js:80 ../prefs.js:81
 msgid "Shall the top bar icon be displayed"
 msgstr "Подешава приказ иконице у горњој траци"
 
-#: ../prefs.js:92
+#: ../prefs.js:96
 msgid "Hide original tray icon (restart required)"
 msgstr ""
 
-#: ../prefs.js:101 ../prefs.js:102
+#: ../prefs.js:106 ../prefs.js:107
 msgid "Shall the original tray icon be hidden"
 msgstr ""
 
-#: ../prefs.js:117
+#: ../prefs.js:122
 msgid "Native notifications"
 msgstr "Системска обавештења"
 
-#: ../prefs.js:126 ../prefs.js:127
+#: ../prefs.js:132 ../prefs.js:133
 msgid "Shall Skype make use of native notifications"
 msgstr "Подешава да ли Скајп треба да користи системска обавештења"
 
-#: ../prefs.js:142
+#: ../prefs.js:148
 msgid "Search provider"
 msgstr ""
 
-#: ../prefs.js:151 ../prefs.js:152
+#: ../prefs.js:158 ../prefs.js:159
 msgid "Shall a Skype search provider be added"
 msgstr ""
 
-#: ../prefs.js:167
+#: ../prefs.js:174
 msgid "Open contacts on left click on top bar icon"
 msgstr "Прикажи контакте када се кликне левим кликом на иконицу у горњој траци"
 
-#: ../prefs.js:176 ../prefs.js:177
+#: ../prefs.js:184 ../prefs.js:185
 msgid ""
 "Shall the Skype contact list be opened when the top bar icon is clicked by "
 "the left mouse button"
 msgstr ""
 "Подешава да ли се приказују контакти приликом кликтања левим кликом на "
 "иконицу у горњој траци"
+
+#: ../prefs.js:200
+msgid "Panel button position"
+msgstr ""
+
+#: ../prefs.js:210 ../prefs.js:211
+msgid "Define panel button's position"
+msgstr ""
 
 #~ msgid "Follow system-wide presence state"
 #~ msgstr "Прати системско стање присутности"
