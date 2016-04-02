@@ -54,6 +54,7 @@ const SkypeMenuButton = new Lang.Class({
         this._skypeApp = skype._skypeApp;
         this._getRecentChats = Lang.bind(skype, skype._getRecentChats);
         this._toggleSkypeMainWindow = Lang.bind(skype, skype._toggleSkypeMainWindow);
+        this._getMostRecentNotificationContactId = Lang.bind(skype, skype._getMostRecentNotificationContactId);
         this._focusWindow = Lang.bind(skype, skype._focusWindow);
         this._focusSkypeMainWindow = Lang.bind(skype, skype._focusSkypeMainWindow);
         this._focusSkypeChatWindow = Lang.bind(skype, skype._focusSkypeChatWindow);
@@ -132,7 +133,15 @@ const SkypeMenuButton = new Lang.Class({
     _onButtonPressEvent: function(actor, event) {
         if(this._isShowContactsOnLeftClickActive() && event.get_button() == 1) {
             this.menu.close();
-            this._toggleSkypeMainWindow();
+
+            let mostRecentContact = this._getMostRecentNotificationContactId();
+            if(mostRecentContact != "") {
+                this._proxy.InvokeRemote("OPEN CHAT " + mostRecentContact);
+                this._focusWindow(this._focusSkypeChatWindow);
+            } else {
+                this._toggleSkypeMainWindow();
+            }
+
             return Clutter.EVENT_STOP;
         }
         return Clutter.EVENT_PROPAGATE;

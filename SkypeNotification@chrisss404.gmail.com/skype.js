@@ -96,6 +96,7 @@ const Skype = new Lang.Class({
         this._searchProvider = null;
         this._skypeMenu = null;
         this._skypeMenuAlert = false;
+        this._skypeMostRecentNotificationContactId = "";
         this._skypeMenuEnabled = true;
         this._skypeHideOriginalTrayIcon = true;
         this._skypeNativeNotifications = true;
@@ -153,7 +154,7 @@ const Skype = new Lang.Class({
             }
             this._skypeMenu = new SkypeMenuButton(this);
             this._runUserPresenceCallbacks();
-            this._addToStatusArea("skypeMenu");
+            this._addSkypeMenuToStatusArea("skypeMenu");
             this._missedChat();
         }
 
@@ -422,11 +423,8 @@ const Skype = new Lang.Class({
         }
 
 
-        let last_activity = this._getLastChatActivity(uid);
-        if(this._notificationActivity[uid] == last_activity) {
+        if(this._isGroupMessage(uid)) {
             uid = "group";
-        } else {
-            this._notificationActivity[uid] = last_activity;
         }
 
 
@@ -489,6 +487,17 @@ const Skype = new Lang.Class({
                 })
             );
         }
+    },
+    
+    _isGroupMessage: function(uid) {
+        let last_activity = this._getLastChatActivity(uid);
+
+        if(this._notificationActivity[uid] == last_activity) {
+            return true;
+        }
+
+        this._notificationActivity[uid] = last_activity;
+        return false;
     },
 
     _isShowContactsOnLeftClickActive: function() {
@@ -638,6 +647,9 @@ const Skype = new Lang.Class({
                 this._skypeMenuAlert = true;
                 this._runUserPresenceCallbacks();
             }
+            if(!this._isGroupMessage(params['id'])) {
+                this._skypeMostRecentNotificationContactId = params['id'];
+            }
         }
 
         if(this._config != null) {
@@ -677,7 +689,7 @@ const Skype = new Lang.Class({
 
             if(this._skypeMenuEnabled && this._skypeMenu == null) {
                 this._skypeMenu = new SkypeMenuButton(this);
-                this._addToStatusArea("skypeMenu");
+                this._addSkypeMenuToStatusArea("skypeMenu");
                 this._missedChat();
             }
 
@@ -702,7 +714,7 @@ const Skype = new Lang.Class({
         }
     },
 
-    _addToStatusArea: function(role) {
+    _addSkypeMenuToStatusArea: function(role) {
         if(this._skypeMenu == null) {
             return;
         }
@@ -852,6 +864,13 @@ const Skype = new Lang.Class({
                 button.destroy();
             }
         }
+    },
+    
+    _getMostRecentNotificationContactId: function() {
+        if(this._skypeMenuAlert) {
+            return this._skypeMostRecentNotificationContactId;
+        }
+        return "";
     }
 });
 
