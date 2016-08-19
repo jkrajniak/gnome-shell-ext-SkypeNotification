@@ -1,0 +1,20 @@
+.skypeIcon {
+    /*
+    icon-size: 1.3em;
+    */
+}
+
+.skypeIconColor {
+    /*
+    color: #54c01b;
+    warning-color: #ec182c;
+    */
+}
+
+.skypeIconColor:active,
+.skypeIconColor:hover {
+    /*
+    color: #82d44e;
+    warning-color: #fc4153;
+    */
+}

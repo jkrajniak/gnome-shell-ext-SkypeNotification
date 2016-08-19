@@ -1,0 +1,194 @@
+# Skype GnomeShell Integration.
+# Copyright (C) 2013 THE gnome-shell-extension-SkypeNotification'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-shell-extension-SkypeNotification package.
+# Christian Hofer <chrisss404@gmail.com>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SkypeNotification@chrisss404.gmail.com\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-03-06 13:20+0100\n"
+"PO-Revision-Date: 2013-07-07 18:30+0200\n"
+"Last-Translator: Christian Hofer <chrisss404@gmail.com>\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../skypeMenuButton.js:65
+msgid "Recent Chats"
+msgstr "Kürzliche Chats"
+
+#: ../skypeMenuButton.js:67
+msgid "Change Status"
+msgstr "Status ändern"
+
+#: ../skypeMenuButton.js:70
+msgid "Online"
+msgstr "Online"
+
+#: ../skypeMenuButton.js:74
+msgid "Away"
+msgstr "Abwesend"
+
+#: ../skypeMenuButton.js:78
+msgid "Do Not Disturb"
+msgstr "Beschäftigt"
+
+#: ../skypeMenuButton.js:82
+msgid "Invisible"
+msgstr "Als offline anzeigen"
+
+#: ../skypeMenuButton.js:86
+msgid "Offline"
+msgstr "Offline"
+
+#: ../skypeMenuButton.js:100
+msgid "Show Contact List"
+msgstr "Kontaktliste anzeigen"
+
+#: ../skypeMenuButton.js:103
+msgid "Add a Contact"
+msgstr "Einen Kontakt hinzufügen"
+
+#: ../skypeMenuButton.js:106
+msgid "Microphone"
+msgstr "Mikrofon"
+
+#: ../skypeMenuButton.js:109
+msgid "Quit"
+msgstr "Beenden"
+
+#: ../skypeConfig.js:52
+msgid "Call Missed"
+msgstr "Anruf verpasst"
+
+#: ../skypeConfig.js:56
+msgid "Voicemail Received"
+msgstr "Sprachnachricht erhalten"
+
+#: ../skypeConfig.js:60
+msgid "Voicemail Sent"
+msgstr "Sprachnachricht gesendet"
+
+#: ../skypeConfig.js:64
+msgid "{contact} has appeared online"
+msgstr "{contact} kam online"
+
+#: ../skypeConfig.js:68
+msgid "{contact} has gone offline"
+msgstr "{contact} ging offline"
+
+#: ../skypeConfig.js:72
+msgid "Contact request from {contact}"
+msgstr "Kontaktanfrage von {contact}"
+
+#: ../skypeConfig.js:76
+msgid "{contact} has been added to your contact list"
+msgstr "{contact} wurde zu deiner Kontaktliste hinzugefügt"
+
+#: ../skypeConfig.js:80
+msgid "{contact} has been deleted from your contact list"
+msgstr "{contact} wurde aus deiner Kontaktliste gelöscht"
+
+#: ../skypeConfig.js:96
+msgid "{contact} joined chat"
+msgstr "{contact} ist dem Chat beigetreten"
+
+#: ../skypeConfig.js:100
+msgid "{contact} left chat"
+msgstr "{contact} hat den Chat verlassen"
+
+#: ../skypeConfig.js:104
+msgid "Incoming file from {contact}"
+msgstr "Eingehende Datei von {contact}"
+
+#: ../skypeConfig.js:108
+msgid "Transfer Complete"
+msgstr "Übertragung abgeschlossen"
+
+#: ../skypeConfig.js:108
+msgid "{filename} saved to {filepath}"
+msgstr "{filename} wurde nach {filepath} gespeichert"
+
+#: ../skypeConfig.js:112
+msgid "Transfer Failed"
+msgstr "Übertragung fehlgeschlagen"
+
+#: ../skypeConfig.js:116
+msgid "SMS Sent"
+msgstr "SMS gesendet"
+
+#: ../skypeConfig.js:120
+msgid "SMS Failed"
+msgstr "SMS Versand fehlschlagen"
+
+#: ../skypeConfig.js:124
+msgid "{contact} has a birthday tomorrow"
+msgstr "{contact} hat morgen Geburtstag"
+
+#: ../skypeConfig.js:128
+msgid "Happy Birthday {contact}"
+msgstr "Alles Gute zum Geburtstag {contact}"
+
+#: ../prefs.js:70
+msgid "Show top bar icon"
+msgstr "Menü-Symbol in der oberen Leiste anzeigen"
+
+#: ../prefs.js:80 ../prefs.js:81
+msgid "Shall the top bar icon be displayed"
+msgstr "Soll das Menü-Symbol in der oberen Leiste angezeigt werden"
+
+#: ../prefs.js:96
+msgid "Hide original tray icon (restart required)"
+msgstr "Taskleistensymbol verstecken (Neustart erforderlich)"
+
+#: ../prefs.js:106 ../prefs.js:107
+msgid "Shall the original tray icon be hidden"
+msgstr "Soll das originale Taskleistensymbol versteckt werden"
+
+#: ../prefs.js:122
+msgid "Native notifications"
+msgstr "Native Benachrichtigungen"
+
+#: ../prefs.js:132 ../prefs.js:133
+msgid "Shall Skype make use of native notifications"
+msgstr "Soll Skype die nativen Benachrichtigungen verwenden"
+
+#: ../prefs.js:148
+msgid "Search provider"
+msgstr "Suchanbieter"
+
+#: ../prefs.js:158 ../prefs.js:159
+msgid "Shall a Skype search provider be added"
+msgstr "Soll ein Skype Suchanbieter hinzugefügt werden"
+
+#: ../prefs.js:174
+msgid "Open contacts on left click on top bar icon"
+msgstr ""
+"Kontakliste bei Linksklick auf das Symbol in der oberen Leiste anzeigen"
+
+#: ../prefs.js:184 ../prefs.js:185
+msgid ""
+"Shall the Skype contact list be opened when the top bar icon is clicked by "
+"the left mouse button"
+msgstr ""
+"Soll die Skype Kontakliste geöffnet werden, wenn das Symbol in der oberen "
+"Leiste mit der linken Maustaste angeklickt wird"
+
+#: ../prefs.js:200
+msgid "Panel button position"
+msgstr "Menü-Symbol Position"
+
+#: ../prefs.js:210 ../prefs.js:211
+msgid "Define panel button's position"
+msgstr "Bestimme die Position des Menü-Symbols"
+
+#~ msgid "Follow system-wide presence state"
+#~ msgstr "Dem systemweiten Anwesenheitsstatus folgen"
+
+#~ msgid "Shall Skype online status follow the system-wide presence state"
+#~ msgstr ""
+#~ "Soll der Skype Online-Status dem systemweiten Anwesenheitsstatus folgen"

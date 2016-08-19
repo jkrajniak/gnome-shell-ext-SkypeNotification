@@ -1,0 +1,186 @@
+# Russian translations for SkypeNotification@chrisss package
+# Английские переводы для пакета SkypeNotification@chrisss.
+# Copyright (C) 2013 THE SkypeNotification@chrisss'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the SkypeNotification@chrisss package.
+# Alexey Kharlamov <derlafff@ya.ru>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SkypeNotification@chrisss 404.gmail.com\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-03-06 13:20+0100\n"
+"PO-Revision-Date: 2013-08-06 16:14+0400\n"
+"Last-Translator: Alexey Kharlamov <derlafff@ya.ru>\n"
+"Language-Team: Russian\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: ../skypeMenuButton.js:65
+msgid "Recent Chats"
+msgstr "Последние беседы"
+
+#: ../skypeMenuButton.js:67
+msgid "Change Status"
+msgstr "Изменить статус"
+
+#: ../skypeMenuButton.js:70
+msgid "Online"
+msgstr "В сети"
+
+#: ../skypeMenuButton.js:74
+msgid "Away"
+msgstr "Нет на месте"
+
+#: ../skypeMenuButton.js:78
+msgid "Do Not Disturb"
+msgstr "Не беспокоить"
+
+#: ../skypeMenuButton.js:82
+msgid "Invisible"
+msgstr "Невидимый"
+
+#: ../skypeMenuButton.js:86
+msgid "Offline"
+msgstr "Не в сети"
+
+#: ../skypeMenuButton.js:100
+msgid "Show Contact List"
+msgstr "Показать список контактов"
+
+#: ../skypeMenuButton.js:103
+msgid "Add a Contact"
+msgstr "Добавить контакт"
+
+#: ../skypeMenuButton.js:106
+msgid "Microphone"
+msgstr "микрофон"
+
+#: ../skypeMenuButton.js:109
+msgid "Quit"
+msgstr "Выход"
+
+#: ../skypeConfig.js:52
+msgid "Call Missed"
+msgstr "Вызов пропущен"
+
+#: ../skypeConfig.js:56
+msgid "Voicemail Received"
+msgstr "Новое голосовое сообщение"
+
+#: ../skypeConfig.js:60
+msgid "Voicemail Sent"
+msgstr "Голосовое сообщение отправлено"
+
+#: ../skypeConfig.js:64
+msgid "{contact} has appeared online"
+msgstr "{contact} появился в сети"
+
+#: ../skypeConfig.js:68
+msgid "{contact} has gone offline"
+msgstr "{contact} вышел из сети"
+
+#: ../skypeConfig.js:72
+msgid "Contact request from {contact}"
+msgstr "Запрос авторизации от {contact}"
+
+#: ../skypeConfig.js:76
+msgid "{contact} has been added to your contact list"
+msgstr "{contact} был добавлен в список контактов"
+
+#: ../skypeConfig.js:80
+msgid "{contact} has been deleted from your contact list"
+msgstr "{contact} был удален из вашего списка контактов"
+
+#: ../skypeConfig.js:96
+msgid "{contact} joined chat"
+msgstr "{contact} вошел в чат"
+
+#: ../skypeConfig.js:100
+msgid "{contact} left chat"
+msgstr "{contact} вышел из чата"
+
+#: ../skypeConfig.js:104
+msgid "Incoming file from {contact}"
+msgstr "Входящий файл от {contact}"
+
+#: ../skypeConfig.js:108
+msgid "Transfer Complete"
+msgstr "Передача завершена"
+
+#: ../skypeConfig.js:108
+msgid "{filename} saved to {filepath}"
+msgstr "{filename} сохранен в {filepath}"
+
+#: ../skypeConfig.js:112
+msgid "Transfer Failed"
+msgstr "Передача не удалась"
+
+#: ../skypeConfig.js:116
+msgid "SMS Sent"
+msgstr "SMS отправлено"
+
+#: ../skypeConfig.js:120
+msgid "SMS Failed"
+msgstr "SMS не отправлено"
+
+#: ../skypeConfig.js:124
+msgid "{contact} has a birthday tomorrow"
+msgstr "Завтра день рождения {contact}"
+
+#: ../skypeConfig.js:128
+msgid "Happy Birthday {contact}"
+msgstr "Сегодня день рождения {contact}"
+
+#: ../prefs.js:70
+msgid "Show top bar icon"
+msgstr "Показывать иконку в верхней панели"
+
+#: ../prefs.js:80 ../prefs.js:81
+msgid "Shall the top bar icon be displayed"
+msgstr "Показывать иконку в верхней панели"
+
+#: ../prefs.js:96
+msgid "Hide original tray icon (restart required)"
+msgstr ""
+
+#: ../prefs.js:106 ../prefs.js:107
+msgid "Shall the original tray icon be hidden"
+msgstr ""
+
+#: ../prefs.js:122
+msgid "Native notifications"
+msgstr ""
+
+#: ../prefs.js:132 ../prefs.js:133
+msgid "Shall Skype make use of native notifications"
+msgstr ""
+
+#: ../prefs.js:148
+msgid "Search provider"
+msgstr ""
+
+#: ../prefs.js:158 ../prefs.js:159
+msgid "Shall a Skype search provider be added"
+msgstr ""
+
+#: ../prefs.js:174
+msgid "Open contacts on left click on top bar icon"
+msgstr ""
+
+#: ../prefs.js:184 ../prefs.js:185
+msgid ""
+"Shall the Skype contact list be opened when the top bar icon is clicked by "
+"the left mouse button"
+msgstr ""
+
+#: ../prefs.js:200
+msgid "Panel button position"
+msgstr ""
+
+#: ../prefs.js:210 ../prefs.js:211
+msgid "Define panel button's position"
+msgstr ""
